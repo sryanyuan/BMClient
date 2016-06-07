@@ -1,0 +1,9 @@
+$#include "../Common/GameRenderObject.h"
+
+class RenderObject
+{
+	void SetVisible(bool _vb);
+	bool IsVisible() const;
+
+	int GetIDInt();
+};

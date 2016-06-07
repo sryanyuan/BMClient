@@ -1,0 +1,6 @@
+$#include "../BackMir/LuaClientEngine.h"
+
+enum LuaEvent
+{
+	kLuaEvent_SwitchScene,
+};

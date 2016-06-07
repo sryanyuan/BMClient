@@ -1,0 +1,29 @@
+$#include "../GameDialog/ScriptWnd.h"
+
+class GameScriptWnd : public GameNewDlg
+{
+	int AddRenderTexture(const char* _pszFileName, int _nTextureID, int _nX, int _nY, int _nLeft = 0, int _nTop = 0, int _nWidth = 0, int _nHeight = 0, unsigned int _uColor = 0);
+	int AddRenderString(const char* _pszString, int _nLeft, int _nTop, unsigned int _uColor = 0);
+
+	void RemoveRenderTexture(int _nID);
+	void RemoveRenderString(int _nID);
+
+	void SetRenderTexture_Texture(int _nID, const char* _pszFileName, int _nTextureID);
+	void SetRenderTexture_Rect(int _nID, int _nLeft, int _nTop, int _nWidth = 0, int _nHeight = 0);
+	void SetRenderTexture_Position(int _nID, int _nX, int _nY);
+	void SetRenderTexture_Color(int _nID, unsigned int _uColor);
+
+	void SetRenderString_String(int _nID, const char* _pszString);
+	void SetRenderString_Position(int _nID, int _nX, int _nY);
+	void SetRenderString_Color(int _nID, unsigned int _uColor);
+
+	void SetRenderTexture_Visible(int _nID, bool _bVisible);
+	void SetRenderString_Visible(int _nID, bool _bVisible);
+
+	void RemoveAllRenderTexture();
+	void RemoveAllRenderString();
+	
+	void RegisterOnButtonClick(const char* _pszFuncName);
+	void RegisterOnShowWindow(const char* _pszFuncName);
+	void RegisterOnCloseWindow(const char* _pszFuncName);
+};

@@ -1,0 +1,6 @@
+$#include "../GameScene/GameScene.h"
+
+class GameScene : public RenderTarget
+{
+	GameMainOptUI* GetMainOpt();
+};

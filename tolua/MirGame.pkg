@@ -1,0 +1,9 @@
+$#include "../BackMir/BackMir.h"
+
+class MirGame
+{
+	static MirGame* GetInstance();
+
+	void SetDarkMode(int _nMode);
+	void SetShowMapSnap(bool _bShow);
+};

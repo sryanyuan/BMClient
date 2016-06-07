@@ -1,0 +1,8 @@
+$#include "../Common/InteractiveContext.h"
+
+class InteractiveContextEx
+{
+	//	All for script
+	void AddContextNode(int _x, int _y, const char* _pMsg, int _nId);
+	void Clear();
+};

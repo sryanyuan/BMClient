@@ -1,0 +1,578 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx</Extensions>
+    </Filter>
+    <Filter Include="GameScene">
+      <UniqueIdentifier>{144628c7-478f-4be6-ad44-4289a6cbf8e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{88b9cb86-f9b3-459a-acc0-ce7d39820450}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Astar">
+      <UniqueIdentifier>{d703da0e-9b0f-4fb6-898a-d15d5d8572e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameDialog">
+      <UniqueIdentifier>{03a64742-a90b-4c7b-affb-eadca937f0f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Net">
+      <UniqueIdentifier>{180b4af8-08d3-461f-a1d2-74fac92ffcc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BackMir">
+      <UniqueIdentifier>{39d3898a-1f51-4463-8eee-d5435183d252}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoginScene">
+      <UniqueIdentifier>{c28cb82d-40ae-450f-8bdd-a9f195cd0c80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Widget">
+      <UniqueIdentifier>{57a548c3-2193-4726-b5c5-4d56fafe8f45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Module">
+      <UniqueIdentifier>{00bfd0ad-f0f2-4ee2-a635-5c89c658400c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LuaExport">
+      <UniqueIdentifier>{fbcf6cf8-dfed-49ac-b167-561f96f4fde8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Module\StackWalker">
+      <UniqueIdentifier>{95c98ba8-9dea-4523-bab1-c45d3c993d19}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene\GameInfoManager.h">
+      <Filter>GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene\GameMapManager.h">
+      <Filter>GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene\GameMonster.h">
+      <Filter>GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene\GameNPC.h">
+      <Filter>GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene\GamePlayer.h">
+      <Filter>GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene\GameResourceManager.h">
+      <Filter>GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene\GameScene.h">
+      <Filter>GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene\GameTextureManager.h">
+      <Filter>GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\CTextureBuffer.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\DrawWndBuffer.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\GameMapDataAdaptor.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\GameRenderObject.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\GfxFont.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\GlobalDefine.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\GlobalFunction.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\InteractiveContext.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\MapSurface.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\MirMap.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ObjectData.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\PlayerBag.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\PlayerStatusControl.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ResourceID.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ScriptCommand.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\SKnl3Helper.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\StructDefine.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\TextPrinter.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\TimeCounter.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Astar\SAstar.h">
+      <Filter>Astar</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDialog\GameCommonDlg.h">
+      <Filter>GameDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDialog\GameDlgBase.h">
+      <Filter>GameDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDialog\GameInfoBoardDlg.h">
+      <Filter>GameDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDialog\GameInteractiveDlg.h">
+      <Filter>GameDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDialog\GameMiniMapDlg.h">
+      <Filter>GameDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\ClientSocket.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Packet.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\PacketQueue.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="BackMir\BackMir.h">
+      <Filter>BackMir</Filter>
+    </ClInclude>
+    <ClInclude Include="BackMir\SGameBase.h">
+      <Filter>BackMir</Filter>
+    </ClInclude>
+    <ClInclude Include="LoginScene\LoginScene.h">
+      <Filter>LoginScene</Filter>
+    </ClInclude>
+    <ClInclude Include="LoginScene\SelChrScene.h">
+      <Filter>LoginScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\Widget.h">
+      <Filter>Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonModule\ByteBuffer.h">
+      <Filter>Module</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonModule\DataParser.h">
+      <Filter>Module</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonModule\EnumUtils.h">
+      <Filter>Module</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonModule\GamePacket.h">
+      <Filter>Module</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonModule\GameStructSerialize.h">
+      <Filter>Module</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonModule\SaveFile.h">
+      <Filter>Module</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\GfxEdit.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene\MagicSystem.h">
+      <Filter>GameDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\GamePacketHandler.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\PacketHandler.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDialog\GameChatDlg.h">
+      <Filter>GameDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene\GameOtherPlayer.h">
+      <Filter>GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonModule\ScriptEngine.h">
+      <Filter>Module</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene\GameTextureManagerWil.h">
+      <Filter>GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\SIBFile.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\SIBDefine.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene\GameTextureManagerSib.h">
+      <Filter>GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene\MagicEffect.h">
+      <Filter>GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonModule\MagicEffectID.h">
+      <Filter>Module</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonModule\ShareData.h">
+      <Filter>Module</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDialog\GameSkillDlg.h">
+      <Filter>GameDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDialog\GameHelpDlg.h">
+      <Filter>GameDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene\GameSoundManager.h">
+      <Filter>GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="LoginScene\SelChrDlg.h">
+      <Filter>LoginScene</Filter>
+    </ClInclude>
+    <ClInclude Include="LoginScene\DeleteConfirmDlg.h">
+      <Filter>LoginScene</Filter>
+    </ClInclude>
+    <ClInclude Include="LoginScene\NewHumDlg.h">
+      <Filter>LoginScene</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDialog\HumStateDlg.h">
+      <Filter>GameDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonModule\ShareDefine.h">
+      <Filter>Module</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDialog\GameQuitDialog.h">
+      <Filter>GameDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDialog\GameAssistDlg.h">
+      <Filter>GameDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDialog\GameTeamDlg.h">
+      <Filter>GameDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDialog\GameDecomposeDlg.h">
+      <Filter>GameDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonModule\ConvertUTF.h">
+      <Filter>Module</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonModule\SimpleIni.h">
+      <Filter>Module</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonModule\SettingLoader.h">
+      <Filter>Module</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonModule\QuestContext.h">
+      <Filter>Module</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonModule\GDefine.h">
+      <Filter>Module</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDialog\GameQuestDlg.h">
+      <Filter>GameDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDialog\GameSettingDlg.h">
+      <Filter>GameDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDialog\GameShopDlg2.h">
+      <Filter>GameDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDialog\GameStoreDlg2.h">
+      <Filter>GameDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDialog\GameOtherHumDlg.h">
+      <Filter>GameDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonModule\StackWalker\StackWalker.h">
+      <Filter>Module\StackWalker</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ExceptionHandler.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="BackMir.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="GameScene\GameInfoManager.cpp">
+      <Filter>GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene\GameMapManager.cpp">
+      <Filter>GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene\GameMonster.cpp">
+      <Filter>GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene\GameNPC.cpp">
+      <Filter>GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene\GameResourceManager.cpp">
+      <Filter>GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene\GameScene.cpp">
+      <Filter>GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene\GameTextureManager.cpp">
+      <Filter>GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\CTextureBuffer.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\DrawWndBuffer.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\GameMapDataAdaptor.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\GameRenderObject.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\GfxFont.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\GlobalFunction.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\InteractiveContext.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\MapSurface.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\MirMap.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\PlayerStatusControl.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\SKnl3Helper.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\SWilFile.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\TextPrinter.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\TimerCounter.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Astar\SAstarImpl.cpp">
+      <Filter>Astar</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\GameBagDlg.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\GameCommonDlg.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\GameHumDlg.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\GameInfoBoardDlg.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\GameInteractiveDlg.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\GameIntroDlg.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\GameMainOptDlgUI.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\GameMiniMapDlg.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\GameSellDlg.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\ClientSocket.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\PacketQueue.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="BackMir\BackMir.cpp">
+      <Filter>BackMir</Filter>
+    </ClCompile>
+    <ClCompile Include="BackMir\main.cpp">
+      <Filter>BackMir</Filter>
+    </ClCompile>
+    <ClCompile Include="BackMir\SGameBase.cpp">
+      <Filter>BackMir</Filter>
+    </ClCompile>
+    <ClCompile Include="LoginScene\LoginScene.cpp">
+      <Filter>LoginScene</Filter>
+    </ClCompile>
+    <ClCompile Include="LoginScene\SelChrScene.cpp">
+      <Filter>LoginScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\Widget.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonModule\ByteBuffer.cpp">
+      <Filter>Module</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonModule\DataParser.cpp">
+      <Filter>Module</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonModule\GamePacket.cpp">
+      <Filter>Module</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonModule\GameStructSerialize.cpp">
+      <Filter>Module</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonModule\SaveFile.cpp">
+      <Filter>Module</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\GfxEdit.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene\MagicSystem.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\GamePacketHandler.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\PacketHandler.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\GameChatDlg.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene\GameOtherPlayer.cpp">
+      <Filter>GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene\GamePlayer.cpp">
+      <Filter>GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonModule\ScriptEngine.cpp">
+      <Filter>Module</Filter>
+    </ClCompile>
+    <ClCompile Include="tolua\luaClient.cpp">
+      <Filter>LuaExport</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene\GameTextureManagerWil.cpp">
+      <Filter>GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\SIBFile.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene\GameTextureManagerSib.cpp">
+      <Filter>GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene\MagicEffect.cpp">
+      <Filter>GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\GameShopDlg.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonModule\MagicEffectID.cpp">
+      <Filter>Module</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\GameSysMenuDlg.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\GameStaticDlg.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonModule\ShareData.cpp">
+      <Filter>Module</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\GameSkillDlg.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\GameMapDlg.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\GameStoreDlg.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\GameHumDlg2.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\GameHelpDlg.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene\GameSoundManager.cpp">
+      <Filter>GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\GameBagDlg2.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\GameCubeDlg.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="LoginScene\SelChrDlg.cpp">
+      <Filter>LoginScene</Filter>
+    </ClCompile>
+    <ClCompile Include="LoginScene\DeleteConfirmDlg.cpp">
+      <Filter>LoginScene</Filter>
+    </ClCompile>
+    <ClCompile Include="LoginScene\NewHumDlg.cpp">
+      <Filter>LoginScene</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\HumStateDlg.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\GameQuitDlg.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\GameAssistDlg.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\GameTeamDlg.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\GameDecomposeDlg.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonModule\ConvertUTF.c">
+      <Filter>Module</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonModule\QuestContext.cpp">
+      <Filter>Module</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\GameQuestDlg.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\GameSettingDlg.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\GameShopDlg2.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\GameStoreDlg2.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDialog\GameOtherHumDlg.cpp">
+      <Filter>GameDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonModule\StackWalker\StackWalker.cpp">
+      <Filter>Module\StackWalker</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\ExceptionHandler.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,290 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>BackMirClient</ProjectName>
+    <ProjectGuid>{A1D173C6-81BE-474E-B7E6-8C7843FB3172}</ProjectGuid>
+    <RootNamespace>SGameBase</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)..\BackMir\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)..\BackMir\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">BackMir</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">BackMir</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>D:\VsProject\Inc\ZipArchive;D:\VsProject\Inc\tolua;D:\VsProject\Inc\lua;D:\VsProject\Inc\Sqlite;D:\VsProject\Inc\LuaPlus;D:\VsProject\hge181\include;D:\VsProject\Inc\Zlib;D:\VsProject\Inc\fmodex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;ZLIB_WINAPI;_NET_GAME_;_ZIPARCHIVE_;_SELCHR_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <OutputFile>$(OutDir)BackMir.exe</OutputFile>
+      <AdditionalLibraryDirectories>D:\VsProject\Lib;D:\VsProject\hge181\lib\vc;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>LIBC.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)SGameBase.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\VsProject\Inc\ZipArchive;D:\VsProject\Inc\lua;D:\VsProject\Inc\tolua;D:\VsProject\Inc\Zlib;D:\VsProject\Inc\Sqlite;D:\VsProject\hge181\include;D:\VsProject\Inc\fmodex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;ZLIB_WINAPI;_NET_GAME_;_ZIPARCHIVE_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <OutputFile>$(OutDir)BackMir.exe</OutputFile>
+      <AdditionalLibraryDirectories>D:\VsProject\hge181\lib\vc;D:\VsProject\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>LIBC.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\CommonModule\ConvertUTF.h" />
+    <ClInclude Include="..\CommonModule\GDefine.h" />
+    <ClInclude Include="..\CommonModule\MagicEffectID.h" />
+    <ClInclude Include="..\CommonModule\QuestContext.h" />
+    <ClInclude Include="..\CommonModule\ScriptEngine.h" />
+    <ClInclude Include="..\CommonModule\SettingLoader.h" />
+    <ClInclude Include="..\CommonModule\ShareData.h" />
+    <ClInclude Include="..\CommonModule\ShareDefine.h" />
+    <ClInclude Include="..\CommonModule\SimpleIni.h" />
+    <ClInclude Include="..\CommonModule\StackWalker\StackWalker.h" />
+    <ClInclude Include="Common\ExceptionHandler.h" />
+    <ClInclude Include="Common\GfxEdit.h" />
+    <ClInclude Include="Common\SIBDefine.h" />
+    <ClInclude Include="Common\SIBFile.h" />
+    <ClInclude Include="GameDialog\GameAssistDlg.h" />
+    <ClInclude Include="GameDialog\GameChatDlg.h" />
+    <ClInclude Include="GameDialog\GameDecomposeDlg.h" />
+    <ClInclude Include="GameDialog\GameHelpDlg.h" />
+    <ClInclude Include="GameDialog\GameOtherHumDlg.h" />
+    <ClInclude Include="GameDialog\GameQuestDlg.h" />
+    <ClInclude Include="GameDialog\GameQuitDialog.h" />
+    <ClInclude Include="GameDialog\GameSettingDlg.h" />
+    <ClInclude Include="GameDialog\GameShopDlg2.h" />
+    <ClInclude Include="GameDialog\GameSkillDlg.h" />
+    <ClInclude Include="GameDialog\GameStoreDlg2.h" />
+    <ClInclude Include="GameDialog\GameTeamDlg.h" />
+    <ClInclude Include="GameDialog\HumStateDlg.h" />
+    <ClInclude Include="GameScene\GameOtherPlayer.h" />
+    <ClInclude Include="GameScene\GameSoundManager.h" />
+    <ClInclude Include="GameScene\GameTextureManagerSib.h" />
+    <ClInclude Include="GameScene\GameTextureManagerWil.h" />
+    <ClInclude Include="GameScene\MagicEffect.h" />
+    <ClInclude Include="GameScene\MagicSystem.h" />
+    <ClInclude Include="LoginScene\DeleteConfirmDlg.h" />
+    <ClInclude Include="LoginScene\NewHumDlg.h" />
+    <ClInclude Include="LoginScene\SelChrDlg.h" />
+    <ClInclude Include="Net\GamePacketHandler.h" />
+    <ClInclude Include="Net\PacketHandler.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="GameScene\GameInfoManager.h" />
+    <ClInclude Include="GameScene\GameMapManager.h" />
+    <ClInclude Include="GameScene\GameMonster.h" />
+    <ClInclude Include="GameScene\GameNPC.h" />
+    <ClInclude Include="GameScene\GamePlayer.h" />
+    <ClInclude Include="GameScene\GameResourceManager.h" />
+    <ClInclude Include="GameScene\GameScene.h" />
+    <ClInclude Include="GameScene\GameTextureManager.h" />
+    <ClInclude Include="Common\CTextureBuffer.h" />
+    <ClInclude Include="Common\DrawWndBuffer.h" />
+    <ClInclude Include="Common\GameMapDataAdaptor.h" />
+    <ClInclude Include="Common\GameRenderObject.h" />
+    <ClInclude Include="Common\GfxFont.h" />
+    <ClInclude Include="Common\GlobalDefine.h" />
+    <ClInclude Include="Common\GlobalFunction.h" />
+    <ClInclude Include="Common\InteractiveContext.h" />
+    <ClInclude Include="Common\MapSurface.h" />
+    <ClInclude Include="Common\MirMap.h" />
+    <ClInclude Include="Common\ObjectData.h" />
+    <ClInclude Include="Common\PlayerBag.h" />
+    <ClInclude Include="Common\PlayerStatusControl.h" />
+    <ClInclude Include="Common\ResourceID.h" />
+    <ClInclude Include="Common\ScriptCommand.h" />
+    <ClInclude Include="Common\SKnl3Helper.h" />
+    <ClInclude Include="Common\StructDefine.h" />
+    <ClInclude Include="Common\TextPrinter.h" />
+    <ClInclude Include="Common\TimeCounter.h" />
+    <ClInclude Include="Astar\SAstar.h" />
+    <ClInclude Include="GameDialog\GameCommonDlg.h" />
+    <ClInclude Include="GameDialog\GameDlgBase.h" />
+    <ClInclude Include="GameDialog\GameInfoBoardDlg.h" />
+    <ClInclude Include="GameDialog\GameInteractiveDlg.h" />
+    <ClInclude Include="GameDialog\GameMiniMapDlg.h" />
+    <ClInclude Include="Net\ClientSocket.h" />
+    <ClInclude Include="Net\Packet.h" />
+    <ClInclude Include="Net\PacketQueue.h" />
+    <ClInclude Include="BackMir\BackMir.h" />
+    <ClInclude Include="BackMir\SGameBase.h" />
+    <ClInclude Include="LoginScene\LoginScene.h" />
+    <ClInclude Include="LoginScene\SelChrScene.h" />
+    <ClInclude Include="Widget\Widget.h" />
+    <ClInclude Include="..\CommonModule\ByteBuffer.h" />
+    <ClInclude Include="..\CommonModule\DataParser.h" />
+    <ClInclude Include="..\CommonModule\EnumUtils.h" />
+    <ClInclude Include="..\CommonModule\GamePacket.h" />
+    <ClInclude Include="..\CommonModule\GameStructSerialize.h" />
+    <ClInclude Include="..\CommonModule\SaveFile.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="BackMir.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\CommonModule\ConvertUTF.c" />
+    <ClCompile Include="..\CommonModule\MagicEffectID.cpp" />
+    <ClCompile Include="..\CommonModule\QuestContext.cpp" />
+    <ClCompile Include="..\CommonModule\ScriptEngine.cpp" />
+    <ClCompile Include="..\CommonModule\ShareData.cpp" />
+    <ClCompile Include="..\CommonModule\StackWalker\StackWalker.cpp" />
+    <ClCompile Include="Common\ExceptionHandler.cpp" />
+    <ClCompile Include="Common\GfxEdit.cpp" />
+    <ClCompile Include="Common\SIBFile.cpp" />
+    <ClCompile Include="GameDialog\GameAssistDlg.cpp" />
+    <ClCompile Include="GameDialog\GameBagDlg2.cpp" />
+    <ClCompile Include="GameDialog\GameChatDlg.cpp" />
+    <ClCompile Include="GameDialog\GameCubeDlg.cpp" />
+    <ClCompile Include="GameDialog\GameDecomposeDlg.cpp" />
+    <ClCompile Include="GameDialog\GameHelpDlg.cpp" />
+    <ClCompile Include="GameDialog\GameHumDlg2.cpp" />
+    <ClCompile Include="GameDialog\GameMapDlg.cpp" />
+    <ClCompile Include="GameDialog\GameOtherHumDlg.cpp" />
+    <ClCompile Include="GameDialog\GameQuestDlg.cpp" />
+    <ClCompile Include="GameDialog\GameQuitDlg.cpp" />
+    <ClCompile Include="GameDialog\GameSettingDlg.cpp" />
+    <ClCompile Include="GameDialog\GameShopDlg.cpp" />
+    <ClCompile Include="GameDialog\GameShopDlg2.cpp" />
+    <ClCompile Include="GameDialog\GameSkillDlg.cpp" />
+    <ClCompile Include="GameDialog\GameStaticDlg.cpp" />
+    <ClCompile Include="GameDialog\GameStoreDlg.cpp" />
+    <ClCompile Include="GameDialog\GameStoreDlg2.cpp" />
+    <ClCompile Include="GameDialog\GameSysMenuDlg.cpp" />
+    <ClCompile Include="GameDialog\GameTeamDlg.cpp" />
+    <ClCompile Include="GameDialog\HumStateDlg.cpp" />
+    <ClCompile Include="GameScene\GameInfoManager.cpp" />
+    <ClCompile Include="GameScene\GameMapManager.cpp" />
+    <ClCompile Include="GameScene\GameMonster.cpp" />
+    <ClCompile Include="GameScene\GameNPC.cpp" />
+    <ClCompile Include="GameScene\GameOtherPlayer.cpp" />
+    <ClCompile Include="GameScene\GamePlayer.cpp" />
+    <ClCompile Include="GameScene\GameResourceManager.cpp" />
+    <ClCompile Include="GameScene\GameScene.cpp" />
+    <ClCompile Include="GameScene\GameSoundManager.cpp" />
+    <ClCompile Include="GameScene\GameTextureManager.cpp" />
+    <ClCompile Include="Common\CTextureBuffer.cpp" />
+    <ClCompile Include="Common\DrawWndBuffer.cpp" />
+    <ClCompile Include="Common\GameMapDataAdaptor.cpp" />
+    <ClCompile Include="Common\GameRenderObject.cpp" />
+    <ClCompile Include="Common\GfxFont.cpp" />
+    <ClCompile Include="Common\GlobalFunction.cpp" />
+    <ClCompile Include="Common\InteractiveContext.cpp" />
+    <ClCompile Include="Common\MapSurface.cpp" />
+    <ClCompile Include="Common\MirMap.cpp" />
+    <ClCompile Include="Common\PlayerStatusControl.cpp" />
+    <ClCompile Include="Common\SKnl3Helper.cpp" />
+    <ClCompile Include="Common\SWilFile.cpp" />
+    <ClCompile Include="Common\TextPrinter.cpp" />
+    <ClCompile Include="Common\TimerCounter.cpp" />
+    <ClCompile Include="Astar\SAstarImpl.cpp" />
+    <ClCompile Include="GameDialog\GameBagDlg.cpp" />
+    <ClCompile Include="GameDialog\GameCommonDlg.cpp" />
+    <ClCompile Include="GameDialog\GameHumDlg.cpp" />
+    <ClCompile Include="GameDialog\GameInfoBoardDlg.cpp" />
+    <ClCompile Include="GameDialog\GameInteractiveDlg.cpp" />
+    <ClCompile Include="GameDialog\GameIntroDlg.cpp" />
+    <ClCompile Include="GameDialog\GameMainOptDlgUI.cpp" />
+    <ClCompile Include="GameDialog\GameMiniMapDlg.cpp" />
+    <ClCompile Include="GameDialog\GameSellDlg.cpp" />
+    <ClCompile Include="GameScene\GameTextureManagerSib.cpp" />
+    <ClCompile Include="GameScene\GameTextureManagerWil.cpp" />
+    <ClCompile Include="GameScene\MagicEffect.cpp" />
+    <ClCompile Include="GameScene\MagicSystem.cpp" />
+    <ClCompile Include="LoginScene\DeleteConfirmDlg.cpp" />
+    <ClCompile Include="LoginScene\NewHumDlg.cpp" />
+    <ClCompile Include="LoginScene\SelChrDlg.cpp" />
+    <ClCompile Include="Net\ClientSocket.cpp" />
+    <ClCompile Include="Net\GamePacketHandler.cpp" />
+    <ClCompile Include="Net\PacketHandler.cpp" />
+    <ClCompile Include="Net\PacketQueue.cpp" />
+    <ClCompile Include="BackMir\BackMir.cpp" />
+    <ClCompile Include="BackMir\main.cpp" />
+    <ClCompile Include="BackMir\SGameBase.cpp" />
+    <ClCompile Include="LoginScene\LoginScene.cpp" />
+    <ClCompile Include="LoginScene\SelChrScene.cpp" />
+    <ClCompile Include="tolua\luaClient.cpp" />
+    <ClCompile Include="Widget\Widget.cpp" />
+    <ClCompile Include="..\CommonModule\ByteBuffer.cpp" />
+    <ClCompile Include="..\CommonModule\DataParser.cpp" />
+    <ClCompile Include="..\CommonModule\GamePacket.cpp" />
+    <ClCompile Include="..\CommonModule\GameStructSerialize.cpp" />
+    <ClCompile Include="..\CommonModule\SaveFile.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

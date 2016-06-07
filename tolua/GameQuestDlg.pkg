@@ -1,0 +1,26 @@
+$#include "../GameDialog/GameQuestDlg.h"
+
+struct QuestSummary
+{
+	std::string xQuestName;
+	int nType;
+};
+
+struct QuestTip
+{
+	std::string xDescript;
+	std::string xRequire;
+	std::string xReward;
+};
+
+struct QuestInfo
+{
+	QuestSummary stSummary;
+	QuestTip stTip;
+};
+
+class GameQuestDlg : public GameNewDlg
+{
+	//	Export to lua
+	QuestInfo* PushQuestInfo();
+};

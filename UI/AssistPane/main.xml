@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window mininfo="450,500" size="450,500" caption="0,0,0,36" >
+	<!--Font name="幼圆" size="12" default="true" /-->
+	<Font name="宋体" size="12" bold="false" default="true" />
+	<Font name="微软雅黑" size="14" bold="true" default="false" />
+	<Font name="宋体" size="14" bold="false" default="false" />
+	<Font name="微软雅黑" size="12" bold="false" default="false" />
+
+	<!--这一层是用来设置背景的-->
+	<HorizontalLayout name="bg" bkcolor="0xFF1e90ff" hole="true" >
+		<!--这一层是用来设置边框的-->
+		<VerticalLayout bkimage="file='AssistPane/border.png' corner='2,2,2,2'" hole="true">
+			<!--游戏内容页面-->
+			<HorizontalLayout>
+					<Label width="3" />
+					
+					<VerticalLayout>
+						<Label height="3" />
+						
+						<!--标题栏-->
+						<HorizontalLayout height="34">
+							<Label name="label_caption" text="BackMIR辅助面板" textcolor="0xffffffff" font="1" float="true" pos="15,10,200,25" />
+							<Label />
+							<Button name="closebtn" width="41" height="35" normalimage="file='assistpane/btn_msgdlgClose.png' source='0,0,41,35'" hotimage="file='assistpane/btn_msgdlgClose.png' source='0,35,41,70'" pushedimage="file='assistpane/btn_msgdlgClose.png' source='0,70,41,105'" />
+						</HorizontalLayout>
+						
+						<HorizontalLayout bkcolor="0xffe9f0f4" >
+							<Label width="5" />
+							
+							<VerticalLayout>
+								<Label height="5" />
+									<!--Tab面板-->
+									<HorizontalLayout height="24">
+										<Button name="button_tableft" width="8" normalimage="file='AssistPane/arrow_left.png' source='0,0,8,13' dest='0,6,8,18'" hotimage="file='AssistPane/arrow_left.png' source='0,13,8,26' dest='0,6,8,18'" pushedimage="file='AssistPane/arrow_left.png' source='0,26,8,39' dest='0,6,8,18'" />
+										<Label width="5" />
+										<HorizontalLayout name="layout_tabbuttons">
+											<Option name="option_tab_0" group="group_tabsel" selected="true" font="3" width="80" height="24" text="物品过滤" normalimage="file='AssistPane/button.png' source='0,0,177,52' corner='8,8,8,8'" hotimage="file='AssistPane/button.png' source='0,52,177,104' corner='8,8,8,8'" pushedimage="file='AssistPane/button.png' source='0,104,177,156' corner='8,8,8,8'" selectedimage="file='AssistPane/button.png' source='0,104,177,156' corner='8,8,8,8'" />
+											<!--Label width="2" /-->
+											<Option name="option_tab_1" group="group_tabsel" selected="false" font="3" width="80" height="24" text="按键映射" normalimage="file='AssistPane/button.png' source='0,0,177,52' corner='8,8,8,8'" hotimage="file='AssistPane/button.png' source='0,52,177,104' corner='8,8,8,8'" pushedimage="file='AssistPane/button.png' source='0,104,177,156' corner='8,8,8,8'" selectedimage="file='AssistPane/button.png' source='0,104,177,156' corner='8,8,8,8'" />
+											<!--Label width="2" /-->
+											<!--Option name="option_tab_2" group="group_tabsel" selected="false" font="3" width="80" height="24" text="人物状态" normalimage="file='AssistPane/button.png' source='0,0,177,52' corner='8,8,8,8'" hotimage="file='AssistPane/button.png' source='0,52,177,104' corner='8,8,8,8'" pushedimage="file='AssistPane/button.png' source='0,104,177,156' corner='8,8,8,8'" selectedimage="file='AssistPane/button.png' source='0,104,177,156' corner='8,8,8,8'" /-->
+											<Label />
+										</HorizontalLayout>
+										<Label width="5" />
+										<Button name="button_tabright" width="8" normalimage="file='AssistPane/arrow_right.png' source='0,0,8,13' dest='0,6,8,18'" hotimage="file='AssistPane/arrow_right.png' source='0,13,8,26' dest='0,6,8,18'" pushedimage="file='AssistPane/arrow_right.png' source='0,26,8,39' dest='0,6,8,18'" />
+									</HorizontalLayout>
+									
+									<Control height="10" />
+									
+									<Label height="2" bkcolor="0xffa5aab1" />
+									
+									<!--内容页面-->
+									<TabLayout name="layout_content">
+										<!--物品过滤-->
+										<VerticalLayout>
+											<Label text="请输入想要过滤的物品名称，回车键分隔:" font="3" />
+											<Control height="5" />
+											<RichEdit name="richedit_itemvisible" bkimage="file='AssistPane/edit_bk.png' corner='2,2,2,2'" inset="6,6,6,6" multiline="true" vscrollbar="true" />
+											<Control height="5" />
+											
+											<HorizontalLayout height="30">
+												<Label />
+												<Button name="button_tabok_0" font="3" width="120" text="应用设置" normalimage="file='AssistPane/button.png' source='0,0,177,52' corner='8,8,8,8'" hotimage="file='AssistPane/button.png' source='0,52,177,104' corner='8,8,8,8'" pushedimage="file='AssistPane/button.png' source='0,104,177,156' corner='8,8,8,8'" selectedimage="file='AssistPane/button.png' source='0,104,177,156' corner='8,8,8,8'" />
+												<Label />
+											</HorizontalLayout>
+										</VerticalLayout>
+										
+										<!--按键映射-->
+										<VerticalLayout vscrollbar="true" >
+											<Label text="将游戏内特定按键映射成自定义按键" font="3" />
+											<Control height="5" />
+											
+											<!--F1 map-->
+											<HorizontalLayout height="20" >
+												<Label text="将[F1]映射为" font="3" />
+												<Label width="5" />
+												<RichEdit name="edit_f1map" maxchar="1" bkimage="file='AssistPane/edit_bk.png' corner='2,2,2,2'" inset="2,2,2,2" />
+												<Label />
+											</HorizontalLayout>
+											
+											<Control height="8" />
+											
+											<!--F2 map-->
+											<HorizontalLayout height="20" >
+												<Label text="将[F2]映射为" font="3" />
+												<Label width="5" />
+												<RichEdit name="edit_f2map" maxchar="1" bkimage="file='AssistPane/edit_bk.png' corner='2,2,2,2'" inset="2,2,2,2" />
+												<Label />
+											</HorizontalLayout>
+											
+											<Control height="8" />
+											
+											<!--F3 map-->
+											<HorizontalLayout height="20" >
+												<Label text="将[F3]映射为" font="3" />
+												<Label width="5" />
+												<RichEdit name="edit_f3map" maxchar="1" bkimage="file='AssistPane/edit_bk.png' corner='2,2,2,2'" inset="2,2,2,2" />
+												<Label />
+											</HorizontalLayout>
+											
+											<Control height="8" />
+											
+											<!--F4 map-->
+											<HorizontalLayout height="20" >
+												<Label text="将[F4]映射为" font="3" />
+												<Label width="5" />
+												<RichEdit name="edit_f4map" maxchar="1" bkimage="file='AssistPane/edit_bk.png' corner='2,2,2,2'" inset="2,2,2,2" />
+												<Label />
+											</HorizontalLayout>
+											
+											<Control height="8" />
+											
+											<!--F5 map-->
+											<HorizontalLayout height="20" >
+												<Label text="将[F5]映射为" font="3" />
+												<Label width="5" />
+												<RichEdit name="edit_f5map" maxchar="1" bkimage="file='AssistPane/edit_bk.png' corner='2,2,2,2'" inset="2,2,2,2" />
+												<Label />
+											</HorizontalLayout>
+											
+											<Control height="8" />
+											
+											<!--F6 map-->
+											<HorizontalLayout height="20" >
+												<Label text="将[F6]映射为" font="3" />
+												<Label width="5" />
+												<RichEdit name="edit_f6map" maxchar="1" bkimage="file='AssistPane/edit_bk.png' corner='2,2,2,2'" inset="2,2,2,2" />
+												<Label />
+											</HorizontalLayout>
+											
+											<Control height="8" />
+											
+											<!--F7 map-->
+											<HorizontalLayout height="20" >
+												<Label text="将[F7]映射为" font="3" />
+												<Label width="5" />
+												<RichEdit name="edit_f7map" maxchar="1" bkimage="file='AssistPane/edit_bk.png' corner='2,2,2,2'" inset="2,2,2,2" />
+												<Label />
+											</HorizontalLayout>
+											
+											<Control height="8" />
+											
+											<!--F8 map-->
+											<HorizontalLayout height="20" >
+												<Label text="将[F8]映射为" font="3" />
+												<Label width="5" />
+												<RichEdit name="edit_f8map" maxchar="1" bkimage="file='AssistPane/edit_bk.png' corner='2,2,2,2'" inset="2,2,2,2" />
+												<Label />
+											</HorizontalLayout>
+											
+											<Control height="8" />
+											
+											<!--F9 map-->
+											<HorizontalLayout height="20" >
+												<Label text="将[F9]映射为" font="3" />
+												<Label width="5" />
+												<RichEdit name="edit_f9map" maxchar="1" bkimage="file='AssistPane/edit_bk.png' corner='2,2,2,2'" inset="2,2,2,2" />
+												<Label />
+											</HorizontalLayout>
+											
+											<Control height="8" />
+											
+											<!--F10 map-->
+											<HorizontalLayout height="20" >
+												<Label text="将[F10]映射为" font="3" />
+												<Label width="5" />
+												<RichEdit name="edit_f10map" maxchar="1" bkimage="file='AssistPane/edit_bk.png' corner='2,2,2,2'" inset="2,2,2,2" />
+												<Label />
+											</HorizontalLayout>
+											
+											<Control height="8" />
+											
+											<!--F11 map-->
+											<HorizontalLayout height="20" >
+												<Label text="将[F11]映射为" font="3" />
+												<Label width="5" />
+												<RichEdit name="edit_f11map" maxchar="1" bkimage="file='AssistPane/edit_bk.png' corner='2,2,2,2'" inset="2,2,2,2" />
+												<Label />
+											</HorizontalLayout>
+											
+											<Control height="12" />
+											
+											<HorizontalLayout height="30">
+												<Label />
+												<Button name="button_tabok_1" font="3" width="120" text="应用设置" normalimage="file='AssistPane/button.png' source='0,0,177,52' corner='8,8,8,8'" hotimage="file='AssistPane/button.png' source='0,52,177,104' corner='8,8,8,8'" pushedimage="file='AssistPane/button.png' source='0,104,177,156' corner='8,8,8,8'" selectedimage="file='AssistPane/button.png' source='0,104,177,156' corner='8,8,8,8'" />
+												<Label />
+											</HorizontalLayout>
+											
+											<!--map end-->
+										</VerticalLayout>
+										
+										<!--人物状态-->
+										<!--VerticalLayout>
+											<Label text="人物附加属性" font="3" />
+											<Control height="5" />
+										</VerticalLayout-->
+										
+									</TabLayout>
+									
+								<Label height="5" />
+							</VerticalLayout>
+							
+							<Label width="5" />
+						</HorizontalLayout>
+						
+						<Label height="3" />
+					</VerticalLayout>
+					
+					<Label width="3" />
+			</HorizontalLayout>
+		</VerticalLayout>
+	</HorizontalLayout>
+</Window>

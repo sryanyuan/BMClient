@@ -1,0 +1,17 @@
+$#include "../GameScene/GameDlgBase.h"
+$#include "../GameScene/GameInteractiveDlg.h"
+
+class GameMainOptUI
+{
+	GameHumDlg* GetHumDlg();
+	GameBagDlg* GetBagDlg();
+	GameIntroDlg* GetIntroDlg();
+	GameInteractiveDlg* GetActiveDlg();
+	GameSellDlg* GetSellDlg();
+	GameChatDlg* GetChatDlg();
+};
+
+class GameInteractiveDlg
+{
+	bool Create(int _npc, int _id, int _step);
+};

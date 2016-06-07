@@ -1,0 +1,16 @@
+$#include "../../CommonModule/QuestContext.h"
+
+class QuestContext
+{
+	bool IsQuestComplete(int _questid);
+	void SetQuestComplete(int _questid);
+	
+	bool IsQuestAccept(int _questid);
+
+	//	Step: 0 for not accepted
+	int GetQuestStep(int _questid);
+	void SetQuestStep(int _questid, int _step);
+	
+	int GetQuestCounter(int _questid);
+	void SetQuestCounter(int _questid, int _counter);
+};

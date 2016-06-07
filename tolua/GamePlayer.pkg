@@ -1,0 +1,12 @@
+$#include "../GameScene/GamePlayer.h"
+
+class GameOtherPlayer
+{
+	int GetHeroJob();
+	int GetHeroLevel();
+};
+
+class GamePlayer : public GameOtherPlayer
+{
+	
+};

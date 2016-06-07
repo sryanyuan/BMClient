@@ -1,0 +1,20 @@
+$#include "../GameDialog/GameCommonDlg.h"
+
+class GameCommonDlg : public RenderObject
+{
+	void AddCommonButton(int _type, int _id, int _x, int _y, const char* _pszText);
+	void RemoveCommonButton(int _id);
+	void MoveTo(int _x, int _y);
+	int GetWidth();
+	int GetHeight();
+	void SetHotKey(int _nHotKey);
+	void SetWndRect(int _nLeft, int _nTop, int _nWidth, int _nHeight);
+};
+
+class GameNewDlg : public GameCommonDlg
+{
+	void SetWindowTitle(const char* _pszTitle);
+	void SetWindowInfo(const char* _pszInfo);
+	void SetFixed();
+	void SetCustomBk();
+};
