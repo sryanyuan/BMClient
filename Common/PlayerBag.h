@@ -4,7 +4,7 @@
 #include "GameInfoManager.h"
 #include "GameRenderObject.h"
 #include "../../CommonModule/ShareDefine.h"
-
+//	sort function
 //	Íæ¼Ò±³°ü
 class PlayerBag
 {
@@ -40,6 +40,7 @@ public:
 	}
 
 public:
+	static bool PlayerBagSort(const ItemAttrib& _refL, const ItemAttrib& _refR);
 	void Clear()
 	{
 		for(size_t i = 0; i < m_items.size(); ++i)
@@ -293,6 +294,10 @@ public:
 		}
 
 		return nCount;
+	}
+	void SortBag()
+	{
+		std::sort(m_items.begin(), m_items.end(), PlayerBagSort);
 	}
 	void DebugTest()
 	{

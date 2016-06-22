@@ -40,6 +40,24 @@
 #endif
 
 #endif
+//////////////////////////////////////////////////////////////////////////
+//	bag sort
+bool PlayerBag::PlayerBagSort(const ItemAttrib& _refL, const ItemAttrib& _refR)
+{
+	if(_refL.type > _refR.type)
+	{
+		return true;
+	}
+	else if(_refL.type == _refR.type)
+	{
+		if(_refL.id > _refR.id)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
 
 //////////////////////////////////////////////////////////////////////////
 extern ByteBuffer g_xBuffer;

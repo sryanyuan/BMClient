@@ -8,7 +8,7 @@
 //////////////////////////////////////////////////////////////////////////
 const int s_nLeftOft = 14;
 const int s_nTopOft = 76;
-static const char* s_pszWindowTip = "[拆分物品]使用Alt+鼠标左键点击消耗品，即可拆分物品";
+static const char* s_pszWindowTip = "[拆分物品]使用Alt+鼠标左键点击消耗品，即可拆分物品\n[整理包裹]Alt+R可以整理包裹";
 //////////////////////////////////////////////////////////////////////////
 GameBagDlg2::GameBagDlg2()
 {
@@ -170,6 +170,12 @@ bool GameBagDlg2::ProcUserCmd(const POINT& _mp)
 		GamePlayer::GetInstance()->GetPlayerBag()->AddItem(&item);
 	}*/
 #endif
+
+	if(AfxGetHge()->Input_GetKeyState(HGEK_ALT) &&
+		AfxGetHge()->Input_KeyDown(HGEK_R))
+	{
+		GamePlayer::GetInstance()->GetPlayerBag()->SortBag();
+	}
 
 	static const int nEachWidth = 34;
 	static const int nEachHeight = 34;

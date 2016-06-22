@@ -327,6 +327,7 @@ int TextPrinter::LineFeedRenderRetLine(float x, float y, const wchar_t* text, in
 
 int TextPrinter::GetLineFeedLines(const char* _pszStr, int _nFeedNumber)
 {
+	wchar_t* pwszStr = CA2W(_pszStr);
 	int nLines = 1;
 
 	float x = 0;
@@ -336,9 +337,9 @@ int TextPrinter::GetLineFeedLines(const char* _pszStr, int _nFeedNumber)
 	UINT nCounter = 0;
 	int nWordOffsetX = 0;
 
-	while(*_pszStr)
+	while(*pwszStr)
 	{
-		if (*_pszStr == L'\n' || *_pszStr == L'\r')
+		if (*pwszStr == L'\n' || *pwszStr == L'\r')
 		{
 			offsetX = x;
 			offsetY += (m_nFontSize + m_nKerningHeight);
@@ -355,20 +356,20 @@ int TextPrinter::GetLineFeedLines(const char* _pszStr, int _nFeedNumber)
 		}
 		else
 		{
-			unsigned int idx = GetGlyphByCharacterStroke(*_pszStr);
+			unsigned int idx = GetGlyphByCharacterStroke(*pwszStr);
 			if (idx > 0)
 			{
-				nWordOffsetX = (GetWidthFromCharacter(*_pszStr) + m_nKerningWidth);
+				nWordOffsetX = (GetWidthFromCharacter(*pwszStr) + m_nKerningWidth);
 				offsetX += nWordOffsetX;
 				nCounter += nWordOffsetX;
 			}
 			else
 			{
-				offsetX += (GetWidthFromCharacter(*_pszStr) + m_nKerningWidth);
+				offsetX += (GetWidthFromCharacter(*pwszStr) + m_nKerningWidth);
 			}
 		}
 
-		++_pszStr;
+		++pwszStr;
 	}
 
 	return nLines;

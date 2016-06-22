@@ -1812,17 +1812,30 @@ void GameNewDlg::RenderWindowTip()
 			m_pRender->Render(rcDrawRect.left, rcDrawRect.top + 1 + 1);
 			m_pRender->Render(rcDrawRect.right, rcDrawRect.top + 1 + 1);
 		}*/
+		//	ÎÄ×Ö
+		{
+			float fKerning = AfxGetPrinter()->GetKerningHeight();
+			AfxGetPrinter()->SetKerningHeight(2.0f);
+			AfxGetPrinter()->SetColor(ARGB_WHITE);
+			int nLines = AfxGetPrinter()->LineFeedRender(rcDrawRect.left + 5, rcDrawRect.top + 5, m_xTip.c_str(), 20 * 12);
+			m_nTipLines = nLines;
+			AfxGetPrinter()->SetKerningHeight(fKerning);
+		}
+	}
+	else
+	{
+		m_nTipLines = AfxGetPrinter()->GetLineFeedLines(m_xTip.c_str(), 12 * 20);
 	}
 	
 	//	ÎÄ×Ö
-	{
+	/*{
 		float fKerning = AfxGetPrinter()->GetKerningHeight();
 		AfxGetPrinter()->SetKerningHeight(2.0f);
 		AfxGetPrinter()->SetColor(ARGB_WHITE);
 		int nLines = AfxGetPrinter()->LineFeedRender(rcDrawRect.left + 5, rcDrawRect.top + 5, m_xTip.c_str(), 20 * 12);
 		m_nTipLines = nLines;
 		AfxGetPrinter()->SetKerningHeight(fKerning);
-	}
+	}*/
 }
 
 void GameNewDlg::SetWindowTip(const char* _pszTip)
