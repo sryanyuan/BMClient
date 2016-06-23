@@ -3729,6 +3729,15 @@ void EffectAttackNumber::Update()
 	//DWORD dwTick = GetTickCount();
 }
 
+int EffectAttackNumber::GetRenderPosY()
+{
+	int nPosY = m_dwCoordY * UNIT_HEIGHT - UNIT_HEIGHT * 2 + m_nOffsetY;
+	DWORD dwLastTime = GetTickCount() - m_dwCreateTime;
+	nPosY -= dwLastTime / 8;
+	nPosY = CENTRAL_Y + (int)nPosY - (int)GamePlayer::GetInstance()->GetObjy();
+	return nPosY;
+}
+
 void EffectAttackNumber::Render()
 {
 	if(m_bCanRemove)
@@ -3743,7 +3752,7 @@ void EffectAttackNumber::Render()
 	rcView.bottom = (int)GamePlayer::GetInstance()->GetObjy() + VIEW_HEIGHT / 2 + UNIT_HEIGHT;
 
 	int nPosX = m_dwCoordX * UNIT_WIDTH + UNIT_WIDTH / 2;
-	int nPosY = m_dwCoordY * UNIT_HEIGHT - UNIT_HEIGHT * 2;
+	int nPosY = m_dwCoordY * UNIT_HEIGHT - UNIT_HEIGHT * 2 + m_nOffsetY;
 
 	DWORD dwLastTime = GetTickCount() - m_dwCreateTime;
 	if(dwLastTime > 10 * 1000)

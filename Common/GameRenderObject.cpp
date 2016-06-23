@@ -137,6 +137,11 @@ void GameObject::SetObjectAction(PLAYER_STATUS _ps, PLAYER_DIRECTION _pd, DWORD 
 	}
 }*/
 
+GameObject::~GameObject()
+{
+	ClearAttackNumberList();
+}
+
 /************************************************************************/
 /* 绘制名字
 /************************************************************************/
@@ -201,6 +206,99 @@ void GameObject::RenderName()
 			m_attrib.name[19] = 0;
 			AfxGetPrinter()->Print(nDrawX, nDrawY, m_attrib.name);
 		}
+	}
+}
+
+//	绘制攻击数字
+void GameObject::RenderAttackNumber()
+{
+	EffectAttackNumberList::iterator it = m_xAttackNumberList.begin();
+
+	for(it;
+		it != m_xAttackNumberList.end();
+		)
+	{
+		EffectAttackNumber* pEffect = *it;
+
+		if(pEffect->CanRemove())
+		{
+			//	delete
+			delete pEffect;
+			pEffect = NULL;
+			it = m_xAttackNumberList.erase(it);
+		}
+		else
+		{
+			//	render
+			pEffect->Render();
+			++it;
+		}
+	}
+}
+
+void GameObject::ClearAttackNumberList()
+{
+	EffectAttackNumberList::iterator it = m_xAttackNumberList.begin();
+
+	for(it;
+		it != m_xAttackNumberList.end();
+		++it)
+	{
+		EffectAttackNumber* pEffect = *it;
+
+		delete pEffect;
+	}
+
+	m_xAttackNumberList.clear();
+}
+
+void GameObject::AddAttackNumber(int _nNumber, bool _bCritical)
+{
+	const int nAttackNumberOffsetY = 16;
+
+	EffectAttackNumber* pEffect = new EffectAttackNumber;
+	if(!pEffect->Init(abs(_nNumber), GetCoordX(), GetCoordY(), _nNumber > 0 ? true : false, _bCritical))
+	{
+		delete pEffect;
+		pEffect = NULL;
+		return;
+	}
+
+	m_xAttackNumberList.push_back(pEffect);
+	if(GetType() == OBJ_PLAYER)
+	{
+		pEffect->SetHero(true);
+	}
+
+	//	adjust position
+	EffectAttackNumberList::reverse_iterator it = m_xAttackNumberList.rbegin();
+	++it;
+
+	EffectAttackNumber* pPrevEff = NULL;
+	if(it == m_xAttackNumberList.rend())
+	{
+		return;
+	}
+	pPrevEff = m_xAttackNumberList.back();
+
+	for(;
+		it != m_xAttackNumberList.rend();
+		++it)
+	{
+		EffectAttackNumber* pEffect = *it;
+		
+		//	calculate the offset
+		int nPrevY = pPrevEff->GetRenderPosY();
+		int nCurY = pEffect->GetRenderPosY();
+
+		int nOffset = nPrevY - nCurY;
+		if(nOffset < nAttackNumberOffsetY)
+		{
+			DEBUG_BREAK;
+			pEffect->SetOffsetY(-(nAttackNumberOffsetY - nOffset) + pPrevEff->GetOffsetY());
+		}
+
+		pPrevEff = pEffect;
 	}
 }
 

@@ -1451,6 +1451,9 @@ void GameMapManager::RenderFrImg()
 		{
 			(*iter)->RenderName();
 		}
+
+		//	»­¹¥»÷Êı×Ö
+		pObject->RenderAttackNumber();
 	}
 
 	//	ºÚÒ¹Ğ§¹û

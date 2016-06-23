@@ -40,6 +40,8 @@ class RenderObject;
 using std::list;
 using std::vector;
 typedef list<RenderObject*> OBJECTLIST;
+class EffectAttackNumber;
+typedef list<EffectAttackNumber*> EffectAttackNumberList;
 
 class RenderObject
 {
@@ -272,7 +274,7 @@ public:
 		m_dwLastMoveTime = 0;
 		m_dwSayingColor = 0;
 	}
-	virtual ~GameObject(){}
+	virtual ~GameObject();
 
 public:
 	inline float GetObjx() const
@@ -555,9 +557,14 @@ public:
 	virtual void RenderSaying();
 	//	获得资源索引
 	int GetTextureMgrIndex();
+	//	绘制攻击数字
+	virtual void RenderAttackNumber();
 
 	void SetHumEffect(DWORD _dwMask, DWORD _dwTime);
 	void ResetHumEffect(DWORD _dwMask);
+
+	void AddAttackNumber(int _nNumber, bool _bCritical);
+	void ClearAttackNumberList();
 
 protected:
 	//	玩家所在坐标(实时) 以1*1 像素为单位
@@ -608,6 +615,9 @@ protected:
 	OBJECT_RENDER_MODE m_eRenderMode;
 
 	DWORD m_dwLastMoveTime;
+
+	//	攻击数字列表
+	EffectAttackNumberList m_xAttackNumberList;
 };
 
 typedef std::list<GameObject*> PLAYERLIST;

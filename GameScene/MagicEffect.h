@@ -487,6 +487,7 @@ public:
 	EffectAttackNumber()
 	{
 		m_nNumber = 0;
+		m_nOffsetY = 0;
 	}
 	virtual ~EffectAttackNumber(){}
 
@@ -499,6 +500,15 @@ public:
 	{
 		m_bIsHero = _bHero;
 	}
+	inline void SetOffsetY(int _nOft)
+	{
+		m_nOffsetY = _nOft;
+	}
+	inline int GetOffsetY()
+	{
+		return m_nOffsetY;
+	}
+	int GetRenderPosY();
 
 private:
 	int m_nNumber;
@@ -510,6 +520,7 @@ private:
 	bool m_bIsHero;
 	int m_nBits;
 	DWORD m_dwAlpha;
+	int m_nOffsetY;
 
 	static hgeSprite* s_pSharedEffectRender;
 	static HTEXTURE s_pSharedNumberTexture;

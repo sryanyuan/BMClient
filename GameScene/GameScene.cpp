@@ -1815,6 +1815,9 @@ bool GameScene::InsertNewAttackNumber(int _nNumber, bool _bAdd, GameObject* _pOb
 		return false;
 	}
 
+	_pObj->AddAttackNumber(_bAdd ? _nNumber : -_nNumber, _bCritical);
+	return true;
+
 	EffectAttackNumber* pEle = new EffectAttackNumber;
 	if(!pEle->Init(_nNumber, _pObj->GetCoordX(), _pObj->GetCoordY(), _bAdd, _bCritical))
 	{
