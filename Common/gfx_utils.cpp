@@ -319,6 +319,63 @@ HTEXTURE Gfx_GetBrightTexture(HGE* _pHge, HTEXTURE _hSource, int _nBrightAdd)
 	return texNew;
 }
 
+HTEXTURE Gfx_GetBrightTextureEx(HGE* _pHge, HTEXTURE _hSource, float _fFactor)
+{
+	if(NULL == _hSource)
+	{
+		return NULL;
+	}
+
+	int nTextureWidth = _pHge->Texture_GetWidth(_hSource);
+	int nTextureHeight = _pHge->Texture_GetHeight(_hSource);
+
+	if(0 == nTextureHeight ||
+		0 == nTextureWidth)
+	{
+		return NULL;
+	}
+
+	HTEXTURE texNew = _pHge->Texture_Create(nTextureWidth, nTextureHeight);
+	DWORD* pDestData = _pHge->Texture_Lock(texNew, false);
+	DWORD* pSrcData = _pHge->Texture_Lock(_hSource);
+
+	for(int nRow = 0; nRow < nTextureHeight; ++nRow)
+	{
+		for(int nCol = 0; nCol < nTextureWidth; ++nCol)
+		{
+			DWORD dwPixelIndex = nRow * nTextureWidth + nCol;
+			DWORD dwPixel = pSrcData[dwPixelIndex];
+			BYTE bAlpha = (dwPixel & 0xff000000) >> 24;
+
+			if(bAlpha)
+			{
+				//	È¡³öRGBÖµ
+				BYTE bR = (dwPixel & 0x00ff0000) >> 16;
+				BYTE bG = (dwPixel & 0x0000ff00) >> 8;
+				BYTE bB = dwPixel & 0x000000ff;
+
+				if(0 == bR &&
+					0 == bG &&
+					0 == bB)
+				{
+					continue;
+				}
+
+				bR = bR * 1.3 > 0xff ? 0xff : bR * 1.3;
+				bG = bG * 1.3 > 0xff ? 0xff : bG * 1.3;
+				bB = bB * 1.3 > 0xff ? 0xff : bB * 1.3;
+
+				pDestData[dwPixelIndex] = ARGB(bAlpha, bR, bG, bB);
+			}
+		}
+	}
+
+	_pHge->Texture_Unlock(_hSource);
+	_pHge->Texture_Unlock(texNew);
+
+	return texNew;
+}
+
 void Gfx_PrintNumberWithComma(GfxFont* _pFont, float _fx, float _fy, int _nNumber)
 {
 	static char s_szNumberCache[20] = {0};
@@ -691,4 +748,75 @@ void Gfx_RenderChatBack(hgeSprite* _pSpr, int _nTexIndex, int _nFrame, float _fx
 	_pSpr->SetTexture(texs[s_nArrowIndex]);
 	_pSpr->SetTextureRect(0, 0, szs[s_nArrowIndex].cx, szs[s_nArrowIndex].cy);
 	_pSpr->Render(_fx + _nWidth / 2 - szs[s_nArrowIndex].cx / 2, _fy + _nHeight + s_nVeriOffset - szs[s_nBottomIndex].cy);*/
+}
+
+static void gfx_RenderNone(hgeSprite* _pSpr, int _nObjIndex, int _nTextureIndex, HTEXTURE _tex, float _fx, float _fy, int _nWidth, int _nHeight)
+{
+	_pSpr->SetTexture(_tex);
+	_pSpr->SetTextureRect(0, 0, _nWidth, _nHeight);
+	_pSpr->Render(_fx, _fy);
+}
+
+static void gfx_RenderBright(hgeSprite* _pSpr, int _nObjIndex, int _nTextureIndex, HTEXTURE _tex, float _fx, float _fy, int _nWidth, int _nHeight)
+{
+	static int s_nPrevObjIndex = 0;
+	static int s_nPrevTextureIndex = 0;
+	static HTEXTURE texBright = 0;
+
+	if(s_nPrevObjIndex == _nObjIndex &&
+		s_nPrevTextureIndex == _nTextureIndex)
+	{
+		//	nothing
+	}
+	else
+	{
+		int nTexWidth = AfxGetHge()->Texture_GetWidth(_tex);
+		int nTexHeight = AfxGetHge()->Texture_GetHeight(_tex);
+		texBright = AfxGetHge()->Texture_Create(nTexHeight, nTexWidth);
+		DWORD* _pSrcData = AfxGetHge()->Texture_Lock(_tex);
+		DWORD* _pDestData = AfxGetHge()->Texture_Lock(texBright, false);
+
+		for(int i = 0; i < nTexHeight; ++i)
+		{
+			for(int j = 0; j < nTexWidth; ++j)
+			{
+				DWORD dwColor = _pSrcData[i * nTexWidth + j];
+
+				BYTE bA = dwColor & 0xff000000;
+				BYTE bR = dwColor & 0x00ff0000;
+				BYTE bG = dwColor & 0x0000ff00;
+				BYTE bB = dwColor & 0x000000ff;
+
+				bR = bR * 1.3 > 0xff ? 0xff : bR * 1.3;
+				bG = bG * 1.3 > 0xff ? 0xff : bG * 1.3;
+				bB = bB * 1.3 > 0xff ? 0xff : bB * 1.3;
+
+				dwColor = ARGB(bA, bR, bG, bB);
+				_pDestData[i * nTexWidth + j] = dwColor;
+			}
+		}
+
+		AfxGetHge()->Texture_Unlock(texBright);
+		AfxGetHge()->Texture_Unlock(_tex);
+	}
+
+	//	render the bright texture
+	_pSpr->SetTexture(texBright);
+	_pSpr->SetTextureRect(0, 0, _nWidth, _nHeight);
+	_pSpr->Render(_fx, _fy);
+}
+
+void Gfx_RenderTextureWithEffect(hgeSprite* _pSpr, int _nObjIndex, int _nTextureIndex, HTEXTURE _tex, float _fx, float _fy, int _nWidth, int _nHeight, TextureEffectType _eType)
+{
+	switch(_eType)
+	{
+	case TextureEffect_Bright:
+		{
+			gfx_RenderBright(_pSpr, _nObjIndex, _nTextureIndex, _tex, _fx, _fy, _nWidth, _nHeight);
+		}break;
+	default:
+		{
+			gfx_RenderNone(_pSpr, _nObjIndex, _nTextureIndex, _tex, _fx, _fy, _nWidth, _nHeight);
+		}break;
+	}
 }

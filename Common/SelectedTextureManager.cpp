@@ -33,7 +33,8 @@ HTEXTURE SelectedTextureManager::GetSelectedTextureMonster(HTEXTURE _texNormal, 
 			return NULL;
 		}
 
-		HTEXTURE newTex = Gfx_GetBrightTexture(m_pHGE, _texNormal, 30);
+		//HTEXTURE newTex = Gfx_GetBrightTexture(m_pHGE, _texNormal, 30);
+		HTEXTURE newTex = Gfx_GetBrightTextureEx(m_pHGE, _texNormal, 1.3);
 		if(NULL != newTex)
 		{
 			m_xCacheMonster.SetCache(dwKey, newTex);
@@ -67,7 +68,8 @@ HTEXTURE SelectedTextureManager::GetSelectedTextureHum(HTEXTURE _texNormal, int 
 			return NULL;
 		}
 
-		HTEXTURE newTex = Gfx_GetBrightTexture(m_pHGE, _texNormal, 20);
+		//HTEXTURE newTex = Gfx_GetBrightTexture(m_pHGE, _texNormal, 20);
+		HTEXTURE newTex = Gfx_GetBrightTextureEx(m_pHGE, _texNormal, 1.3);
 		if(NULL != newTex)
 		{
 			m_xCacheHum.SetCache(dwKey, newTex);
