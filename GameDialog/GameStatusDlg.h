@@ -42,12 +42,13 @@ public:
 
 public:
 	void AddStatus(int _nStatusID, DWORD _dwLastTime);
+	void RemoveStatus(int _nStatusID);
 
 protected:
 	void AlignItems();
 
 public:
-	static const char* GetStatusString(int _nStatusID);
+	static const char* GetStatusString(StatusInfoItem* _pItem);
 
 protected:
 	StatusInfoItemList m_xStatusList;

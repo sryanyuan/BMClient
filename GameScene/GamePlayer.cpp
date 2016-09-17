@@ -3943,6 +3943,7 @@ void GamePlayer::UpdatePlayerAttrib()
 	}
 
 	UpdateSuitAttrib();
+	UpdateSuitSameLevel();
 	//	同时更新纹理索引
 	//UpdatePlayerTexIndex();
 }
@@ -4134,6 +4135,54 @@ void GamePlayer::UpdateSuitAttrib()
 				}
 			}
 		}
+	}
+}
+
+void GamePlayer::UpdateSuitSameLevel()
+{
+	
+	//	计算套装附加属性
+	int nSuitExtraType = 0;
+	int nSuitCount[9] = {0};
+
+	//	Get all suit attrib information
+	for(int i = 0; i < PLAYER_ITEM_TOTAL; ++i)
+	{
+		if(m_equip[i].type != ITEM_NO)
+		{
+			int nQualityIndex = GetItemUpgrade(m_equip[i].level);
+
+			if (0 < nQualityIndex &&
+				nQualityIndex < 9)
+			{
+				nSuitCount[nQualityIndex]++;
+			}
+		}
+	}
+
+	//	check active
+	for (int i = 0; i < 9; ++i)
+	{
+		if (nSuitCount[i] >= 5)
+		{
+			nSuitExtraType = i;
+			break;
+		}
+	}
+
+	GameStatusDlg* pDlg = GameScene::sThis->GetStatusDlg();
+
+	if (NULL == pDlg)
+	{
+		return;
+	}
+
+	pDlg->RemoveStatus(GSTATUS_SUITSAMELEVEL);
+
+	if (0 != nSuitExtraType)
+	{
+		//	add status
+		pDlg->AddStatus(GSTATUS_SUITSAMELEVEL, MAKELONG(nSuitExtraType, 0xffff));
 	}
 }
 

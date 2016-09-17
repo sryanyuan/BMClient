@@ -196,6 +196,8 @@ public:
 	void UpdatePlayerAttrib();
 	//	更新套装属性信息
 	void UpdateSuitAttrib();
+	//	更新相同品质的加成信息
+	void UpdateSuitSameLevel();
 	//void UpdatePlayerTexIndex();
 	//	是否是最后一帧
 	bool IsLastFrame()

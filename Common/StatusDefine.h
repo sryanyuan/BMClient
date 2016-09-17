@@ -4,12 +4,14 @@
 struct StatusInfo
 {
 	int nStatusID;
+	int nParam;
 	DWORD dwExpireTime;
 
 	StatusInfo()
 	{
 		nStatusID = 0;
 		dwExpireTime = 0;
+		nParam = 0;
 	}
 };
 
@@ -19,5 +21,6 @@ struct StatusInfo
 #define GSTATUS_SHIELD			203
 #define GSTATUS_ENERGYSHIELD	204
 #define GSTATUS_JINGANG			205
+#define GSTATUS_SUITSAMELEVEL	206
 //////////////////////////////////////////////////////////////////////////
 #endif

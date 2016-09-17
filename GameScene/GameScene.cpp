@@ -379,6 +379,9 @@ bool GameScene::SwitchScene(const char* lpszmapname)
 	//	Clear the rect cache
 	ClearRectCache();
 
+	//	update player status
+	GamePlayer::GetInstance()->UpdatePlayerAttrib();
+
 	return bSuc;
 }
 
@@ -2237,6 +2240,21 @@ bool GameScene::SendChatMessage()
 				}
 #endif
 			}
+			else if(0 == strcmp(szCmd, "smake"))
+			{
+#ifdef _DEBUG
+				if(0 != sscanf(szText, "@smake %d,%d", &nX, &nY))
+				{
+					PkgPlayerSpeOperateReq req;
+					req.uUserId = GamePlayer::GetInstance()->GetHandlerID();
+					req.dwOp = CMD_OP_MAKESUPERITEM;
+					req.dwParam = MAKELONG(nX, nY);
+					g_xBuffer.Reset();
+					g_xBuffer << req;
+					SendBufferToGS(&g_xBuffer);
+				}
+#endif
+			}
 			else if(0 == strcmp(szCmd, "addolshopitem"))
 			{
 #ifdef _DEBUG
@@ -3003,7 +3021,8 @@ GameMonster* GameScene::NewMonsterByID(int _nID)
 		pNewMonster = new YamaWatcherMonster;
 	}
 	else if(uMonsID == 140 ||
-		uMonsID == 143)
+		uMonsID == 143 ||
+		uMonsID == 159)
 	{
 		pNewMonster = new FireDragonMonster;
 	}

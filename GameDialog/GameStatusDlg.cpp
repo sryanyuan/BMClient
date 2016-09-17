@@ -123,11 +123,11 @@ bool GameStatusDlg::ProcUserCmd(const POINT& _mp)
 			if(dwLeftSec > 60)
 			{
 				//	大于60秒 改用分钟显示
-				sprintf(szMsgTip, "[%s] 剩余时间: %d m", GetStatusString(pItem->stInfo.nStatusID) , dwLeftSec / 60);
+				sprintf(szMsgTip, "[%s] 剩余时间: %d m", GetStatusString(pItem) , dwLeftSec / 60);
 			}
 			else
 			{
-				sprintf(szMsgTip, "[%s] 剩余时间: %d s", GetStatusString(pItem->stInfo.nStatusID) , dwLeftSec);
+				sprintf(szMsgTip, "[%s] 剩余时间: %d s", GetStatusString(pItem) , dwLeftSec);
 			}
 			GameMainOptUI::GetInstance()->GetIntroDlg()->ShowString(szMsgTip);
 
@@ -189,13 +189,8 @@ void GameStatusDlg::Render()
 	}
 }
 
-void GameStatusDlg::AddStatus(int _nStatusID, DWORD _dwLastTime)
+void GameStatusDlg::RemoveStatus(int _nStatusID)
 {
-	DWORD dwTick = GetTickCount();
-
-	StatusInfoItem* pItem = NULL;
-	
-	//	search for already exists item
 	StatusInfoItemList::iterator begIter = m_xStatusList.begin();
 	StatusInfoItemList::const_iterator endIter = m_xStatusList.end();
 
@@ -207,7 +202,40 @@ void GameStatusDlg::AddStatus(int _nStatusID, DWORD _dwLastTime)
 
 		if(pListItem->stInfo.nStatusID == _nStatusID)
 		{
+			delete pListItem;
+			m_xStatusList.erase(begIter);
+			return;
+		}
+	}
+}
+
+void GameStatusDlg::AddStatus(int _nStatusID, DWORD _dwLastTime)
+{
+	DWORD dwTick = GetTickCount();
+
+	StatusInfoItem* pItem = NULL;
+	int nExtraInf = 0;
+	
+	//	search for already exists item
+	StatusInfoItemList::iterator begIter = m_xStatusList.begin();
+	StatusInfoItemList::const_iterator endIter = m_xStatusList.end();
+
+	if (_nStatusID == GSTATUS_SUITSAMELEVEL)
+	{
+		nExtraInf = LOWORD(_dwLastTime);
+		_dwLastTime = HIWORD(_dwLastTime);
+	}
+
+	for(begIter;
+		begIter != endIter;
+		++begIter)
+	{
+		StatusInfoItem* pListItem = *begIter;
+
+		if(pListItem->stInfo.nStatusID == _nStatusID)
+		{
 			pListItem->stInfo.dwExpireTime = dwTick + _dwLastTime;
+			pListItem->stInfo.nParam = nExtraInf;
 			m_xStatusList.erase(begIter);
 			pItem = pListItem;
 			break;
@@ -219,6 +247,12 @@ void GameStatusDlg::AddStatus(int _nStatusID, DWORD _dwLastTime)
 		pItem = new StatusInfoItem;
 		pItem->stInfo.nStatusID = _nStatusID;
 		pItem->stInfo.dwExpireTime = dwTick + _dwLastTime;
+		pItem->stInfo.nParam = nExtraInf;
+	}
+
+	if (_nStatusID == GSTATUS_SUITSAMELEVEL)
+	{
+		pItem->stInfo.dwExpireTime = 0xffffffff;
 	}
 	
 	//int nSize = m_xStatusList.size();
@@ -264,11 +298,11 @@ void GameStatusDlg::AlignItems()
 }
 
 //////////////////////////////////////////////////////////////////////////
-const char* GameStatusDlg::GetStatusString(int _nStatusID)
+const char* GameStatusDlg::GetStatusString(StatusInfoItem* _pItem)
 {
-	if(_nStatusID >= 200)
+	if(_pItem->stInfo.nStatusID >= 200)
 	{
-		switch(_nStatusID)
+		switch(_pItem->stInfo.nStatusID)
 		{
 		case GSTATUS_DOUBLEDROP:
 			{
@@ -293,6 +327,41 @@ const char* GameStatusDlg::GetStatusString(int _nStatusID)
 		case GSTATUS_JINGANG:
 			{
 				return "金刚不坏";
+			}break;
+		case GSTATUS_SUITSAMELEVEL:
+			{
+				if (1 == _pItem->stInfo.nParam)
+				{
+					return "良品套装 输出1.03倍";
+				}
+				else if(2 == _pItem->stInfo.nParam)
+				{
+					return "精致套装 输出1.06倍"; 
+				}
+				else if(3 == _pItem->stInfo.nParam)
+				{
+					return "无暇套装 输出1.09倍"; 
+				}
+				else if(4 == _pItem->stInfo.nParam)
+				{
+					return "完美套装 输出1.12倍"; 
+				}
+				else if(5 == _pItem->stInfo.nParam)
+				{
+					return "卓越套装 输出1.15倍"; 
+				}
+				else if(6 == _pItem->stInfo.nParam)
+				{
+					return "登封套装 输出1.20倍"; 
+				}
+				else if(7 == _pItem->stInfo.nParam)
+				{
+					return "传说套装 输出1.30倍"; 
+				}
+				else if(8 == _pItem->stInfo.nParam)
+				{
+					return "史诗套装 输出1.40倍"; 
+				}
 			}break;
 		}
 	}

@@ -400,6 +400,7 @@ void GameNPC::DoPacket(const PkgPlayerShowShopAck& ack)
 		GameScene::sThis->GetMainOpt()->GetDonateDlg()->CreateDonateDlg(2);
 	}
 	else if(ack.bType == SHOP_IDENTIFY ||
+		ack.bType == SHOP_IDENTIFY_LOW ||
 		ack.bType == SHOP_UNBIND)
 	{
 		GameIdentifyDlg* pDlg = GameScene::sThis->GetMainOpt()->GetIdentifyDlg();

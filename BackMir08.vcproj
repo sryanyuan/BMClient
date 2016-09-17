@@ -345,6 +345,14 @@
 				RelativePath=".\GameScene\MagicSystem.h"
 				>
 			</File>
+			<File
+				RelativePath=".\GameScene\StatusMonster.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\GameScene\StatusMonster.h"
+				>
+			</File>
 			<Filter
 				Name="GameMonster"
 				>

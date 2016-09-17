@@ -177,7 +177,17 @@ void GameIdentifyDlg::SetItem(ItemAttrib* _pItem)
 		if(pTheGame->IsEquipItem(*_pItem))
 		{
 			int nLevel = GetItemUpgrade(_pItem->level);
-			m_nPrice = (nLevel + 1) * 10000;
+			int nEquipLevel = GetItemGrade(_pItem->id);
+
+			if (nEquipLevel == 0 ||
+				nEquipLevel > 3)
+			{
+				m_nPrice = (nLevel + 1) * 10000;
+			}
+			else
+			{
+				m_nPrice = (nLevel + 1) * 1000;
+			}
 		}
 		else
 		{
