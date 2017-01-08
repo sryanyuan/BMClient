@@ -164,6 +164,8 @@ protected:
 public:
 	static hgeSprite* pEffectRender;
 	static hgeSprite* pNormalRender;
+
+	static void InitRender();
 };
 
 typedef std::list<MagicElement*> MagicElementList;
@@ -509,6 +511,9 @@ public:
 		return m_nOffsetY;
 	}
 	int GetRenderPosY();
+
+public:
+	static void InitRender();
 
 private:
 	int m_nNumber;

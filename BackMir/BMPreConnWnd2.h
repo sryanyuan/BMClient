@@ -4,11 +4,6 @@
 #include <uilib.h>
 #include "../../CommonModule/DataParser.h"
 #include "../../CommonModule/GamePacket.h"
-#ifdef _DEBUG
-#pragma comment(lib, "duilib_d.lib")
-#else
-#pragma comment(lib, "duilib.lib")
-#endif
 
 using namespace DuiLib;
 //////////////////////////////////////////////////////////////////////////

@@ -28,6 +28,7 @@
 #include "../Common/OutlineTextureManager.h"
 #include <string.h>
 #include "../Common/gfx_utils.h"
+#include "../BackMir/GlobalLuaConfig.h"
 
 HGE* GameScene::s_hge = NULL;
 GameScene* GameScene::sThis = NULL;
@@ -258,7 +259,7 @@ bool GameScene::Init(HGE* _hge)
  	s_hge = _hge;
  	char szSrcBuf[MAX_PATH];
  	char szFile[MAX_PATH];
- 	SKNL3GetCurrentAppPath(szSrcBuf, MAX_PATH);
+ 	GetRootPath(szSrcBuf, MAX_PATH);
 	//	初始化人物数据
  	m_pPlayer = GamePlayer::GetInstance();
  	AfxInitPlayer(m_pPlayer);
@@ -338,7 +339,7 @@ bool GameScene::SwitchScene(const char* lpszmapname)
 	{
 		AfxGetHge()->System_Log("载入地图[%s]成功", lpszmapname);
 	}
-	m_pMainOpt->SetMapName(GameMapManager::GetInstance()->GetMapData()->GetMapName());
+	
 	//m_pMiniMap->SetMap(lpszmapname);
 	//GameMapManager::GetInstance()->RedrawBuffer();
 	m_pTarget = NULL;
@@ -388,6 +389,7 @@ bool GameScene::SwitchScene(const char* lpszmapname)
 /************************************************************************/
 /* 切换地图场景 
 /************************************************************************/
+/*
 bool GameScene::SwitchScene(DWORD _id)
 {
 	char szMapName[MAX_PATH];
@@ -432,10 +434,6 @@ bool GameScene::SwitchScene(DWORD _id)
 	{
 		AfxGetHge()->System_Log("载入地图ID[%d]",
 			_id);
-		/*if(!pTheGame->LoadScript(_id))
-		{
-			AfxGetHge()->System_Log("载入地图脚本失败");
-		}*/
 		//return true;
 	}
 
@@ -467,6 +465,54 @@ bool GameScene::SwitchScene(DWORD _id)
 	GameScene::sThis->GetMainOpt()->GetShopDlg2()->CloseDialog();
 	GameScene::sThis->GetMainOpt()->GetStoreDlg2()->CloseDialog();
 	return SwitchScene(pszMapName);
+}*/
+
+bool GameScene::SwitchScene(DWORD _id)
+{
+	const LuaMapInfo* pMapInfo = GetMapConfigManager().GetLuaMapInfo(_id);
+	if(NULL == pMapInfo)
+	{
+		AfxGetHge()->System_Log("不存在的地图ID[%d]",
+			_id);
+		return false;
+	}
+	else
+	{
+		AfxGetHge()->System_Log("载入地图ID[%d]",
+			_id);
+		//return true;
+	}
+
+	//	清除黑夜标记
+	pTheGame->SetDarkMode(0);
+	//	清楚地图显示标记
+	pTheGame->SetShowMapSnap(true);
+
+	//	触发场景更换事件
+	LuaEvent_SwitchScene evt = {0};
+	evt.nMapId = _id;
+	pTheGame->GetScriptEngine()->DispatchEvent(kLuaEvent_SwitchScene, &evt);
+
+	GameResourceManager::GetInstance()->ReleaseAllFile();
+	GameSoundManager::GetInstancePtr()->ReleaseCache();
+	SelectedTextureManager::GetInstance()->ClearAll();
+	OutlineTextureManager::GetInstance()->ClearAll();
+
+	if(m_pMiniMap)
+	{
+		m_pMiniMap->SetMap(_id);
+		GamePlayer::GetInstance()->SetMapID(_id);
+		m_pMainOpt->GetMapDlg()->Reset();
+	}
+	GamePlayer::GetInstance()->SetAtkMonster(NULL);
+	GamePlayer::GetInstance()->SetMgcTarget(NULL);
+	//m_pMainOpt->GetShopDlg()->SetVisible(false);
+	//m_pMainOpt->GetStoreDlg()->SetVisible(false);
+	GameScene::sThis->GetMainOpt()->GetShopDlg2()->CloseDialog();
+	GameScene::sThis->GetMainOpt()->GetStoreDlg2()->CloseDialog();
+
+	m_pMainOpt->SetMapName(pMapInfo->szMapChName);
+	return SwitchScene(pMapInfo->szMapResFile);
 }
 
 bool GameScene::LoadProperty(int _id)
@@ -876,7 +922,7 @@ bool GameScene::ProcUserCmd(const POINT& _mp)
 
 	float dt = AfxGetHge()->Timer_GetDelta();
 	POINT ptMouse = _mp;
-
+	
 	if(AfxGetHge()->Input_KeyUp(HGEK_ENTER))
 	{
 		if(!m_pMainOpt->GetChatDlg()->GetEdit()->IsFocused())
@@ -2442,6 +2488,116 @@ bool GameScene::SendChatMessage()
 				}
 #endif
 			}
+			else if(0 == strcmp(szCmd, "resetworldweight"))
+			{
+#ifdef _DEBUG
+				PkgPlayerSpeOperateReq req;
+				req.uUserId = GamePlayer::GetInstance()->GetHandlerID();
+				req.dwOp = CMD_OP_RESETWORLDWEIGHT;
+				req.dwParam = 0;
+				g_xBuffer.Reset();
+				g_xBuffer << req;
+				SendBufferToGS(&g_xBuffer);
+#endif
+			}
+			else if(0 == strcmp(szCmd, "resetsceneweight"))
+			{
+#ifdef _DEBUG
+				PkgPlayerSpeOperateReq req;
+				req.uUserId = GamePlayer::GetInstance()->GetHandlerID();
+				req.dwOp = CMD_OP_RESETSCENEWEIGHT;
+				req.dwParam = 0;
+				g_xBuffer.Reset();
+				g_xBuffer << req;
+				SendBufferToGS(&g_xBuffer);
+#endif
+
+			}
+			else if(0 == strcmp(szCmd, "showworldweight"))
+			{
+#ifdef _DEBUG
+				PkgPlayerSpeOperateReq req;
+				req.uUserId = GamePlayer::GetInstance()->GetHandlerID();
+				req.dwOp = CMD_OP_SHOWWORLDWEIGHT;
+				req.dwParam = 0;
+				g_xBuffer.Reset();
+				g_xBuffer << req;
+				SendBufferToGS(&g_xBuffer);
+#endif
+			}
+			else if(0 == strcmp(szCmd, "showsceneweight"))
+			{
+#ifdef _DEBUG
+				PkgPlayerSpeOperateReq req;
+				req.uUserId = GamePlayer::GetInstance()->GetHandlerID();
+				req.dwOp = CMD_OP_SHOWSCENEWEIGHT;
+				req.dwParam = 0;
+				g_xBuffer.Reset();
+				g_xBuffer << req;
+				SendBufferToGS(&g_xBuffer);
+#endif
+
+			}
+			else if(0 == strcmp(szCmd, "setworldweight"))
+			{
+#ifdef _DEBUG
+				if(0 != sscanf(szText, "@setworldweight %d,%d", &nX, &nY))
+				{
+					PkgPlayerSpeOperateReq req;
+					req.uUserId = GamePlayer::GetInstance()->GetHandlerID();
+					req.dwOp = CMD_OP_SETWORLDWEIGHT;
+					req.dwParam = MAKELONG(nX, nY);
+					g_xBuffer.Reset();
+					g_xBuffer << req;
+					SendBufferToGS(&g_xBuffer);
+				}
+#endif
+			}
+			else if(0 == strcmp(szCmd, "setsceneweight"))
+			{
+#ifdef _DEBUG
+				if(0 != sscanf(szText, "@setsceneweight %d,%d", &nX, &nY))
+				{
+					PkgPlayerSpeOperateReq req;
+					req.uUserId = GamePlayer::GetInstance()->GetHandlerID();
+					req.dwOp = CMD_OP_SETSCENEWEIGHT;
+					req.dwParam = MAKELONG(nX, nY);
+					g_xBuffer.Reset();
+					g_xBuffer << req;
+					SendBufferToGS(&g_xBuffer);
+				}
+#endif
+			}
+			else if(0 == strcmp(szCmd, "sget"))
+			{
+#ifdef _DEBUG
+				if(0 != sscanf(szText, "@sget %d,%d", &nX, &nY))
+				{
+					PkgPlayerSpeOperateReq req;
+					req.uUserId = GamePlayer::GetInstance()->GetHandlerID();
+					req.dwOp = CMD_OP_SGET;
+					req.dwParam = MAKELONG(nX, nY);
+					g_xBuffer.Reset();
+					g_xBuffer << req;
+					SendBufferToGS(&g_xBuffer);
+				}
+#endif
+			}
+			else if(0 == strcmp(szCmd, "simsg"))
+			{
+#ifdef _DEBUG
+				if(0 != sscanf(szText, "@simsg %d,%d", &nX, &nY))
+				{
+					PkgPlayerSpeOperateReq req;
+					req.uUserId = GamePlayer::GetInstance()->GetHandlerID();
+					req.dwOp = CMD_OP_SENDSUPERITEMMSG;
+					req.dwParam = MAKELONG(nX, nY);
+					g_xBuffer.Reset();
+					g_xBuffer << req;
+					SendBufferToGS(&g_xBuffer);
+				}
+#endif
+			}
 			else if(0 == strcmp(szCmd, "scheduleactive"))
 			{
 #ifdef _DEBUG
@@ -3175,6 +3331,11 @@ bool GameScene::InsertNewObject(const PkgNewPlayerNot& not)
 				GameInfoManager::GetInstance()->GetItemAttrib(HIWORD(not.dwLook1), pItem);
 
 				pNewPlayer->RefleashHumState();
+			}
+			if (not.dwSpeLook1)
+			{
+				ItemAttrib* pItem = pNewPlayer->GetPlayerItem(PLAYER_ITEM_WEAPON);
+				pItem->level = MakeItemUpgrade(0, 6);
 			}
 
 			if(!not.xSkillInfo.empty())

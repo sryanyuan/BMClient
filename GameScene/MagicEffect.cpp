@@ -167,10 +167,21 @@ const char* g_szMgcDescriptor[MEFF_USERTOTAL] =
 	""
 };
 //////////////////////////////////////////////////////////////////////////
-hgeSprite* MagicElement::pEffectRender = new hgeSprite(0, 0, 0, 0, 0);
-hgeSprite* MagicElement::pNormalRender = new hgeSprite(0, 0, 0, 0, 0);
-hgeSprite* EffectAttackNumber::s_pSharedEffectRender = new hgeSprite(0, 0, 0, 0, 0);
+hgeSprite* MagicElement::pEffectRender = NULL;
+hgeSprite* MagicElement::pNormalRender = NULL;
+hgeSprite* EffectAttackNumber::s_pSharedEffectRender = NULL;
 HTEXTURE EffectAttackNumber::s_pSharedNumberTexture = 0;
+//////////////////////////////////////////////////////////////////////////
+void MagicElement::InitRender()
+{
+	pEffectRender = new hgeSprite(0, 0, 0, 0, 0);
+	pNormalRender = new hgeSprite(0, 0, 0, 0, 0);
+}
+
+void EffectAttackNumber::InitRender()
+{
+	s_pSharedEffectRender = new hgeSprite(0, 0, 0, 0, 0);
+}
 //////////////////////////////////////////////////////////////////////////
 MagicElement::MagicElement()
 {

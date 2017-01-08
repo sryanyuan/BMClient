@@ -2,6 +2,7 @@
 #include "../Common/GlobalDefine.h"
 #include "../Common/GlobalFunction.h"
 #include <hgeresource.h>
+#include "../../CommonModule/GDefine.h"
 
 //////////////////////////////////////////////////////////////////////////
 SelChrScene::SelChrScene()

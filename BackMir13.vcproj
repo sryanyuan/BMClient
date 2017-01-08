@@ -18,7 +18,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)..\BackMir\BinDebug"
+			OutputDirectory="$(SolutionDir)..\BackMir\"
 			IntermediateDirectory="Debug"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
@@ -43,8 +43,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DEVLIB_DIR)\Inc\DuiLib&quot;;&quot;$(DEVLIB_DIR)\Inc\luajit&quot;;&quot;$(DEVLIB_DIR)\Inc\ZipArchive&quot;;&quot;$(DEVLIB_DIR)\Inc\fomdex&quot;;&quot;$(DEVLIB_DIR)\Inc\Sqlite&quot;;&quot;$(DEVLIB_DIR)\Inc\Zlib&quot;;&quot;$(DEVLIB_DIR)\inc\hge&quot;;&quot;$(DEVLIB_DIR)\inc\DX8.1\&quot;;&quot;$(DEVLIB_DIR)\Inc\fastdelegate&quot;;&quot;$(DEVLIB_DIR)\Inc\protobuf&quot;;&quot;$(DEVLIB_DIR)\Inc\curl&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;ZLIB_WINAPI;_NET_GAME_;_ZIPARCHIVE_;_SELCHR_;POINTER_64=__ptr64;_BIN_PATH"
+				AdditionalIncludeDirectories="&quot;$(DEVLIB_DIR)\Inc\DuiLib&quot;;&quot;$(DEVLIB_DIR)\Inc\tolua&quot;;&quot;$(DEVLIB_DIR)\Inc\ZipArchive&quot;;&quot;$(DEVLIB_DIR)\Inc\fomdex&quot;;&quot;$(DEVLIB_DIR)\Inc\Sqlite&quot;;&quot;$(DEVLIB_DIR)\Inc\Zlib&quot;;&quot;$(DEVLIB_DIR)\inc\hge&quot;;&quot;$(DEVLIB_DIR)\inc\DX8.1\&quot;;&quot;$(DEVLIB_DIR)\Inc\fastdelegate&quot;;&quot;$(DEVLIB_DIR)\Inc\protobuf&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;ZLIB_WINAPI;_NET_GAME_;_ZIPARCHIVE_;_SELCHR_;POINTER_64=__ptr64"
 				StringPooling="true"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -67,11 +67,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/nodefaultlib:libci"
 				AdditionalDependencies="gdi32.lib"
-				OutputFile="$(SolutionDir)..\BackMir\BinDebug\BackMir.exe"
+				OutputFile="$(SolutionDir)..\BackMir\BackMir.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(DEVLIB_DIR)\Lib\luajit&quot;;&quot;$(DEVLIB_DIR)\Lib\DX8.1&quot;;&quot;$(DEVLIB_DIR)\Lib\hge&quot;;&quot;$(DEVLIB_DIR)\Lib\duilib&quot;;&quot;$(DEVLIB_DIR)\Lib\fmodex&quot;;&quot;$(DEVLIB_DIR)\Lib\sqlite3&quot;;&quot;$(DEVLIB_DIR)\Lib\ziparchive&quot;;&quot;$(DEVLIB_DIR)\Lib\zlib&quot;;&quot;$(DEVLIB_DIR)\Lib\protobuf&quot;;&quot;$(DEVLIB_DIR)\Lib\curl&quot;"
+				AdditionalLibraryDirectories="&quot;$(DEVLIB_DIR)\Lib\tolua&quot;;&quot;$(DEVLIB_DIR)\Lib\DX8.1&quot;;&quot;$(DEVLIB_DIR)\Lib\hge&quot;;&quot;$(DEVLIB_DIR)\Lib\duilib&quot;;&quot;$(DEVLIB_DIR)\Lib\fmodex&quot;;&quot;$(DEVLIB_DIR)\Lib\sqlite3&quot;;&quot;$(DEVLIB_DIR)\Lib\ziparchive&quot;;&quot;$(DEVLIB_DIR)\Lib\zlib&quot;;&quot;$(DEVLIB_DIR)\Lib\protobuf&quot;"
 				IgnoreDefaultLibraryNames="LIBC.lib"
-				DelayLoadDLLs="$(NOINHERIT)"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/SGameBase.pdb"
 				SubSystem="2"
@@ -103,7 +102,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)..\BackMir\Bin\"
+			OutputDirectory="$(SolutionDir)..\BackMir\"
 			IntermediateDirectory="Release"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
@@ -127,8 +126,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				AdditionalIncludeDirectories="&quot;$(DEVLIB_DIR)\Inc\DuiLib&quot;;&quot;$(DEVLIB_DIR)\Inc\ZipArchive&quot;;&quot;$(DEVLIB_DIR)\Inc\fomdex&quot;;&quot;$(DEVLIB_DIR)\Inc\luajit&quot;;&quot;$(DEVLIB_DIR)\Inc\Zlib&quot;;&quot;$(DEVLIB_DIR)\Inc\Sqlite&quot;;&quot;$(DEVLIB_DIR)\Inc\hge&quot;;&quot;$(DEVLIB_DIR)\inc\DX8.1\&quot;;&quot;$(DEVLIB_DIR)\Inc\protobuf&quot;;&quot;$(DEVLIB_DIR)\Inc\fastdelegate&quot;;&quot;$(DEVLIB_DIR)\Inc\curl&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;ZLIB_WINAPI;_NET_GAME_;_ZIPARCHIVE_;_SELCHR_;_THEMIDA_;POINTER_64=__ptr64;_BIN_PATH"
+				AdditionalIncludeDirectories="&quot;$(DEVLIB_DIR)\Inc\DuiLib&quot;;&quot;$(DEVLIB_DIR)\Inc\ZipArchive&quot;;&quot;$(DEVLIB_DIR)\Inc\fomdex&quot;;&quot;$(DEVLIB_DIR)\Inc\tolua&quot;;&quot;$(DEVLIB_DIR)\Inc\Zlib&quot;;&quot;$(DEVLIB_DIR)\Inc\Sqlite&quot;;&quot;$(DEVLIB_DIR)\Inc\hge&quot;;&quot;$(DEVLIB_DIR)\inc\DX8.1\&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;ZLIB_WINAPI;_NET_GAME_;_ZIPARCHIVE_;_SELCHR_;_THEMIDA_;POINTER_64=__ptr64"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -147,11 +146,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/nodefaultlib:libci"
-				OutputFile="$(SolutionDir)..\BackMir\Bin\BackMir.exe"
+				OutputFile="$(SolutionDir)..\BackMir\BackMir.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(DEVLIB_DIR)\Lib\luajit&quot;;&quot;$(DEVLIB_DIR)\Lib\DX8.1&quot;;&quot;$(DEVLIB_DIR)\Lib\hge&quot;;&quot;$(DEVLIB_DIR)\Lib\duilib&quot;;&quot;$(DEVLIB_DIR)\Lib\fmodex&quot;;&quot;$(DEVLIB_DIR)\Lib\sqlite3&quot;;&quot;$(DEVLIB_DIR)\Lib\ziparchive&quot;;&quot;$(DEVLIB_DIR)\Lib\zlib&quot;;&quot;$(DEVLIB_DIR)\Lib\themida&quot;;&quot;$(DEVLIB_DIR)\Lib\protobuf&quot;;&quot;$(DEVLIB_DIR)\Lib\curl&quot;"
+				AdditionalLibraryDirectories="&quot;$(DEVLIB_DIR)\Lib\tolua&quot;;&quot;$(DEVLIB_DIR)\Lib\DX8.1&quot;;&quot;$(DEVLIB_DIR)\Lib\hge&quot;;&quot;$(DEVLIB_DIR)\Lib\duilib&quot;;&quot;$(DEVLIB_DIR)\Lib\fmodex&quot;;&quot;$(DEVLIB_DIR)\Lib\sqlite3&quot;;&quot;$(DEVLIB_DIR)\Lib\ziparchive&quot;;&quot;$(DEVLIB_DIR)\Lib\zlib&quot;;&quot;$(DEVLIB_DIR)\Lib\themida&quot;"
 				IgnoreDefaultLibraryNames="LIBC.lib"
-				DelayLoadDLLs=""
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -1140,14 +1138,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\BackMir\BMPasswordWnd.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\BackMir\BMPasswordWnd.h"
-				>
-			</File>
-			<File
 				RelativePath=".\BackMir\BMPreConnWnd.cpp"
 				>
 			</File>
@@ -1169,14 +1159,6 @@
 			</File>
 			<File
 				RelativePath=".\BackMir\BMSelServerWnd.h"
-				>
-			</File>
-			<File
-				RelativePath=".\BackMir\GlobalLuaConfig.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\BackMir\GlobalLuaConfig.h"
 				>
 			</File>
 			<File
@@ -1263,14 +1245,6 @@
 		<Filter
 			Name="Module"
 			>
-			<File
-				RelativePath="..\CommonModule\BMHttpManager.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\CommonModule\BMHttpManager.h"
-				>
-			</File>
 			<File
 				RelativePath="..\CommonModule\ByteBuffer.cpp"
 				>
@@ -1392,35 +1366,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\CommonModule\LuaConfigLoader.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\CommonModule\LuaConfigLoader.h"
-				>
-			</File>
-			<File
-				RelativePath="..\CommonModule\LuaIterator.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\CommonModule\LuaIterator.h"
-				>
-			</File>
-			<File
 				RelativePath="..\CommonModule\MagicEffectID.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\CommonModule\MagicEffectID.h"
-				>
-			</File>
-			<File
-				RelativePath="..\CommonModule\MapConfigManager.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\CommonModule\MapConfigManager.h"
 				>
 			</File>
 			<File
@@ -1485,14 +1435,6 @@
 			</File>
 			<File
 				RelativePath="..\CommonModule\StoveManager.h"
-				>
-			</File>
-			<File
-				RelativePath="..\CommonModule\utils.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\CommonModule\utils.h"
 				>
 			</File>
 			<File
@@ -1577,14 +1519,6 @@
 			>
 			<File
 				RelativePath="..\CommonModule\Doc\ItemAttrib_Àà±ð.txt"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Import"
-			>
-			<File
-				RelativePath=".\Import\ImportModule.cpp"
 				>
 			</File>
 		</Filter>

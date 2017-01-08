@@ -19,6 +19,8 @@ class GfxFont;
 class TextPrinter;
 class ByteBuffer;
 
+void InitGameFonts();
+
 float GetLengthOf2Point(const POINT& p1, const POINT& p2);
 PLAYER_DIRECTION GetAngle(const POINT& p1, const POINT& p2);
 int GetDirectionOf2(const POINT& atk, const POINT& atked, int atkdis = 1);
@@ -43,6 +45,7 @@ GfxFont* AfxGetFont14();
 TextPrinter* AfxGetPrinter();
 
 const char* GetRootPath();
+void GetRootPath(char* _pszBuf, unsigned int _sz);
 
 unsigned int SendBuffer(ByteBuffer* _xBuf, bool _bNeedCheckSum = false);
 unsigned int SendBuffer2(ByteBuffer* _xBuf, bool _bNeedCheckSum = false);
@@ -69,5 +72,7 @@ typedef std::map<int, RECT> Int2RectMap;
 typedef std::map<int, Int2RectMap*> ObjRectCache;
 extern ObjRectCache g_xRectCache;
 void ClearRectCache();
+
+std::string UTF8ToGBK(const std::string& strUTF8);
 //////////////////////////////////////////////////////////////////////////
 #endif

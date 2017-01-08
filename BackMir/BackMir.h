@@ -16,6 +16,7 @@
 #include "../../CommonModule/DataParser.h"
 #include "../DuiWnd/AssistPaneWnd.h"
 #include "../Common/SelectedTextureManager.h"
+#include <google/protobuf/message.h>
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 class MirGame;
@@ -38,6 +39,9 @@ unsigned int SendBufferToGS(ByteBuffer* _pBuf);
 unsigned int SendBufferToLS(ByteBuffer* _pBuf);
 unsigned int SendBufferToGS(ByteBuffer& _xBuf);
 unsigned int SendBufferToLS(ByteBuffer& _xBuf);
+
+unsigned int SendProto(int _nOpcode, google::protobuf::Message& _refMsg);
+unsigned int SendProto2(int _nOpcode, google::protobuf::Message& _refMsg);
 //////////////////////////////////////////////////////////////////////////
 class MirGame : public SGameBase
 {
@@ -250,6 +254,9 @@ private:
 	void LoginAddGameRoleAck(const char* _pData, unsigned int _len);
 	void LoginDelGameRoleAck(const char* _pData, unsigned int _len);
 	void DoLoginPacket(const PkgLoginQuickMsgNot& not);
+	void LoginCreateHumRsp(const char* _pData, unsigned int _len);
+	void LoginDelHumRsp(const char* _pData, unsigned int _len);
+	void LoginQuickMessage(const char* _pData, unsigned int _len);
 
 	void RenderCursor(float _fx, float _fy);
 

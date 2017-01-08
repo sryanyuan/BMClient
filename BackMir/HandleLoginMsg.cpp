@@ -26,6 +26,8 @@
 #include "../LoginScene/SelChrDlg.h"
 #include "../BackMir/BackMir.h"
 #include "BMPreConnWnd.h"
+#include "../../CommonModule/ProtoType.h"
+#include "../../CommonModule/loginsvr.pb.h"
 //////////////////////////////////////////////////////////////////////////
 void STDCALL MirGame::_HandleLoginMsg(const void* _pData, unsigned int _len)
 {
@@ -42,7 +44,19 @@ void MirGame::HandleLoginMsg(const void* _pData, unsigned int _len)
 	const char* pData = (const char*)_pData;
 	pData += 8;
 
-	if(uOpCode == PKG_LOGIN_ADDGAMEROLE_ACK)
+	if (uOpCode == protocol::CreateHumRsp)
+	{
+		LoginCreateHumRsp(pData, _len - 8);
+	}
+	else if (uOpCode == protocol::DelHumRsp)
+	{
+		LoginDelHumRsp(pData, _len - 8);
+	}
+	else if (uOpCode == protocol::QuickMessageNtf)
+	{
+		LoginQuickMessage(pData, _len - 8);
+	}
+	else if(uOpCode == PKG_LOGIN_ADDGAMEROLE_ACK)
 	{
 		LoginAddGameRoleAck(pData, _len);
 	}
@@ -200,4 +214,158 @@ void MirGame::DoLoginPacket(const PkgLoginQuickMsgNot& not)
 	{
 		MessageBox(NULL, pszMsg, "TIP", MB_OK);
 	}
+}
+
+void MirGame::LoginCreateHumRsp(const char* _pData, unsigned int _len)
+{
+	protocol::MCreateHumRsp rsp;
+	if (!rsp.ParseFromArray(_pData, _len))
+	{
+		return;
+	}
+
+	if(rsp.result() == 0)
+	{
+		MessageBox(NULL, "ERROR", "Can't Create ..", MB_OK);
+	}
+	else
+	{
+		const char* szName = rsp.name().c_str();
+
+		if(strlen(szName) > 0 &&
+			strlen(szName) < 19)
+		{
+			if(pTheGame->GetCurStage() == SCENE_LOGIN)
+			{
+				if(pTheGame->GetLoginScene()->GetPage() == PAGE_SELCHR)
+				{
+					//	update global header data
+					for(int i = 0; i < 3; ++i)
+					{
+						if(g_stHeroHeader[i].szName[0] == 0)
+						{
+							strcpy(g_stHeroHeader[i].szName, szName);
+							g_stHeroHeader[i].bJob = rsp.job();
+							g_stHeroHeader[i].bSex = rsp.sex();
+							g_stHeroHeader[i].uLevel = 1;
+							break;
+						}
+					}
+					if(pTheGame->GetLoginScene()->GetSelChrDlg() == NULL)
+					{
+						return;
+					}
+					HeroHeader header;
+					strcpy(header.szName, szName);
+					header.bJob = rsp.job();
+					header.bSex = rsp.sex();
+					header.uLevel = 1;
+					pTheGame->GetLoginScene()->GetSelChrDlg()->AddHumData(&header);
+				}
+			}
+		}
+	}
+}
+
+void MirGame::LoginDelHumRsp(const char* _pData, unsigned int _len)
+{
+	protocol::MDelHumRsp rsp;
+	if (!rsp.ParseFromArray(_pData, _len))
+	{
+		return;
+	}
+
+	const char* szName = rsp.name().c_str();
+
+	if(pTheGame->GetCurStage() == PAGE_LOGIN)
+	{
+		if(pTheGame->GetLoginScene()->GetPage() == PAGE_SELCHR)
+		{
+			//	update global header data
+			for(int i = 0; i < 3; ++i)
+			{
+				if(0 == strcmp(g_stHeroHeader[i].szName, szName))
+				{
+					g_stHeroHeader[i].szName[0] = 0;
+					g_stHeroHeader[i].bJob = 0;
+					g_stHeroHeader[i].bSex = 0;
+					g_stHeroHeader[i].uLevel = 0;
+					break;
+				}
+			}
+
+			if(pTheGame->GetLoginScene()->GetSelChrDlg() == NULL)
+			{
+				return;
+			}
+
+			int nIndex = pTheGame->GetLoginScene()->GetSelChrDlg()->GetHumIndex(szName);
+			if(nIndex != -1)
+			{
+				pTheGame->GetLoginScene()->GetSelChrDlg()->DeleteHum(nIndex);
+			}
+		}
+	}
+}
+
+void MirGame::LoginQuickMessage(const char* _pData, unsigned int _len)
+{
+	protocol::MQuickMessageNtf ntf;
+	if (!ntf.ParseFromArray(_pData, _len))
+	{
+		return;
+	}
+
+	int nMsgId = ntf.msgid();
+	const char* pszMsg = NULL;
+
+	if(nMsgId == 1)
+	{
+		pszMsg = "没有可用的游戏服务器";
+	}
+	else if(nMsgId == 2)
+	{
+		pszMsg = "人物存档不存在";
+	}
+	else if(nMsgId == 3)
+	{
+		pszMsg = "异常的存档读取";
+	}
+	else if(nMsgId == 4)
+	{
+		pszMsg = "角色名已存在";
+	}
+	else if(nMsgId == 5)
+	{
+		pszMsg = "不存在的玩家数据";
+	}
+	else if(nMsgId == 6)
+	{
+		pszMsg = "无法创建角色";
+	}
+	else if(nMsgId == 7)
+	{
+		pszMsg = "无可用的游戏服务器";
+	}
+	else if(nMsgId == 8)
+	{
+		pszMsg = "用户名或者密码错误";
+	}
+	else if(nMsgId == 9)
+	{
+		pszMsg = "存档失败";
+	}
+	else if (nMsgId == 10)
+	{
+		char msg[100];
+		sprintf(msg, "您在服务器[%d]中已登录了，无法重复登录", ntf.param());
+		pszMsg = msg;
+	}
+	else
+	{
+		char szMsg[MAX_PATH];
+		sprintf(szMsg, "Unknown msg id : %d", nMsgId);
+	}
+
+	MessageBox(NULL, pszMsg, "Msg from loginsvr", MB_OK);
 }

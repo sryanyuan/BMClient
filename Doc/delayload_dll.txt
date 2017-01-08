@@ -1,0 +1,16 @@
+启用_DELAY_LOAD_DLL宏
+并将以下DLL加入延迟DLL列表
+
+Debug:
+sqlite3.dll
+fmodex.dll
+duilib_d.dll
+hge.dll
+zlibwapi_d.dll
+
+Release:
+sqlite3.dll
+fmodex.dll
+duilib.dll
+hge.dll
+zlibwapi.dll

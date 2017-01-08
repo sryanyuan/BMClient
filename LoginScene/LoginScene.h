@@ -40,7 +40,7 @@ class LoginScene : public RenderObject
 public:
 	enum RECT_RIGION
 	{
-		RECT_SINGLE,
+		RECT_BATTLE,
 		RECT_NET,
 		RECT_SETTING,
 		RECT_MADE,
@@ -72,6 +72,9 @@ public:
 	void OnSceneProg(int _nTotal, int _nCur);
 	void RenderBk();
 	void OnPressNetButton();
+	void OnBattleNetHTTPGet(const char* _pData, size_t _uSize);
+	void OnAppVersionHTTPGet(const char* _pData, size_t _uSize);
+	void OnPatchURLHTTPGet(const char* _pData, size_t _uSize);
 
 public:
 	inline void SetPage(WORD _wPage)	{m_wCurPage = _wPage;}
@@ -119,6 +122,8 @@ private:
 	GameTextureManagerSib* m_pTexMgr;
 	hgeSprite* m_pEffRender;
 	FireworksRenderList m_xFireworks;
+
+	std::string m_xLatestAppVersion;
 
 public:
 	char* m_szIP;

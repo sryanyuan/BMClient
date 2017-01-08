@@ -5,7 +5,12 @@
 
 #include "../Common/GameRenderObject.h"
 #include <vector>
+#include <FastDelegate.h>
+#include <FastDelegateBind.h>
 //////////////////////////////////////////////////////////////////////////
+// param : slider offset
+typedef fastdelegate::FastDelegate1<int, void> SliderCallback;
+
 struct CommonButton
 {
 	int nID;
@@ -20,6 +25,15 @@ struct CommonButton
 	DWORD dwDownColor;
 	DWORD dwCheckedColor;
 	bool bVisible;
+	// slider fields
+	int nSliderRangeX;
+	int nSliderRangeY;
+	int nSliderTotalUnit;
+	int nSliderCurrentUnit;
+	POINT stOriginClickPoint;
+	SliderCallback sliderCallback;
+	RECT rcRenderScale9;
+	bool bFocus;
 };
 
 struct StaticTexture
@@ -40,6 +54,7 @@ typedef std::vector<StaticTexture> STATICTEXTURES;
 #define CBTN_DOWNARROW	5
 #define CBTN_CHECKBOX	6
 #define CBTN_OPTION		7
+#define CBTN_SLIDER		8
 
 #define BTN_NORMAL_MASK		0x00
 #define BTN_OVER_MASK		0x80
@@ -53,6 +68,7 @@ typedef std::vector<StaticTexture> STATICTEXTURES;
 #define BTN_STATE_CHECKED	4
 
 #define BTN_COLOR_NORMAL	ARGB(255, 171, 128, 25)
+
 //////////////////////////////////////////////////////////////////////////
 class GameCommonDlg : public RenderObject
 {
@@ -127,6 +143,7 @@ public:
 	virtual bool OnShowDialog()				{return true;}
 
 public:
+	bool ProcessSlider(const POINT& _refMousePoint);
 	bool CalcCloseButtonPosition();
 	void SetCommonButtonTexture(HTEXTURE _tex);
 	void SetCommonButtonState(int _id, int _state);

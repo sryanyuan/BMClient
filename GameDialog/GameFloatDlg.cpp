@@ -1,10 +1,11 @@
 #include "GameFloatDlg.h"
 #include "../BackMir/BackMir.h"
 //////////////////////////////////////////////////////////////////////////
-#define FLOATMESSAGEBAR_SPEED	400
+#define FLOATMESSAGEBAR_SPEED	700
+#define FLOATMESSAGEBAR_SPEED_UNIT 2.5f
 #define FLOATMESSAGEBAR_POSY	10
 #define FLOATMESSAGEBAR_HEIGHT	20
-#define FLOATMESSAGEITEM_SPEED	100
+#define FLOATMESSAGEITEM_SPEED	160
 #define FLOATMESSAGEWAIT_TIME	100
 //////////////////////////////////////////////////////////////////////////
 GameFloatDlg::GameFloatDlg()
@@ -85,7 +86,8 @@ void GameFloatDlg::Update(float _dt)
 			//	ÏÔÊ¾ÐÅÏ¢
 			FloatMessageItem* pShowItem = m_xMsgList.front();
 
-			pShowItem->fShowX -= (float)FLOATMESSAGEITEM_SPEED * _dt;
+			//pShowItem->fShowX -= (float)FLOATMESSAGEBAR_SPEED * _dt;
+			pShowItem->fShowX -= (float)FLOATMESSAGEBAR_SPEED_UNIT * 1;
 			if(pShowItem->fShowX + pShowItem->nTextLen <= 0)
 			{
 				pShowItem->fShowX = -pShowItem->nTextLen;

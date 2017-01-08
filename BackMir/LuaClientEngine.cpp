@@ -3,15 +3,13 @@
 #include "../Common/GlobalFunction.h"
 #include <hge.h>
 //////////////////////////////////////////////////////////////////////////
-//#pragma comment(lib, "lua51.lib")
-//////////////////////////////////////////////////////////////////////////
 LuaClientEngine::LuaClientEngine()
 {
 	SetZipPassword(SaveFile::CalcInternalPassword());
 #ifdef _DEBUG
 	m_eFileExt = kLuaFileExt_Lua;
 #else
-	m_eFileExt = kLuaFileExt_Bbt;
+	m_eFileExt = kLuaFileExt_Bjt;
 #endif
 }
 

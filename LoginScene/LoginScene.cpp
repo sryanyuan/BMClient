@@ -14,6 +14,10 @@
 #include "../BackMir/BMPreConnWnd.h"
 #include "../GameScene/GameResourceManager.h"
 #include "../Common/gfx_utils.h"
+#include "../../CommonModule/BMHttpManager.h"
+#include "../../CommonModule/cJSON.h"
+#include "../../CommonModule/CommandLineHelper.h"
+#include "../BackMir/GlobalLuaConfig.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -22,13 +26,9 @@
 /************************************************************************/
 static const char* g_szButtonText[] = 
 {
-	"单人游戏",
-#ifdef _DEBUG
-	"联机游戏",
-#else
+	"战网游戏",
 	"开始游戏",
-#endif
-	"致    谢",
+	"检查更新",
 	"关    于",
 	"退出游戏"
 };
@@ -44,11 +44,11 @@ LoginScene::LoginScene()
 	ZeroMemory(m_stRect, sizeof(m_stRect));
 	ZeroMemory(m_stHero, sizeof(m_stHero));
 
-#ifdef _DEBUG
-	m_stRect[RECT_SINGLE].left = 329;
-	m_stRect[RECT_SINGLE].right = 478;
-	m_stRect[RECT_SINGLE].top = 213;
-	m_stRect[RECT_SINGLE].bottom = 238;
+//#ifdef _DEBUG
+	m_stRect[RECT_BATTLE].left = 329;
+	m_stRect[RECT_BATTLE].right = 478;
+	m_stRect[RECT_BATTLE].top = 213;
+	m_stRect[RECT_BATTLE].bottom = 238;
 
 	m_stRect[RECT_NET].left = 329;
 	m_stRect[RECT_NET].right = 478;
@@ -69,7 +69,7 @@ LoginScene::LoginScene()
 	m_stRect[RECT_QUIT].right = 478;
 	m_stRect[RECT_QUIT].top = 377;
 	m_stRect[RECT_QUIT].bottom = 403;
-#else
+/*#else
 	m_stRect[RECT_SINGLE + 1].left = 329;
 	m_stRect[RECT_SINGLE + 1].right = 478;
 	m_stRect[RECT_SINGLE + 1].top = 213;
@@ -89,7 +89,7 @@ LoginScene::LoginScene()
 	m_stRect[RECT_MADE + 1].right = 478;
 	m_stRect[RECT_MADE + 1].top = 341;
 	m_stRect[RECT_MADE + 1].bottom = 366;
-#endif
+#endif*/
 
 	m_wCurProg = m_wTotalProg = 0;
 	ResetMouseState();
@@ -145,11 +145,6 @@ LoginScene::~LoginScene()
 /************************************************************************/
 bool LoginScene::Init(hgeResourceManager* _pRes)
 {
-	//char szPath[MAX_PATH];
-	//strcpy(szPath, GetRootPath());
-	//strcat(szPath, "GameRes\\login.dat");
-	//m_pxResMgr = new hgeResourceManager(szPath);
-	//m_pxResMgr = new hgeResourceManager("GameRes\\login.dat");
 	m_pxResMgr = _pRes;
 	m_hThread = 0;
 
@@ -164,36 +159,6 @@ bool LoginScene::Init(hgeResourceManager* _pRes)
 		AfxGetHge()->System_Log("can't load package [Ani.sib]");
 	}
 
-	//	读取人物存档
-	/*char szName[20] = {0};
-	for(int i = 0; i < strlen(m_szHero); ++i)
-	{
-		if(m_szHero[i] == '.')
-		{
-			szName[i] = 0;
-			break;
-		}
-		szName[i] = m_szHero[i];
-	}
-#ifdef _DEBUG
-	if(szName[0] == 0)
-	{
-		strcpy(szName, "测试人物");
-	}
-#endif
-	if(strlen(szName) == 0)
-	{
-		::MessageBox(NULL, "错误的人物存档", "错误", MB_ICONERROR);
-		abort();
-	}
-	strcpy(GamePlayer::GetInstance()->GetAttrib()->name, szName);
-	if(!GamePlayer::GetInstance()->LoadProperty(0))
-	{
-		AfxGetHge()->System_Log("无法读取人物存档信息");
-		::MessageBox(NULL, "错误的人物存档", "错误", MB_ICONERROR);
-		abort();
-		return false;
-	}*/
 	return true;
 }
 
@@ -476,6 +441,277 @@ void LoginScene::OnPressNetButton()
 	SetPage(PAGE_SELCHR);
 }
 
+void LoginScene::OnBattleNetHTTPGet(const char* _pData, size_t _uSize)
+{
+	if (NULL == _pData ||
+		0 == _uSize)
+	{
+		::MessageBox(NULL, "无法获取服务器列表", "错误", MB_OK | MB_ICONERROR);
+		return;
+	}
+
+	// parse json object
+	cJSON* pRoot = cJSON_Parse(_pData);
+
+	if (NULL == pRoot)
+	{
+		::MessageBox(NULL, "无法获取服务器列表", "错误", MB_OK | MB_ICONERROR);
+		return;
+	}
+
+	bool bParseOk = false;
+	const char* pszErrTip = "解析服务器列表失败";
+	std::string xServerList;
+	int nCode = -1;
+
+	do 
+	{
+		cJSON* pCode = cJSON_GetObjectItem(pRoot, "code");
+		if (NULL == pCode)
+		{
+			break;
+		}
+		if (cJSON_Number != pCode->type)
+		{
+			break;
+		}
+		nCode = pCode->valueint;
+
+		cJSON* pMsg = cJSON_GetObjectItem(pRoot, "message");
+		if (NULL == pMsg)
+		{
+			break;
+		}
+		if (cJSON_String != pMsg->type)
+		{
+			break;
+		}
+		xServerList = pMsg->valuestring;
+		bParseOk = true;
+	} while (0);
+	cJSON_Delete(pRoot);
+	pRoot = NULL;
+
+	if (!bParseOk)
+	{
+		::MessageBox(NULL, pszErrTip, "错误", MB_OK | MB_ICONERROR);
+		return;
+	}
+	if (0 != nCode ||
+		0 == xServerList.size())
+	{
+		::MessageBox(NULL, xServerList.c_str(), "错误", MB_OK | MB_ICONERROR);
+		return;
+	}
+
+	CommandLineHelper xHelper;
+	if (xHelper.InitParam())
+	{
+		const char* pszSvrIP = xHelper.GetParam("svrip");
+		if (NULL != pszSvrIP)
+		{
+			if (0 == strcmp(xServerList.c_str(), pszSvrIP))
+			{
+				::MessageBox(NULL, "您已登录战网服务器", "提示", MB_OK | MB_ICONINFORMATION);
+				return;
+			}
+		}
+	}
+
+	char szLaunchCmd[MAX_PATH];
+#ifdef _DEBUG
+	sprintf(szLaunchCmd, "%s/BinDebug/backmir.exe svrip=%s lk=lk0x", GetRootPath(), xServerList.c_str());
+#else
+	sprintf(szLaunchCmd, "%s/Bin/backmir.exe svrip=%s lk=lk0x", GetRootPath(), xServerList.c_str());
+#endif
+	
+	PROCESS_INFORMATION pi;
+	STARTUPINFO si = { sizeof(si) };
+	si.wShowWindow = SW_NORMAL;
+
+	BOOL bRet = CreateProcess(NULL, szLaunchCmd, NULL, NULL, FALSE, NORMAL_PRIORITY_CLASS, NULL, NULL, &si, &pi);
+	if (FALSE == bRet)
+	{
+		::MessageBox(NULL, "无法启动游戏", "错误", MB_OK | MB_ICONERROR);
+		return;
+	}
+
+	CloseHandle(pi.hThread);
+	CloseHandle(pi.hProcess);
+
+	PostQuitMessage(0);
+}
+
+void LoginScene::OnAppVersionHTTPGet(const char* _pData, size_t _uSize)
+{
+	if (NULL == _pData ||
+		0 == _uSize)
+	{
+		::MessageBox(NULL, "无法获得版本信息", "错误", MB_OK | MB_ICONERROR);
+		return;
+	}
+
+	// parse json object
+	cJSON* pRoot = cJSON_Parse(_pData);
+
+	if (NULL == pRoot)
+	{
+		::MessageBox(NULL, "无法获得版本信息", "错误", MB_OK | MB_ICONERROR);
+		return;
+	}
+
+	bool bParseOk = false;
+	const char* pszErrTip = "解析版本信息失败";
+	std::string xAppVersionLatest;
+	int nCode = -1;
+
+	do
+	{
+		cJSON* pCode = cJSON_GetObjectItem(pRoot, "code");
+		if (NULL == pCode)
+		{
+			break;
+		}
+		if (cJSON_Number != pCode->type)
+		{
+			break;
+		}
+		nCode = pCode->valueint;
+
+		cJSON* pMsg = cJSON_GetObjectItem(pRoot, "message");
+		if (NULL == pMsg)
+		{
+			break;
+		}
+		if (cJSON_String != pMsg->type)
+		{
+			break;
+		}
+		xAppVersionLatest = pMsg->valuestring;
+		bParseOk = true;
+	} while (0);
+	cJSON_Delete(pRoot);
+	pRoot = NULL;
+
+	if (!bParseOk)
+	{
+		::MessageBox(NULL, pszErrTip, "错误", MB_OK | MB_ICONERROR);
+		return;
+	}
+	if (0 != nCode ||
+		0 == xAppVersionLatest.size())
+	{
+		::MessageBox(NULL, xAppVersionLatest.c_str(), "错误", MB_OK | MB_ICONERROR);
+		return;
+	}
+	if (0 == strcmp(xAppVersionLatest.c_str(), BACKMIR_CURVERSION))
+	{
+		::MessageBox(NULL, "您已经是最新版本", "提示", MB_OK | MB_ICONINFORMATION);
+		return;
+	}
+	m_xLatestAppVersion = xAppVersionLatest;
+
+	// get patch url
+	const std::string& refURL = GetGlobalLuaConfig("gHTTPKVAddress");
+	if (refURL.empty())
+	{
+		::MessageBox(NULL, "无法获取请求", "错误", MB_OK | MB_ICONERROR);
+		return;
+	}
+	char szReqURL[MAX_PATH];
+	sprintf(szReqURL, "%s/get?key=app_patch_url_%s", refURL.c_str(), xAppVersionLatest.c_str());
+	// request for battle net address
+	BMHttpManager::GetInstance()->DoGetRequestSync(szReqURL, fastdelegate::bind(&LoginScene::OnPatchURLHTTPGet, this));
+}
+
+void LoginScene::OnPatchURLHTTPGet(const char* _pData, size_t _uSize)
+{
+	if (NULL == _pData ||
+		0 == _uSize)
+	{
+		::MessageBox(NULL, "无法获得补丁地址", "错误", MB_OK | MB_ICONERROR);
+		return;
+	}
+
+	// parse json object
+	cJSON* pRoot = cJSON_Parse(_pData);
+
+	if (NULL == pRoot)
+	{
+		::MessageBox(NULL, "无法获得补丁地址", "错误", MB_OK | MB_ICONERROR);
+		return;
+	}
+
+	bool bParseOk = false;
+	const char* pszErrTip = "解析补丁地址失败";
+	std::string xAppPatchURL;
+	int nCode = -1;
+
+	do
+	{
+		cJSON* pCode = cJSON_GetObjectItem(pRoot, "code");
+		if (NULL == pCode)
+		{
+			break;
+		}
+		if (cJSON_Number != pCode->type)
+		{
+			break;
+		}
+		nCode = pCode->valueint;
+
+		cJSON* pMsg = cJSON_GetObjectItem(pRoot, "message");
+		if (NULL == pMsg)
+		{
+			break;
+		}
+		if (cJSON_String != pMsg->type)
+		{
+			break;
+		}
+		xAppPatchURL = pMsg->valuestring;
+		bParseOk = true;
+	} while (0);
+	cJSON_Delete(pRoot);
+	pRoot = NULL;
+
+	if (!bParseOk)
+	{
+		::MessageBox(NULL, pszErrTip, "错误", MB_OK | MB_ICONERROR);
+		return;
+	}
+	if (0 != nCode ||
+		0 == xAppPatchURL.size())
+	{
+		::MessageBox(NULL, xAppPatchURL.c_str(), "错误", MB_OK | MB_ICONERROR);
+		return;
+	}
+
+	// copy the clip
+	char szTip[MAX_PATH];
+	if (::OpenClipboard(NULL))
+	{
+		::EmptyClipboard();
+		HGLOBAL clipbuffer;
+		char *buffer;
+		clipbuffer = ::GlobalAlloc(GMEM_DDESHARE, xAppPatchURL.size() + 1);
+		buffer = (char *)::GlobalLock(clipbuffer);
+		strcpy(buffer, xAppPatchURL.c_str());
+		::GlobalUnlock(clipbuffer);
+		::SetClipboardData(CF_TEXT, clipbuffer);
+		::CloseClipboard();
+	}
+	else
+	{
+		sprintf(szTip, "访问剪贴板失败，%s补丁下载地址为: %s", m_xLatestAppVersion.c_str(), xAppPatchURL.c_str());
+		::MessageBox(NULL, szTip, "错误", MB_OK | MB_ICONERROR);
+		return;
+	}
+	
+	sprintf(szTip, "最新版本(%s)补丁下载地址为：%s ， 已为您拷贝到剪贴板，请复制到浏览器中访问下载", m_xLatestAppVersion.c_str(), xAppPatchURL.c_str());
+	::MessageBox(NULL, szTip, "提示", MB_OK | MB_ICONINFORMATION);
+}
+
 void LoginScene::OnButton(RECT_RIGION _rc)
 {
 	bool bDown = AfxGetHge()->Input_GetKeyState(HGEK_LBUTTON);
@@ -486,6 +722,10 @@ void LoginScene::OnButton(RECT_RIGION _rc)
 		m_wCurOver = 0xFF;
 		m_wCurDown = _rc;
 	}
+	if (bUp)
+	{
+		GameSoundManager::GetInstancePtr()->PlayGameSound(SDGAME_CLICKBUTTON);
+	}
 
 	switch(_rc)
 	{
@@ -495,26 +735,25 @@ void LoginScene::OnButton(RECT_RIGION _rc)
 			if(bUp)
 			{
 				m_wCurPage = PAGE_ABOUT;
-				GameSoundManager::GetInstancePtr()->PlayGameSound(SDGAME_CLICKBUTTON);
 			}
 		}break;
-	case RECT_SINGLE:
+	case RECT_BATTLE:
 		{
 			//
 			if(bUp)
 			{
-				//	单机进入
-#ifdef _DEBUG
-				AfxGetHge()->System_Log("DEBUG模式单机登陆");
-				GamePlayer* pPlayer = GamePlayer::GetInstance();
-				strcpy(pPlayer->GetAttrib()->name, "GM01");
-				pPlayer->SetMapID(0);
-				pPlayer->SetReallyCoord(20, 16);
-				//m_hThread = (HANDLE)_beginthreadex(NULL, 0, &LoginScene::LoadGameScene, GameScene::sThis, 0, NULL);
-				LoadGameScene(GameScene::sThis);
-				m_wCurPage = PAGE_LOAD;
-				GameSoundManager::GetInstancePtr()->PlayGameSound(SDGAME_CLICKBUTTON);
-#endif
+				//	战网游戏
+				// get kv http address
+				const std::string& refURL = GetGlobalLuaConfig("gHTTPKVAddress");
+				if (refURL.empty())
+				{
+					::MessageBox(NULL, "无法获取请求", "错误", MB_OK | MB_ICONERROR);
+					return;
+				}
+				char szReqURL[MAX_PATH];
+				sprintf(szReqURL, "%s/get?key=app_battlenet_addresses", refURL.c_str());
+				// request for battle net address
+				BMHttpManager::GetInstance()->DoGetRequestSync(szReqURL, fastdelegate::bind(&LoginScene::OnBattleNetHTTPGet, this));
 			}
 		}break;
 	case RECT_NET:
@@ -524,15 +763,25 @@ void LoginScene::OnButton(RECT_RIGION _rc)
 			if(bUp)
 			{
 				OnPressNetButton();
-				GameSoundManager::GetInstancePtr()->PlayGameSound(SDGAME_CLICKBUTTON);
 			}
 		}break;
 	case RECT_SETTING:
 		{
+			// check for update
 			//
 			if(bUp)
 			{
-				m_wCurPage = PAGE_THANKS;
+				//m_wCurPage = PAGE_THANKS;
+				const std::string& refURL = GetGlobalLuaConfig("gHTTPKVAddress");
+				if (refURL.empty())
+				{
+					::MessageBox(NULL, "无法获取请求", "错误", MB_OK | MB_ICONERROR);
+					return;
+				}
+				char szReqURL[MAX_PATH];
+				sprintf(szReqURL, "%s/get?key=app_version", refURL.c_str());
+				// request for battle net address
+				BMHttpManager::GetInstance()->DoGetRequestSync(szReqURL, fastdelegate::bind(&LoginScene::OnAppVersionHTTPGet, this));
 			}
 		}break;
 	case RECT_QUIT:
@@ -540,7 +789,6 @@ void LoginScene::OnButton(RECT_RIGION _rc)
 			//
 			if(bUp)
 			{
-				GameSoundManager::GetInstancePtr()->PlayGameSound(SDGAME_CLICKBUTTON);
 				::PostQuitMessage(0);
 			}
 		}break;
@@ -670,11 +918,8 @@ void LoginScene::RenderLogin()
 		{
 			m_pRender->SetTexture(tex);
 			m_pRender->SetTextureRect(0, 0, 149, 26);
-#ifdef _DEBUG
-			for(int i = RECT_SINGLE; i < RECT_TOTAL; ++i)
-#else
-			for(int i = RECT_SINGLE + 1; i < RECT_TOTAL; ++i)
-#endif
+
+			for (int i = RECT_BATTLE; i < RECT_TOTAL; ++i)
 			{
 				m_pRender->Render(m_stRect[i].left,
 					m_stRect[i].top);
@@ -703,11 +948,11 @@ void LoginScene::RenderLogin()
 				m_pRender->Render(m_stRect[m_wCurDown].left, m_stRect[m_wCurDown].top);
 			}
 		}
-#ifdef _DEBUG
-		for(int i = RECT_SINGLE; i < RECT_TOTAL; ++i)
-#else
+//#ifdef _DEBUG
+		for (int i = RECT_BATTLE; i < RECT_TOTAL; ++i)
+/*#else
 		for(int i = RECT_SINGLE + 1; i < RECT_TOTAL; ++i)
-#endif
+#endif*/
 		{
 			if(m_wCurDown == i)
 			{
@@ -771,11 +1016,11 @@ void LoginScene::RenderLogin()
 /************************************************************************/
 bool LoginScene::CommandLogin(const POINT& _ptMouse)
 {
-#ifdef _DEBUG
-	for(int i = RECT_SINGLE; i < RECT_TOTAL; ++i)
-#else
+//#ifdef _DEBUG
+	for (int i = RECT_BATTLE; i < RECT_TOTAL; ++i)
+/*#else
 	for(int i = RECT_SINGLE + 1; i < RECT_TOTAL; ++i)
-#endif
+#endif*/
 	{
 		if(m_bIsConnectiong)
 		{

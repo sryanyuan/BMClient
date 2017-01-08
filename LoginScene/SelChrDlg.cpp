@@ -7,6 +7,7 @@
 #include "../BackMir/BMPreConnWnd.h"
 #include "../GameScene/GameResourceManager.h"
 #include "../Common/gfx_utils.h"
+#include "../../CommonModule/ProtoType.h"
 //////////////////////////////////////////////////////////////////////////
 const char* g_szHeader[] =
 {
@@ -569,13 +570,24 @@ void SelChrDlg::OnEnterGame()
 		}
 		else if(pTheGame->GetGameMode() == GM_LOGIN)
 		{
-			g_xBuffer.Reset();
-			g_xBuffer << (int)0;
-			g_xBuffer << PKG_LOGIN_STARTGAME_REQ;
-			g_xBuffer << (char)strlen(m_stHero[m_nCurHumOrder].szName);
-			g_xBuffer.Write(m_stHero[m_nCurHumOrder].szName, strlen(m_stHero[m_nCurHumOrder].szName));
-			g_xBuffer << (short)0;
-			SendBufferToLS(g_xBuffer);
+			if (GetProtoType() == ProtoType_ByteBuffer)
+			{
+				g_xBuffer.Reset();
+				g_xBuffer << (int)0;
+				g_xBuffer << PKG_LOGIN_STARTGAME_REQ;
+				g_xBuffer << (char)strlen(m_stHero[m_nCurHumOrder].szName);
+				g_xBuffer.Write(m_stHero[m_nCurHumOrder].szName, strlen(m_stHero[m_nCurHumOrder].szName));
+				g_xBuffer << (short)0;
+				SendBufferToLS(g_xBuffer);
+			}
+			else
+			{
+				protocol::MLoginGameReq req;
+				req.set_name(m_stHero[m_nCurHumOrder].szName, strlen(m_stHero[m_nCurHumOrder].szName));
+				req.set_servername("", 0);
+				SendProto(protocol::LoginGameReq, req);
+			}
+			
 			m_bIsConnecting = true;
 			m_fConnectTotalTime = 0.0f;
 			GamePlayer::GetInstance()->SetSaveIndex(m_nCurHumOrder);

@@ -4,21 +4,20 @@
 #include <uilib.h>
 #include "../../CommonModule/DataParser.h"
 #include "../../CommonModule/GamePacket.h"
-#ifdef _DEBUG
-	#pragma comment(lib, "duilib_d.lib")
-#else
-	#pragma comment(lib, "duilib.lib")
-#endif
+#include "../../CommonModule/loginsvr.pb.h"
 
 using namespace DuiLib;
 //////////////////////////////////////////////////////////////////////////
 extern bool g_bPrepared;
+extern bool g_bDataLoaded;
 extern GAME_MODE g_eGameMode;
 extern HeroHeader g_stHeroHeader[3];
 //////////////////////////////////////////////////////////////////////////
 #define DO_GAMESVR_PACKET(op, pkg) case op:{pkg p;g_PreConnWnd->m_xBuffer >> p;g_PreConnWnd->DoGameSvrPacket(p);}break;
 #define DO_LOGINSVR_PACKET(op, pkg) case op:{pkg p;g_PreConnWnd->m_xBuffer >> p;g_PreConnWnd->DoLoginSvrPacket(p);}break;
 #define DO_GLOBAL_PACKET(op, pkg) case op:{pkg p;g_PreConnWnd->m_xBuffer >> p;g_PreConnWnd->DoPacket(p);}break;
+
+void UpdateGlobalHeroHeader(const protocol::MPlayerHumBaseDataNtf& _refHum);
 //////////////////////////////////////////////////////////////////////////
 class BMPreConnWnd : public CWindowWnd, public INotifyUI
 {
@@ -49,6 +48,8 @@ public:
 	void PrepareLoadData();
 	void LoadData();
 
+	void AskForSignIn();
+
 public:
 	void DoGameSvrPacket(const PkgLoginGameTypeNot& not);
 	void DoPacket(const PkgLoginGameTypeNot& not);
@@ -58,6 +59,8 @@ public:
 	void DoLoginSvrPacket(const PkgLoginQuickMsgNot& not);
 	void DoLoginSvrPacket(const PkgLoginServerAddrNot& not);
 	void DoLoginSvr_HeadData(const char* _pData, unsigned int _len);
+
+	void DoLoginSvrPacketProtobuf(const char* _pData, size_t _uLength);
 
 public:
 	static void __stdcall OnFullMsgGameSvr(const void* _pData, unsigned int _len);
@@ -74,6 +77,9 @@ protected:
 	DWORD m_dwLSIdx;
 	std::string m_xPsw;
 	std::string m_xAct;
+	//	for game server connect verify
+	int m_nLID;
+	std::string m_xAccessToken;
 };
 //////////////////////////////////////////////////////////////////////////
 extern BMPreConnWnd* g_PreConnWnd;

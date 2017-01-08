@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Window size="300,180">
+    <VerticalLayout name="VerticalLayoutUI1" width="331" height="194" bkimage="precnnwnd_bk.png">
+		<Label text="请选择服务器" textcolor="#ffffffff" align="center" padding="0,2,0,0" />
+        <List name="serverList" padding="10,8,10,14" vscrollbar="true" bkcolor="#ffffffff" autovscroll="false" readonly="true"/>
+    </VerticalLayout>
+</Window>

@@ -12,26 +12,6 @@
 #include "../Themida/ThemidaSDK.h"
 #endif
 
-#pragma comment(lib, "sqlite3.lib")
-
-// #if _MSC_VER >= 1500
-// 
-// #ifdef _DEBUG
-// #pragma comment(lib, "json_vc71_libmtd.lib")
-// #else
-// #pragma comment(lib, "json_vc71_libmt.lib")
-// #endif
-// 
-// #else if _MSC_VER >= 1310
-// 
-// #ifdef _DEBUG
-// #pragma comment(lib, "json_vc71_libmtd.lib")
-// #else
-// #pragma comment(lib, "json_vc71_libmt.lib")
-// #endif
-// 
-// #endif
-
 static const char* g_szAttribName[] = 
 {
 	"HP","MP","reqValue","reqType","weight","lucky","DC","maxDC","sex","atkSpeed",
@@ -48,7 +28,7 @@ GameInfoManager::GameInfoManager()
 	m_sql = NULL;
 	//	判断数据库文件是否存在 存在启用数据库 不存在用INI文件存取
 	char szDBFile[MAX_PATH];
-	SKNL3GetCurrentAppPath(szDBFile, sizeof(szDBFile));
+	GetRootPath(szDBFile, sizeof(szDBFile));
 	//sprintf(szDBFile, "%s%s", szDBFile, "Help\\legend.bm");
 	strcat(szDBFile, "Help\\legend.bm");
 	if(0 == access(szDBFile, 0))

@@ -7,8 +7,6 @@
 #include <Gdiplusimaging.h>
 #include <atlconv.h>
 
-#pragma comment(lib, "gdiplus.lib")
-
 int GetCodecClsid(const WCHAR* format, CLSID* pClsid)
 {
 	UINT  num = 0;          // number of image encoders

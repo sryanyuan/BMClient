@@ -7,8 +7,13 @@
 #include "BackMir.h"
 #include "../../CommonModule/GamePacket.h"
 #include "../Common/GlobalFunction.h"
+#include "../../CommonModule/loginsvr.pb.h"
+#include "../../CommonModule/ProtoType.h"
+#include "BMSelServerWnd.h"
+#include "BMPasswordWnd.h"
 //////////////////////////////////////////////////////////////////////////
 bool g_bPrepared = false;
+bool g_bDataLoaded = false;
 BMPreConnWnd* g_PreConnWnd = NULL;
 GAME_MODE g_eGameMode = GM_NONE;
 HeroHeader g_stHeroHeader[3];
@@ -36,10 +41,44 @@ BMPreConnWnd::BMPreConnWnd()
 			m_xPsw = pszValue;
 		}
 	}
+
+	m_nLID = 0;
 }
 
 BMPreConnWnd::~BMPreConnWnd()
 {
+	// reset all callback
+	m_xParserGameSvr.SetHandlePacket(NULL);
+	m_xParserLoginSvr.SetHandlePacket(NULL);
+	m_xParserGlobal.SetHandlePacket(NULL);
+
+	//	取消socket事件监听
+	CHAR strError[256] = { 0 };
+	if (g_eGameMode == GM_NORMAL)
+	{
+		//	仅有游戏服务器 则ClientSocket就是游戏服务器socket
+		if (WSAAsyncSelect(g_xClientSocket.GetSocket(), NULL, WM_SOCKMSG, FD_CONNECT | FD_READ | FD_CLOSE) == SOCKET_ERROR)
+		{
+			wsprintf(strError, "WSAAsyncSelect() generated error %d\n", WSAGetLastError());
+			OutputDebugString(strError);
+		}
+	}
+	else if (g_eGameMode == GM_LOGIN)
+	{
+		//	登陆游戏服务器 则ClientSocket是登陆服务器 ClientSocket2是游戏服务器 2个都重定位
+		if (WSAAsyncSelect(g_xClientSocket.GetSocket(), NULL, WM_SOCKMSG, FD_CONNECT | FD_READ | FD_CLOSE) == SOCKET_ERROR)
+		{
+			wsprintf(strError, "WSAAsyncSelect() generated error %d\n", WSAGetLastError());
+			OutputDebugString(strError);
+		}
+
+		if (WSAAsyncSelect(g_xClientSocket2.GetSocket(), NULL, WM_SOCKMSG, FD_CONNECT | FD_READ | FD_CLOSE) == SOCKET_ERROR)
+		{
+			wsprintf(strError, "WSAAsyncSelect() generated error %d\n", WSAGetLastError());
+			OutputDebugString(strError);
+		}
+	}
+
 	g_PreConnWnd = NULL;
 }
 
@@ -301,6 +340,7 @@ void BMPreConnWnd::RunGame()
 	}
 	
 	g_bPrepared = true;
+	g_bDataLoaded = true;
 	Close();
 }
 
@@ -489,6 +529,17 @@ void __stdcall BMPreConnWnd::OnFullMsgGlobal(const void* _pData, unsigned int _n
 	g_PreConnWnd->m_xBuffer.Reset();
 	unsigned int uOpCode = pPacket->uOp;
 
+	if (uOpCode >= protocol::LSOp_MIN &&
+		uOpCode <= protocol::LSOp_MAX)
+	{
+		SetProtoType(ProtoType_Protobuf);
+	}
+	if (ProtoType_Protobuf == GetProtoType())
+	{
+		g_PreConnWnd->DoLoginSvrPacketProtobuf((const char*)_pData, _nLen);
+		return;
+	}
+
 	g_PreConnWnd->m_xBuffer.Write(_pData, _nLen);
 
 	switch(uOpCode)
@@ -532,6 +583,18 @@ void __stdcall BMPreConnWnd::OnFullMsgLoginSvr(const void* _pData, unsigned int 
 
 	unsigned int uOpCode = pPacket->uOp;
 
+	//	is a protobuf message ?
+	if (uOpCode >= protocol::LSOp_MIN &&
+		uOpCode <= protocol::LSOp_MAX)
+	{
+		SetProtoType(ProtoType_Protobuf);
+	}
+	if (ProtoType_Protobuf == GetProtoType())
+	{
+		g_PreConnWnd->DoLoginSvrPacketProtobuf((const char*)_pData, _nLen);
+		return;
+	}
+
 	g_PreConnWnd->m_xBuffer.Reset();
 	g_PreConnWnd->m_xBuffer.Write(_pData, _nLen);
 
@@ -552,6 +615,201 @@ void __stdcall BMPreConnWnd::OnFullMsgLoginSvr(const void* _pData, unsigned int 
 	}
 }
 
+void BMPreConnWnd::DoLoginSvrPacketProtobuf(const char* _pData, size_t _uLength)
+{
+	const PacketHeader* pPacket = (const PacketHeader*)_pData;
+	const char* pData = _pData + 8;
+	size_t uLen = _uLength - 8;
+
+	unsigned int uOpCode = pPacket->uOp;
+
+	switch (uOpCode)
+	{
+	case protocol::LSAccessNtf:
+		{
+			protocol::MLSAccessNtf ntf;
+			if (!ntf.ParseFromArray(pData, uLen))
+			{
+				return;
+			}
+			m_nLID = ntf.lid();
+			m_xAccessToken = ntf.accesstoken();
+
+			if(g_eGameMode == GM_NONE)
+			{
+				//	未设置游戏模式
+				KillTimer(m_hWnd, TIMER_FTYPETIMEOUT);
+				g_eGameMode = GM_LOGIN;
+				AppendString("OK");
+
+				// Request for enter account and password
+				if (m_xPsw.empty() ||
+					m_xAct.empty())
+				{
+					AskForSignIn();
+				}
+
+				if(m_xPsw.empty() ||
+					m_xAct.empty())
+				{
+					MessageBox(NULL, "请输入账号密码", "错误", MB_OK | MB_ICONERROR);
+					PrepareCloseGame();
+					exit(-1);
+					return;
+				}
+
+				//	发送账号密码请求
+				AppendString("\rVerify...");
+				SetTimer(m_hWnd, TIMER_VERIFYTIMEOUT, 15000, NULL);
+
+				//	验证账户密码
+				protocol::MVerifyAccountReq req;
+				req.set_account(m_xAct.c_str());
+				req.set_password(m_xPsw.c_str());
+				SendProto(protocol::VerifyAccountReq, req);
+
+				//	定时器
+				SetTimer(m_hWnd, TIMER_SEND_LOGIN_HEARTBEAT, 15 * 1000, NULL);
+			}
+		}break;
+	case protocol::QuickMessageNtf:
+		{
+			protocol::MQuickMessageNtf ntf;
+			if (!ntf.ParseFromArray(pData, uLen))
+			{
+				return;
+			}
+
+			if(ntf.msgid() == 8)
+			{
+				MessageBox(NULL, "用户名或者密码错误", "错误", MB_OK | MB_ICONERROR);
+				PrepareCloseGame();
+			}
+			else if(ntf.msgid() == 7)
+			{
+				MessageBox(NULL, "没有可用的游戏服务器", "错误", MB_OK | MB_ICONERROR);
+				PrepareCloseGame();
+			}
+			else if(ntf.msgid() == 10)
+			{
+				char msg[100];
+				sprintf(msg, "您在服务器[%d]中已登录了，无法重复登录", ntf.param());
+				MessageBox(NULL, msg, "错误", MB_OK | MB_ICONERROR);
+			}
+		}break;
+	case protocol::ServerListNtf:
+		{
+			protocol::MServerListNtf ntf;
+			if (!ntf.ParseFromArray(pData, uLen))
+			{
+				return;
+			}
+
+			//	选择服务器
+			KillTimer(m_hWnd, TIMER_VERIFYTIMEOUT);
+			AppendString("OK\n");
+			BMSelServerWnd wnd;
+			wnd.SetServerList(ntf);
+			wnd.Create(NULL, "SelServerWnd", UI_WNDSTYLE_FRAME, 0, 0, 0, 200, 350, 0);
+			wnd.CenterWindow();
+			int nSel = wnd.ShowModal();
+			int nServerIndex = wnd.GetSelServerIndex();
+
+			if (IDOK == nSel &&
+				nServerIndex >= 0 &&
+				nServerIndex < ntf.servers_size())
+			{
+				const protocol::MServerListItem& refServer = ntf.servers(nServerIndex);
+				AppendString("\nConnecting to Game server ...");
+				const char* pServerAddr = refServer.serveraddress().c_str();
+				char* pAddr = new char[strlen(pServerAddr) + 1];
+				strcpy(pAddr, pServerAddr);
+				char* pszColon = strchr(pAddr, ':');
+				if (NULL == pszColon)
+				{
+					delete []pAddr;
+					pAddr = NULL;
+					return;
+				}
+
+				*pszColon = '\0';
+				int nPort = atoi(pszColon + 1);
+
+				g_xClientSocket2.ConnectToServer(m_hWnd, pAddr, nPort);
+				delete []pAddr;
+				pAddr = NULL;
+
+				SetTimer(m_hWnd, TIMER_CONNTIMEOUT, 15000, NULL);
+				AppendString("\rConnect GameServer...");
+			}
+			else
+			{
+				MessageBox(NULL, "不可用的游戏服务器", "错误", MB_OK | MB_ICONERROR);
+				PrepareCloseGame();
+			}
+		}break;
+	case protocol::VerifyAccountRsp:
+		{
+			protocol::MVerifyAccountRsp rsp;
+			if (!rsp.ParseFromArray(pData, uLen))
+			{
+				return;
+			}
+		}break;
+	case protocol::PlayerHumBaseDataNtf:
+		{
+			protocol::MPlayerHumBaseDataNtf ntf;
+			if (!ntf.ParseFromArray(pData, uLen))
+			{
+				return;
+			}
+
+			for (int index = 0; index < ntf.roles_size(); index++)
+			{
+				const protocol::MPlayerHumBaseData& refRoleData = ntf.roles(index);
+				
+				//DoLoginSvr_HeadData(refRoleData.roledata().c_str(), refRoleData.roledata().size());
+				const char* pRoleData = refRoleData.roledata().c_str();
+				char nRoleIndex = refRoleData.roleindex();
+
+				if(nRoleIndex >= 0 &&
+					nRoleIndex <= 2)
+				{
+					char namelen = *pRoleData;
+					pRoleData += 1;
+
+					char szName[20] = {0};
+					memcpy(szName, pRoleData, namelen + 1);
+					pRoleData += namelen + 1;
+
+					char sex = *pRoleData;
+					++pRoleData;
+
+					char job = *pRoleData;
+					++pRoleData;
+
+					short level = *(short*)pRoleData;
+
+					g_stHeroHeader[nRoleIndex].bJob = job;
+					g_stHeroHeader[nRoleIndex].bSex = sex;
+					strcpy(g_stHeroHeader[nRoleIndex].szName, szName);
+					g_stHeroHeader[nRoleIndex].uLevel = level;
+				}
+			}
+		}break;
+	/*case protocol::PlayerHumBaseDataNtf:
+		{
+			protocol::MPlayerHumBaseDataNtf ntf;
+			if (!ntf.ParseFromArray(pData, uLen))
+			{
+				return;
+			}
+
+			UpdateGlobalHeroHeader(ntf);
+		}break;*/
+	}
+}
+
 void BMPreConnWnd::DoGameSvrPacket(const PkgLoginGameTypeNot& not)
 {
 	//	游戏服务器 在当前模式为登陆模式下 会收到该包
@@ -567,13 +825,25 @@ void BMPreConnWnd::DoGameSvrPacket(const PkgLoginGameTypeNot& not)
 			//RunGame();
 			//PrepareRunGame();
 			//	将索引发给游戏服务器
-			PkgLoginConnIdxNot not;
-			not.dwGSIdx = 0;
-			not.dwLSIdx = m_dwLSIdx;
-			g_xBuffer.Reset();
-			g_xBuffer << not;
-			//SendBuffer2(&g_xBuffer);
-			SendBuffer2(&g_xBuffer, true);
+			if (GetProtoType() == ProtoType_ByteBuffer)
+			{
+				PkgLoginConnIdxNot not;
+				not.dwGSIdx = 0;
+				not.dwLSIdx = m_dwLSIdx;
+				g_xBuffer.Reset();
+				g_xBuffer << not;
+				//SendBuffer2(&g_xBuffer);
+				SendBuffer2(&g_xBuffer, true);
+			}
+			else
+			{
+				//	使用protobuf 有accessToken
+				protocol::MRegisterClientReq req;
+				req.set_sid(not.dwConnIdx);
+				req.set_lid(m_nLID);
+				req.set_accesstoken(m_xAccessToken.c_str());
+				SendProto2(protocol::RegisterClientReq, req);
+			}
 		}
 	}
 }
@@ -649,10 +919,12 @@ void BMPreConnWnd::DoLoginSvrPacket(const PkgLoginQuickMsgNot& not)
 	if(not.uMsg == 8)
 	{
 		MessageBox(NULL, "用户名或者密码错误", "错误", MB_OK | MB_ICONERROR);
+		PrepareCloseGame();
 	}
 	else if(not.uMsg == 7)
 	{
 		MessageBox(NULL, "没有可用的游戏服务器", "错误", MB_OK | MB_ICONERROR);
+		PrepareCloseGame();
 	}
 }
 
@@ -720,17 +992,29 @@ void BMPreConnWnd::DoPacket(const PkgLoginGameTypeNot& not)
 			KillTimer(m_hWnd, TIMER_FTYPETIMEOUT);
 			g_eGameMode = GM_LOGIN;
 			AppendString("OK");
-			//	发送账号密码请求
-			AppendString("\rVerify...");
-			SetTimer(m_hWnd, TIMER_VERIFYTIMEOUT, 15000, NULL);
+
+			//	定时器
+			SetTimer(m_hWnd, TIMER_SEND_LOGIN_HEARTBEAT, 15 * 1000, NULL);
+
+			// Request for enter account and password
+			if (m_xPsw.empty() ||
+				m_xAct.empty())
+			{
+				AskForSignIn();
+			}
 
 			if(m_xPsw.empty() ||
 				m_xAct.empty())
 			{
 				MessageBox(NULL, "请输入账号密码", "错误", MB_OK | MB_ICONERROR);
 				PrepareCloseGame();
+				exit(-1);
 				return;
 			}
+
+			//	发送账号密码请求
+			AppendString("\rVerify...");
+			SetTimer(m_hWnd, TIMER_VERIFYTIMEOUT, 15000, NULL);
 
 			//	记录下LS的索引
 			m_dwLSIdx = not.dwConnIdx;
@@ -746,9 +1030,6 @@ void BMPreConnWnd::DoPacket(const PkgLoginGameTypeNot& not)
 			m_xSndBuf.Write(m_xPsw.c_str(), m_xPsw.length());
 			//	登陆游戏模式 socket1就是登录服务器连接
 			SendBuffer(&m_xSndBuf);
-
-			//	定时器
-			SetTimer(m_hWnd, TIMER_SEND_LOGIN_HEARTBEAT, 15 * 1000, NULL);
 		}
 		else
 		{
@@ -769,4 +1050,62 @@ void BMPreConnWnd::DoPacket(const PkgLoginGameTypeNot& not)
 			//PrepareRunGame();
 		}
 	}
+}
+
+void UpdateGlobalHeroHeader(const protocol::MPlayerHumBaseDataNtf& _refHum)
+{
+	int nRoleSize = _refHum.roles_size();
+
+	for (int i = 0; i < nRoleSize; ++i)
+	{
+		const protocol::MPlayerHumBaseData& refBaseData = _refHum.roles(i);
+
+		const char* pData = refBaseData.roledata().c_str();
+		pData += 8;
+
+		char index = *pData;
+		pData ++;
+
+		if(index >= 0 &&
+			index <= 2)
+		{
+			char namelen = *pData;
+			pData += 1;
+
+			char szName[20] = {0};
+			memcpy(szName, pData, namelen + 1);
+			pData += namelen + 1;
+
+			char sex = *pData;
+			++pData;
+
+			char job = *pData;
+			++pData;
+
+			short level = *(short*)pData;
+
+			g_stHeroHeader[index].bJob = job;
+			g_stHeroHeader[index].bSex = sex;
+			strcpy(g_stHeroHeader[index].szName, szName);
+			g_stHeroHeader[index].uLevel = level;
+		}
+	}
+}
+
+void BMPreConnWnd::AskForSignIn()
+{
+	// Request for enter account and password
+	BMPasswordWnd wnd;
+	wnd.Create(NULL, "PasswordWnd", UI_WNDSTYLE_FRAME, 0, 0, 0, 200, 350, 0);
+	wnd.CenterWindow();
+	SetForegroundWindow(wnd.GetHWND());
+	SetFocus(wnd.GetHWND());
+	::ShowWindow(m_hWnd, SW_SHOWMINIMIZED);
+	int nSel = wnd.ShowModal();
+	if (IDOK == nSel)
+	{
+		m_xAct = wnd.GetAccount();
+		m_xPsw = wnd.GetPassword();
+	}
+	::ShowWindow(m_hWnd, SW_NORMAL);
 }

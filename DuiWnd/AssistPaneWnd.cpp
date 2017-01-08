@@ -4,6 +4,7 @@
 #include <direct.h>
 #include <sstream>
 #include <hge.h>
+#include "../Common/GlobalFunction.h"
 //////////////////////////////////////////////////////////////////////////
 using namespace DuiLib;
 using std::string;
@@ -322,9 +323,13 @@ void AssistPaneWnd::ProcessTabChange(DuiLib::TNotifyUI& msg)
 		bLeft = false;
 	}
 
+#if _MSC_VER == 1800
+	CDuiPtrArray* pOptions = m_PaintManager.GetOptionGroup("group_tabsel");
+#else
 	CStdPtrArray* pOptions = m_PaintManager.GetOptionGroup("group_tabsel");
+#endif
 	COptionUI* pCurOption = NULL;
-
+	
 	for(int i = 0; i < pOptions->GetSize(); ++i)
 	{
 		COptionUI* pOption = (COptionUI*)pOptions->GetAt(i);
@@ -529,8 +534,7 @@ void AssistPaneWnd::ProcessTabChange(DuiLib::TNotifyUI& msg)
 void AssistPaneWnd::LoadConfigFromLocal()
 {
 	char szRootPath[MAX_PATH] = {0};
-	GetModuleFileName(NULL, szRootPath, sizeof(szRootPath));
-	PathRemoveFileSpec(szRootPath);
+	GetRootPath(szRootPath, MAX_PATH);
 	strcat(szRootPath, "/assist/local.xml");
 
 	if(!PathFileExists(szRootPath))
@@ -623,8 +627,7 @@ void AssistPaneWnd::LoadConfigFromLocal()
 void AssistPaneWnd::WriteConfigToLocal()
 {
 	char szRootPath[MAX_PATH] = {0};
-	GetModuleFileName(NULL, szRootPath, sizeof(szRootPath));
-	PathRemoveFileSpec(szRootPath);
+	GetRootPath(szRootPath, MAX_PATH);
 	strcat(szRootPath, "/assist/");
 
 	if(!PathFileExists(szRootPath))
@@ -647,14 +650,14 @@ void AssistPaneWnd::WriteConfigToLocal()
 	if(!m_xItemVisibleSet.empty())
 	{
 		StringSet::iterator begIter = m_xItemVisibleSet.begin();
-		StringSet::const_iterator endIter = m_xItemVisibleSet.end();
+		StringSet::iterator endIter = m_xItemVisibleSet.end();
 		int nSectionCounter = 0;
 
 		for(begIter;
 			begIter != endIter;
 			++begIter)
 		{
-			string& refValue = *begIter;
+			const string& refValue = *begIter;
 
 			char szSection[32] = {0};
 			sprintf(szSection, "data_%d", nSectionCounter);

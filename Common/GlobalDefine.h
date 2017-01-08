@@ -42,8 +42,6 @@
 #define FONT_WIDTH_NUMBER		6
 #define FONT_HEIGHT_NUMBER		6
 
-#define VIEW_WIDTH				(48 * 17)
-#define VIEW_HEIGHT				(32 * 15)
 #define VIEW_OPERATE			120
 
 #define CENTRAL_X				(48 * 8 - 8)
@@ -179,6 +177,7 @@ enum GAME_RES
 	RES_HAIR2,
 	RES_WEAPON,
 	RES_WEAPON2,
+	RES_WEAPONEFFECT,
 	//RES_PRGUSE,
 	//RES_PRGUSE2,
 	RES_OPUI,

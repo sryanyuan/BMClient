@@ -1,0 +1,448 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>BackMirClient</ProjectName>
+    <ProjectGuid>{A1D173C6-81BE-474E-B7E6-8C7843FB3172}</ProjectGuid>
+    <RootNamespace>SGameBase</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v120_xp</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v120_xp</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)..\BackMir\</OutDir>
+    <IntDir>Debug\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>BackMir</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)..\BackMir\</OutDir>
+    <IntDir>Release\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>BackMir</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(DEVLIB_DIR)\Incvc12\DuiLib;$(DEVLIB_DIR)\Inc\luajit;$(DEVLIB_DIR)\Inc\ZipArchive;$(DEVLIB_DIR)\Inc\fomdex;$(DEVLIB_DIR)\Inc\Sqlite;$(DEVLIB_DIR)\Inc\Zlib;$(DEVLIB_DIR)\inc\hge;$(DEVLIB_DIR)\inc\DX8.1\;$(DEVLIB_DIR)\Inc\fastdelegate;$(DEVLIB_DIR)\Inc\protobuf;$(DEVLIB_DIR)\Inc\curl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;ZLIB_WINAPI;_NET_GAME_;_ZIPARCHIVE_;_SELCHR_;POINTER_64=__ptr64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/nodefaultlib:libci /SAFESEH:NO %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>gdi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(SolutionDir)..\BackMir\BackMir.exe</OutputFile>
+      <AdditionalLibraryDirectories>$(DEVLIB_DIR)\Libvc12\luajit;$(DEVLIB_DIR)\Libvc12\DX8.1;$(DEVLIB_DIR)\Libvc12\hge;$(DEVLIB_DIR)\Libvc12\duilib;$(DEVLIB_DIR)\Libvc12\fmodex;$(DEVLIB_DIR)\Libvc12\sqlite3;$(DEVLIB_DIR)\Libvc12\ziparchive;$(DEVLIB_DIR)\Libvc12\zlib;$(DEVLIB_DIR)\Libvc12\protobuf;$(DEVLIB_DIR)\Libvc12\curl;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>LIBC.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+      <TargetMachine>MachineX86</TargetMachine>
+      <DelayLoadDLLs>duilibvc12_d.dll;zlibwapivc12_d.dll;hge.dll;sqlite3.dll;fmodex.dll;lua51vc12_d.dll;libcurlvc12d.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>$(DEVLIB_DIR)\Incvc12\DuiLib;$(DEVLIB_DIR)\Inc\ZipArchive;$(DEVLIB_DIR)\Inc\fomdex;$(DEVLIB_DIR)\Inc\luajit;$(DEVLIB_DIR)\Inc\Zlib;$(DEVLIB_DIR)\Inc\Sqlite;$(DEVLIB_DIR)\Inc\hge;$(DEVLIB_DIR)\inc\DX8.1\;$(DEVLIB_DIR)\Inc\fastdelegate;$(DEVLIB_DIR)\Inc\protobuf;$(DEVLIB_DIR)\Inc\curl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;ZLIB_WINAPI;_NET_GAME_;_ZIPARCHIVE_;_SELCHR_;_THEMIDA_;POINTER_64=__ptr64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/nodefaultlib:libci /SAFESEH:NO %(AdditionalOptions)</AdditionalOptions>
+      <OutputFile>$(SolutionDir)..\BackMir\BackMir.exe</OutputFile>
+      <AdditionalLibraryDirectories>$(DEVLIB_DIR)\Libvc12\luajit;$(DEVLIB_DIR)\Libvc12\DX8.1;$(DEVLIB_DIR)\Libvc12\hge;$(DEVLIB_DIR)\Libvc12\duilib;$(DEVLIB_DIR)\Libvc12\fmodex;$(DEVLIB_DIR)\Libvc12\sqlite3;$(DEVLIB_DIR)\Libvc12\ziparchive;$(DEVLIB_DIR)\Libvc12\zlib;$(DEVLIB_DIR)\Libvc12\themida;$(DEVLIB_DIR)\Libvc12\protobuf;$(DEVLIB_DIR)\Libvc12\curl;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>LIBC.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+      <TargetMachine>MachineX86</TargetMachine>
+      <DelayLoadDLLs>duilibvc12.dll;zlibwapivc12.dll;hge.dll;sqlite3.dll;fmodex.dll;lua51vc12.dll;libcurlvc12.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\CommonModule\BMHttpManager.h" />
+    <ClInclude Include="..\CommonModule\ByteBuffer.h" />
+    <ClInclude Include="..\CommonModule\cJSON.h" />
+    <ClInclude Include="..\CommonModule\CommandLineHelper.h" />
+    <ClInclude Include="..\CommonModule\ConvertUTF.h" />
+    <ClInclude Include="..\CommonModule\DataEncryptor.h" />
+    <ClInclude Include="..\CommonModule\DataParser.h" />
+    <ClInclude Include="..\CommonModule\EnumUtils.h" />
+    <ClInclude Include="..\CommonModule\GamePacket.h" />
+    <ClInclude Include="..\CommonModule\GameStructSerialize.h" />
+    <ClInclude Include="..\CommonModule\GDefine.h" />
+    <ClInclude Include="..\CommonModule\HideAttribHelper.h" />
+    <ClInclude Include="..\CommonModule\ItemGrowUtils.h" />
+    <ClInclude Include="..\CommonModule\loginsvr.pb.h" />
+    <ClInclude Include="..\CommonModule\LuaBaseEngine.h" />
+    <ClInclude Include="..\CommonModule\LuaBaseExecutor.h" />
+    <ClInclude Include="..\CommonModule\lua_extend.h" />
+    <ClInclude Include="..\CommonModule\MagicEffectID.h" />
+    <ClInclude Include="..\CommonModule\ObjectData.h" />
+    <ClInclude Include="..\CommonModule\PotentialAttribHelper.h" />
+    <ClInclude Include="..\CommonModule\ProtoType.h" />
+    <ClInclude Include="..\CommonModule\QuestContext.h" />
+    <ClInclude Include="..\CommonModule\SaveFile.h" />
+    <ClInclude Include="..\CommonModule\ScriptEngine.h" />
+    <ClInclude Include="..\CommonModule\SettingLoader.h" />
+    <ClInclude Include="..\CommonModule\ShareData.h" />
+    <ClInclude Include="..\CommonModule\SimpleIni.h" />
+    <ClInclude Include="..\CommonModule\StackWalker\StackWalker.h" />
+    <ClInclude Include="..\CommonModule\StoveManager.h" />
+    <ClInclude Include="..\CommonModule\xxtea.h" />
+    <ClInclude Include="..\CommonModule\ZipDataReader.h" />
+    <ClInclude Include="Astar\SAstar.h" />
+    <ClInclude Include="BackMir\BackMir.h" />
+    <ClInclude Include="BackMir\BMPasswordWnd.h" />
+    <ClInclude Include="BackMir\BMPreConnWnd.h" />
+    <ClInclude Include="BackMir\BMPreConnWnd2.h" />
+    <ClInclude Include="BackMir\BMSelServerWnd.h" />
+    <ClInclude Include="BackMir\GlobalLuaConfig.h" />
+    <ClInclude Include="BackMir\LuaClientEngine.h" />
+    <ClInclude Include="BackMir\SGameBase.h" />
+    <ClInclude Include="Common\Bmp2Jpg.h" />
+    <ClInclude Include="Common\CTextureBuffer.h" />
+    <ClInclude Include="Common\CursorManager.h" />
+    <ClInclude Include="Common\DrawWndBuffer.h" />
+    <ClInclude Include="Common\ExceptionHandler.h" />
+    <ClInclude Include="Common\GameGUIObject.h" />
+    <ClInclude Include="Common\GameMapDataAdaptor.h" />
+    <ClInclude Include="Common\GameRenderObject.h" />
+    <ClInclude Include="Common\GfxEdit.h" />
+    <ClInclude Include="Common\GfxFont.h" />
+    <ClInclude Include="Common\gfx_utils.h" />
+    <ClInclude Include="Common\GlobalDefine.h" />
+    <ClInclude Include="Common\GlobalFunction.h" />
+    <ClInclude Include="Common\InteractiveContext.h" />
+    <ClInclude Include="Common\MapSurface.h" />
+    <ClInclude Include="Common\MirMap.h" />
+    <ClInclude Include="Common\OutlineTextureManager.h" />
+    <ClInclude Include="Common\PlayerBag.h" />
+    <ClInclude Include="Common\PlayerStatusControl.h" />
+    <ClInclude Include="Common\ProcessInfo.h" />
+    <ClInclude Include="Common\RenderItemControl.h" />
+    <ClInclude Include="Common\ResourceID.h" />
+    <ClInclude Include="Common\ScriptCommand.h" />
+    <ClInclude Include="Common\SelectedTextureManager.h" />
+    <ClInclude Include="Common\SIBDefine.h" />
+    <ClInclude Include="Common\SIBFile.h" />
+    <ClInclude Include="Common\SKnl3Helper.h" />
+    <ClInclude Include="Common\SPBFile.h" />
+    <ClInclude Include="Common\StatusDefine.h" />
+    <ClInclude Include="Common\StructDefine.h" />
+    <ClInclude Include="Common\TextPrinter.h" />
+    <ClInclude Include="Common\TextureCache.h" />
+    <ClInclude Include="Common\TimeCounter.h" />
+    <ClInclude Include="DuiWnd\AssistPaneWnd.h" />
+    <ClInclude Include="GameDialog\ChatDataModel.h" />
+    <ClInclude Include="GameDialog\CircleBuffer.h" />
+    <ClInclude Include="GameDialog\GameAssistDlg.h" />
+    <ClInclude Include="GameDialog\GameAttribDlg.h" />
+    <ClInclude Include="GameDialog\GameBigStoreDlg.h" />
+    <ClInclude Include="GameDialog\GameChargeDlg.h" />
+    <ClInclude Include="GameDialog\GameChatDlg.h" />
+    <ClInclude Include="GameDialog\GameCommonDlg.h" />
+    <ClInclude Include="GameDialog\GameDecomposeDlg.h" />
+    <ClInclude Include="GameDialog\GameDisplayDlg.h" />
+    <ClInclude Include="GameDialog\GameDlgBase.h" />
+    <ClInclude Include="GameDialog\GameDonateDlg.h" />
+    <ClInclude Include="GameDialog\GameFloatDlg.h" />
+    <ClInclude Include="GameDialog\GameHelpDlg.h" />
+    <ClInclude Include="GameDialog\GameIdentifyDlg.h" />
+    <ClInclude Include="GameDialog\GameInfoBoardDlg.h" />
+    <ClInclude Include="GameDialog\GameInputDlg.h" />
+    <ClInclude Include="GameDialog\GameInteractiveDlg.h" />
+    <ClInclude Include="GameDialog\GameMiniMapDlg.h" />
+    <ClInclude Include="GameDialog\GameOtherHumDlg.h" />
+    <ClInclude Include="GameDialog\GameQuestDlg.h" />
+    <ClInclude Include="GameDialog\GameQuitDialog.h" />
+    <ClInclude Include="GameDialog\GameRankDlg.h" />
+    <ClInclude Include="GameDialog\GameRoleInfoDlg.h" />
+    <ClInclude Include="GameDialog\GameSettingDlg.h" />
+    <ClInclude Include="GameDialog\GameShopDlg2.h" />
+    <ClInclude Include="GameDialog\GameSkillDlg.h" />
+    <ClInclude Include="GameDialog\GameStatusDlg.h" />
+    <ClInclude Include="GameDialog\GameStoreDlg2.h" />
+    <ClInclude Include="GameDialog\GameStoveDlg.h" />
+    <ClInclude Include="GameDialog\GameTeamDlg.h" />
+    <ClInclude Include="GameDialog\HumStateDlg.h" />
+    <ClInclude Include="GameDialog\OfflineSellDlg.h" />
+    <ClInclude Include="GameDialog\OlShopDlg.h" />
+    <ClInclude Include="GameDialog\ScriptWnd.h" />
+    <ClInclude Include="GameScene\GameInfoManager.h" />
+    <ClInclude Include="GameScene\GameMapManager.h" />
+    <ClInclude Include="GameScene\GameMonster.h" />
+    <ClInclude Include="GameScene\GameNPC.h" />
+    <ClInclude Include="GameScene\GameOtherPlayer.h" />
+    <ClInclude Include="GameScene\GamePlayer.h" />
+    <ClInclude Include="GameScene\GameResourceManager.h" />
+    <ClInclude Include="GameScene\GameScene.h" />
+    <ClInclude Include="GameScene\GameSoundManager.h" />
+    <ClInclude Include="GameScene\GameTextureManager.h" />
+    <ClInclude Include="GameScene\GameTextureManagerSib.h" />
+    <ClInclude Include="GameScene\GameTextureManagerSPB.h" />
+    <ClInclude Include="GameScene\GameTextureManagerWil.h" />
+    <ClInclude Include="GameScene\MagicEffect.h" />
+    <ClInclude Include="GameScene\MagicSystem.h" />
+    <ClInclude Include="GameScene\StatusMonster.h" />
+    <ClInclude Include="LoginScene\DeleteConfirmDlg.h" />
+    <ClInclude Include="LoginScene\LoginScene.h" />
+    <ClInclude Include="LoginScene\NewHumDlg.h" />
+    <ClInclude Include="LoginScene\SelChrDlg.h" />
+    <ClInclude Include="LoginScene\SelChrScene.h" />
+    <ClInclude Include="Net\ClientSocket.h" />
+    <ClInclude Include="Net\GamePacketHandler.h" />
+    <ClInclude Include="Net\Packet.h" />
+    <ClInclude Include="Net\PacketHandler.h" />
+    <ClInclude Include="Net\PacketQueue.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="TinyXML\tinystr.h" />
+    <ClInclude Include="TinyXML\tinyxml.h" />
+    <ClInclude Include="Widget\Widget.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resource\arrow\attack.cur" />
+    <None Include="resource\arrow\normal.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="BackMir.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resource\icon\main.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\CommonModule\BMHttpManager.cpp" />
+    <ClCompile Include="..\CommonModule\ByteBuffer.cpp" />
+    <ClCompile Include="..\CommonModule\cJSON.c" />
+    <ClCompile Include="..\CommonModule\CommandLineHelper.cpp" />
+    <ClCompile Include="..\CommonModule\ConvertUTF.c" />
+    <ClCompile Include="..\CommonModule\DataEncryptor.cpp" />
+    <ClCompile Include="..\CommonModule\DataParser.cpp" />
+    <ClCompile Include="..\CommonModule\GamePacket.cpp" />
+    <ClCompile Include="..\CommonModule\GameStructSerialize.cpp" />
+    <ClCompile Include="..\CommonModule\HideAttribHelper.cpp" />
+    <ClCompile Include="..\CommonModule\loginsvr.pb.cc" />
+    <ClCompile Include="..\CommonModule\LuaBaseEngine.cpp" />
+    <ClCompile Include="..\CommonModule\LuaBaseEngine_Dispatcher.cpp" />
+    <ClCompile Include="..\CommonModule\LuaBaseExecutor.cpp" />
+    <ClCompile Include="..\CommonModule\lua_extend.cpp" />
+    <ClCompile Include="..\CommonModule\MagicEffectID.cpp" />
+    <ClCompile Include="..\CommonModule\ProtoType.cpp" />
+    <ClCompile Include="..\CommonModule\QuestContext.cpp" />
+    <ClCompile Include="..\CommonModule\SaveFile.cpp" />
+    <ClCompile Include="..\CommonModule\ScriptEngine.cpp" />
+    <ClCompile Include="..\CommonModule\ShareData.cpp" />
+    <ClCompile Include="..\CommonModule\StackWalker\StackWalker.cpp" />
+    <ClCompile Include="..\CommonModule\StoveManager.cpp" />
+    <ClCompile Include="..\CommonModule\xxtea.cpp" />
+    <ClCompile Include="..\CommonModule\ZipDataReader.cpp" />
+    <ClCompile Include="Astar\SAstarImpl.cpp" />
+    <ClCompile Include="BackMir\BackMir.cpp" />
+    <ClCompile Include="BackMir\BMPasswordWnd.cpp" />
+    <ClCompile Include="BackMir\BMPreConnWnd.cpp" />
+    <ClCompile Include="BackMir\BMPreConnWnd2.cpp" />
+    <ClCompile Include="BackMir\BMSelServerWnd.cpp" />
+    <ClCompile Include="BackMir\GlobalLuaConfig.cpp" />
+    <ClCompile Include="BackMir\HandleLoginMsg.cpp" />
+    <ClCompile Include="BackMir\LuaClientEngine.cpp" />
+    <ClCompile Include="BackMir\main.cpp" />
+    <ClCompile Include="BackMir\SGameBase.cpp" />
+    <ClCompile Include="Common\Bmp2Jpg.cpp" />
+    <ClCompile Include="Common\CTextureBuffer.cpp" />
+    <ClCompile Include="Common\DrawWndBuffer.cpp" />
+    <ClCompile Include="Common\ExceptionHandler.cpp" />
+    <ClCompile Include="Common\GameMapDataAdaptor.cpp" />
+    <ClCompile Include="Common\GameRenderObject.cpp" />
+    <ClCompile Include="Common\GfxEdit.cpp" />
+    <ClCompile Include="Common\GfxFont.cpp" />
+    <ClCompile Include="Common\gfx_utils.cpp" />
+    <ClCompile Include="Common\GlobalFunction.cpp" />
+    <ClCompile Include="Common\InteractiveContext.cpp" />
+    <ClCompile Include="Common\MapSurface.cpp" />
+    <ClCompile Include="Common\MirMap.cpp" />
+    <ClCompile Include="Common\OutlineTextureManager.cpp" />
+    <ClCompile Include="Common\PlayerStatusControl.cpp" />
+    <ClCompile Include="Common\ProcessInfo.cpp" />
+    <ClCompile Include="Common\SelectedTextureManager.cpp" />
+    <ClCompile Include="Common\SIBFile.cpp" />
+    <ClCompile Include="Common\SKnl3Helper.cpp" />
+    <ClCompile Include="Common\SPBFile.cpp" />
+    <ClCompile Include="Common\SWilFile.cpp" />
+    <ClCompile Include="Common\TextPrinter.cpp" />
+    <ClCompile Include="Common\TextureCache.cpp" />
+    <ClCompile Include="Common\TimerCounter.cpp" />
+    <ClCompile Include="DuiWnd\AssistPaneWnd.cpp" />
+    <ClCompile Include="GameDialog\ChatDataModel.cpp" />
+    <ClCompile Include="GameDialog\GameAssistDlg.cpp" />
+    <ClCompile Include="GameDialog\GameAttribDlg.cpp" />
+    <ClCompile Include="GameDialog\GameBagDlg.cpp" />
+    <ClCompile Include="GameDialog\GameBagDlg2.cpp" />
+    <ClCompile Include="GameDialog\GameBigStoreDlg.cpp" />
+    <ClCompile Include="GameDialog\GameChargeDlg.cpp" />
+    <ClCompile Include="GameDialog\GameChatDlg.cpp" />
+    <ClCompile Include="GameDialog\GameCommonDlg.cpp" />
+    <ClCompile Include="GameDialog\GameCubeDlg.cpp" />
+    <ClCompile Include="GameDialog\GameDecomposeDlg.cpp" />
+    <ClCompile Include="GameDialog\GameDisplayDlg.cpp" />
+    <ClCompile Include="GameDialog\GameDonateDlg.cpp" />
+    <ClCompile Include="GameDialog\GameFloatDlg.cpp" />
+    <ClCompile Include="GameDialog\GameHelpDlg.cpp" />
+    <ClCompile Include="GameDialog\GameHumDlg.cpp" />
+    <ClCompile Include="GameDialog\GameHumDlg2.cpp" />
+    <ClCompile Include="GameDialog\GameIdentifyDlg.cpp" />
+    <ClCompile Include="GameDialog\GameInfoBoardDlg.cpp" />
+    <ClCompile Include="GameDialog\GameInputDlg.cpp" />
+    <ClCompile Include="GameDialog\GameInteractiveDlg.cpp" />
+    <ClCompile Include="GameDialog\GameIntroDlg.cpp" />
+    <ClCompile Include="GameDialog\GameMainOptDlgUI.cpp" />
+    <ClCompile Include="GameDialog\GameMapDlg.cpp" />
+    <ClCompile Include="GameDialog\GameMiniMapDlg.cpp" />
+    <ClCompile Include="GameDialog\GameOtherHumDlg.cpp" />
+    <ClCompile Include="GameDialog\GameQuestDlg.cpp" />
+    <ClCompile Include="GameDialog\GameQuitDlg.cpp" />
+    <ClCompile Include="GameDialog\GameRankDlg.cpp" />
+    <ClCompile Include="GameDialog\GameRoleInfoDlg.cpp" />
+    <ClCompile Include="GameDialog\GameSellDlg.cpp" />
+    <ClCompile Include="GameDialog\GameSettingDlg.cpp" />
+    <ClCompile Include="GameDialog\GameShopDlg.cpp" />
+    <ClCompile Include="GameDialog\GameShopDlg2.cpp" />
+    <ClCompile Include="GameDialog\GameSkillDlg.cpp" />
+    <ClCompile Include="GameDialog\GameStaticDlg.cpp" />
+    <ClCompile Include="GameDialog\GameStatusDlg.cpp" />
+    <ClCompile Include="GameDialog\GameStoreDlg.cpp" />
+    <ClCompile Include="GameDialog\GameStoreDlg2.cpp" />
+    <ClCompile Include="GameDialog\GameStoveDlg.cpp" />
+    <ClCompile Include="GameDialog\GameSysMenuDlg.cpp" />
+    <ClCompile Include="GameDialog\GameTeamDlg.cpp" />
+    <ClCompile Include="GameDialog\HumStateDlg.cpp" />
+    <ClCompile Include="GameDialog\OfflineSellDlg.cpp" />
+    <ClCompile Include="GameDialog\OlShopDlg.cpp" />
+    <ClCompile Include="GameDialog\ScriptWnd.cpp" />
+    <ClCompile Include="GameScene\GameInfoManager.cpp" />
+    <ClCompile Include="GameScene\GameMapManager.cpp" />
+    <ClCompile Include="GameScene\GameMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\BehemothDevourerMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\BlueGhastMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\ChiHuMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\ChiYueEMoMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\DreamDevourerMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\FireDragonMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\FlameDCMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\FlameMCMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\FlameSummonerMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\FlyStatueMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\IceDefenderMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\IceGuardMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\IceKingMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\IceKingOfWarMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\IceSavageMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\IceServantMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\IceSoldierMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\KulouMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\ManWormMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\MoLongBossMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\MoLongStoneMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\MoonBeastMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\MoonLizardMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\MoonSpiderMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\MoonSpriteMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\MoonStatueMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\MoonWarLordMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\MutatedFaceGrabberMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\QieMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\Self16DrtMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\ShadowSpiderMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\ShenShouMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\SuHuMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\SuperBullMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\Way16DrtMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\WhiteTigerMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\WoMaJiaoZhuMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\YamaKingMonster.cpp" />
+    <ClCompile Include="GameScene\GameMonster\YamaWatcherMonster.cpp" />
+    <ClCompile Include="GameScene\GameNPC.cpp" />
+    <ClCompile Include="GameScene\GameOtherPlayer.cpp" />
+    <ClCompile Include="GameScene\GamePlayer.cpp" />
+    <ClCompile Include="GameScene\GameResourceManager.cpp" />
+    <ClCompile Include="GameScene\GameScene.cpp" />
+    <ClCompile Include="GameScene\GameSoundManager.cpp" />
+    <ClCompile Include="GameScene\GameTextureManager.cpp" />
+    <ClCompile Include="GameScene\GameTextureManagerSib.cpp" />
+    <ClCompile Include="GameScene\GameTextureManagerSPB.cpp" />
+    <ClCompile Include="GameScene\GameTextureManagerWil.cpp" />
+    <ClCompile Include="GameScene\MagicEffect.cpp" />
+    <ClCompile Include="GameScene\MagicSystem.cpp" />
+    <ClCompile Include="GameScene\StatusMonster.cpp" />
+    <ClCompile Include="Import\ImportModule.cpp" />
+    <ClCompile Include="LoginScene\DeleteConfirmDlg.cpp" />
+    <ClCompile Include="LoginScene\LoginScene.cpp" />
+    <ClCompile Include="LoginScene\NewHumDlg.cpp" />
+    <ClCompile Include="LoginScene\SelChrDlg.cpp" />
+    <ClCompile Include="LoginScene\SelChrScene.cpp" />
+    <ClCompile Include="Net\ClientSocket.cpp" />
+    <ClCompile Include="Net\GamePacketHandler.cpp" />
+    <ClCompile Include="Net\PacketHandler.cpp" />
+    <ClCompile Include="Net\PacketQueue.cpp" />
+    <ClCompile Include="TinyXML\tinystr.cpp" />
+    <ClCompile Include="TinyXML\tinyxml.cpp" />
+    <ClCompile Include="TinyXML\tinyxmlerror.cpp" />
+    <ClCompile Include="TinyXML\tinyxmlparser.cpp" />
+    <ClCompile Include="tolua\luaClient.cpp" />
+    <ClCompile Include="Widget\Widget.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\CommonModule\Doc\ItemAttrib_类别.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

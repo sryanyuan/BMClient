@@ -174,6 +174,44 @@ void GameOtherPlayer::RenderWeapon()
 		sOffsetY = ttexs->GetTextureOffsetY(nWeaponIndex);
 		m_pRender->Render(nRenderX + sOffsetX, nRenderY + sOffsetY);
 	}
+
+	if (GetRenderMode() == ORM_TRANSPARENT)
+	{
+		ItemAttrib* pWeapon = GetPlayerItem(PLAYER_ITEM_WEAPON);
+		if (NULL != pWeapon &&
+			GetItemUpgrade(pWeapon->level) > 5)
+		{
+			ttexs = GameResourceManager::GetInstance()->GetTexs(RES_WEAPONEFFECT);
+			if (NULL == ttexs)
+			{
+				return;
+			}
+			int nWeaponEffectIndex = nWeaponIndex;
+			if (nResIndex == 1)
+			{
+				if (pWeapon->id >= 1405 &&
+					pWeapon->id <= 1407)
+				{
+					nWeaponEffectIndex += (46800 - 1200);
+				}
+				else if (pWeapon->id == 1410)
+				{
+
+				}
+			}
+
+			tex = ttexs->GetTexture(nWeaponEffectIndex);
+			if (tex)
+			{
+				MagicElement::pEffectRender->SetTexture(tex);
+				MagicElement::pEffectRender->SetTextureRect(0, 0, ttexs->GetTextureWidth(nWeaponEffectIndex),
+					ttexs->GetTextureHeight(nWeaponEffectIndex));
+				sOffsetX = ttexs->GetTextureOffsetX(nWeaponEffectIndex);
+				sOffsetY = ttexs->GetTextureOffsetY(nWeaponEffectIndex);
+				MagicElement::pEffectRender->Render(nRenderX + sOffsetX, nRenderY + sOffsetY);
+			}
+		}
+	}
 }
 
 void GameOtherPlayer::RenderHair()
@@ -3765,6 +3803,17 @@ void GameOtherPlayer::DoPacket(const PkgPlayerLostItemAck& ack)
 	if(GetType() == OBJ_PLAYER)
 	{
 		ItemAttrib* pItem = GamePlayer::GetInstance()->GetPlayerBag()->GetItemByTag(ack.dwTag);
+		if (NULL == pItem)
+		{
+			for (int i = 0; i < PLAYER_ITEM_TOTAL; ++i)
+			{
+				if (GamePlayer::GetInstance()->GetPlayerItem((PLAYER_ITEM_TYPE)i)->tag == ack.dwTag)
+				{
+					pItem = GamePlayer::GetInstance()->GetPlayerItem((PLAYER_ITEM_TYPE)i);
+					break;
+				}
+			}
+		}
 		if(pItem)
 		{
 			if(pItem->type == ITEM_COST)
@@ -3863,7 +3912,23 @@ void GameOtherPlayer::DoPacket(const PkgPlayerDressItemAck& ack)
 			ItemAttrib* pItem = GetPlayerItem((PLAYER_ITEM_TYPE)ack.bPos);
 			if(pItem)
 			{
-				pItem->type = ITEM_WEAPON;
+				if (ack.bPos == PLAYER_ITEM_WEAPON)
+				{
+					pItem->type = ITEM_WEAPON;
+
+					if (ack.dwFlag & 0x1 != 0)
+					{
+						pItem->level = MakeItemUpgrade(0, 6);
+					}
+					else
+					{
+						pItem->level = 0;
+					}
+				}
+				else if (ack.bPos == PLAYER_ITEM_CLOTH)
+				{
+					pItem->type == ITEM_CLOTH;
+				}
 				pItem->tex = ack.dwTex;
 				pItem->id = ack.uUserId;
 
@@ -4492,8 +4557,28 @@ void GameOtherPlayer::DoPacket(const PkgPlayerUpdateItemNtf& ntf)
 
 		if(NULL != pItem)
 		{
+			ItemAttrib prevItem = *pItem;
 			memcpy(pItem, &ntf.stItem, sizeof(ItemAttrib));
 			GameMainOptUI::GetInstance()->GetDisplayDlg()->ResetItemAttirb();
+
+			if (pTheGame->IsEquipItem(prevItem))
+			{
+				WORD wPrevDuraMax = LOWORD(prevItem.maxHP);
+				WORD wPrevDura = HIWORD(prevItem.maxHP);
+				WORD wCurDuraMax = LOWORD(pItem->maxHP);
+				WORD wCurDura = HIWORD(pItem->maxHP);
+
+				if (wCurDura != wPrevDura ||
+					wPrevDuraMax != wCurDuraMax)
+				{
+					// durability changed
+					if (wCurDura < wCurDuraMax / 4 ||
+						wCurDuraMax <= 2)
+					{
+						GameInfoBoardDlg::GetInstance()->InsertBoardMsg(ARGB_RED, "[%s]持久过低", pItem->name);
+					}
+				}
+			}
 		}
 	}
 }
@@ -4944,22 +5029,6 @@ void GameOtherPlayer::DoPacket(const PkgPlayerUpdateRandSeedNot &not)
 		GameInfoBoardDlg::GetInstance()->InsertBoardMsg(ARGB_WHITE, "同步攻击种子：%d", not.dwSeed);
 #endif
 	}
-}
-
-string UTF8ToGBK(const std::string& strUTF8) 
-{ 
-	int len = MultiByteToWideChar(CP_UTF8, 0, strUTF8.c_str(), -1, NULL, 0);
-	unsigned short * wszGBK = new unsigned short[len + 1]; memset(wszGBK, 0, len * 2 + 2); 
-	MultiByteToWideChar(CP_UTF8, 0, (LPCTSTR)strUTF8.c_str(), -1, (LPWSTR)wszGBK, len);
-
-	len = WideCharToMultiByte(CP_ACP, 0, (LPCWSTR)wszGBK, -1, NULL, 0, NULL, NULL); 
-	char *szGBK = new char[len + 1];
-	memset(szGBK, 0, len + 1); 
-	WideCharToMultiByte(CP_ACP,0, (LPCWSTR)wszGBK, -1, szGBK, len, NULL, NULL); //strUTF8 = szGBK; 
-	std::string strTemp(szGBK); 
-	delete[]szGBK; 
-	delete[]wszGBK; 
-	return strTemp; 
 }
 
 void GameOtherPlayer::DoPacket(const PkgPlayerRankListNot& not)

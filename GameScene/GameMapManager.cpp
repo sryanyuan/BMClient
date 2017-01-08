@@ -51,28 +51,10 @@ GameMapManager::~GameMapManager()
 	m_hTileTarget = NULL;
 }
 
-/*
-bool GameMapManager::LoadMap(int _mapid)
-{
-	char szPath[MAX_PATH];
-	SKNL3GetCurrentAppPath(szPath, MAX_PATH);
-	sprintf(szPath, "%sMap\\%d.map", szPath, _mapid);
-
-	if(!m_mapData.LoadMap(szPath))
-	{
-		HGE* hge = hgeCreate(HGE_VERSION);
-		hge->System_Log("¶ÁÈ¡µØÍ¼%dÊ§°Ü", _mapid);
-		hge->Release();
-		return false;
-	}
-
-	return true;
-}*/
-
 bool GameMapManager::LoadMap(const char* lpszMapName)
 {
 	char szPath[MAX_PATH];
-	SKNL3GetCurrentAppPath(szPath, MAX_PATH);
+	GetRootPath(szPath, MAX_PATH);
 	sprintf(szPath, "%sMap\\%s.map", szPath, lpszMapName);
 
 	if(!m_mapData.LoadMap(szPath))
@@ -89,7 +71,7 @@ bool GameMapManager::LoadMap(const char* lpszMapName)
 bool GameMapManager::LoadMapReadOnly(const char* lpszMapName)
 {
 	char szPath[MAX_PATH];
-	SKNL3GetCurrentAppPath(szPath, MAX_PATH);
+	GetRootPath(szPath, MAX_PATH);
 	sprintf(szPath, "%sMap\\%s.map", szPath, lpszMapName);
 
 	if(!m_mapData.LoadMapReadOnly(szPath))

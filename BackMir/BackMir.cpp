@@ -28,7 +28,9 @@
 #include "../../CommonModule/StoveManager.h"
 #include "../Common/OutlineTextureManager.h"
 #include "../Common/CursorManager.h"
+#include "../../CommonModule/DataEncryptor.h"
 #include <UIlib.h>
+#include <float.h>
 
 #ifdef DEMO
 #undef DEMO
@@ -51,8 +53,7 @@ TOLUA_API int  tolua_BackMirClient_open (lua_State* tolua_S);
 ByteBuffer g_xBuffer(10240);
 //	Game instance
 MirGame* pTheGame = NULL;
-//////////////////////////////////////////////////////////////////////////
-#pragma comment(lib, "shlwapi.lib")
+
 //////////////////////////////////////////////////////////////////////////
 MirGame* MirGame::GetInstance()
 {
@@ -123,6 +124,73 @@ unsigned int SendBufferToLS(ByteBuffer& _xBuf)
 {
 	return SendBufferToLS(&_xBuf);
 }
+
+unsigned int SendProto(int _nOpcode, google::protobuf::Message& _refMsg)
+{
+	int nSize = _refMsg.ByteSize();
+	if (0 == nSize)
+	{
+		return 0;
+	}
+	nSize += 8;
+	unsigned int uSizeBigendian = nSize;
+	uSizeBigendian = htonl(uSizeBigendian);
+
+	static char s_bytesBuffer[0xff];
+	//	write code
+	memcpy(s_bytesBuffer, &uSizeBigendian, sizeof(unsigned int));
+	memcpy(s_bytesBuffer + 4, &_nOpcode, sizeof(int));
+	
+	if (nSize > sizeof(s_bytesBuffer) - 8)
+	{
+		return 0;
+	}
+
+	if (!_refMsg.SerializeToArray(s_bytesBuffer + sizeof(int) * 2, sizeof(s_bytesBuffer) - sizeof(int) * 2))
+	{
+		return 0;
+	}
+
+	return g_xClientSocket.SendToServer((const char*)s_bytesBuffer, nSize);
+}
+
+unsigned int SendProto2(int _nOpcode, google::protobuf::Message& _refMsg)
+{
+	int nSize = _refMsg.ByteSize();
+	if (0 == nSize)
+	{
+		return 0;
+	}
+	nSize += 8;
+	unsigned int uSizeBigendian = nSize;
+	uSizeBigendian = htonl(uSizeBigendian);
+
+	static char s_bytesBuffer[0xff];
+	//	write code
+	memcpy(s_bytesBuffer, &uSizeBigendian, sizeof(unsigned int));
+	memcpy(s_bytesBuffer + 4, &_nOpcode, sizeof(int));
+
+	if (nSize > sizeof(s_bytesBuffer) - 8)
+	{
+		return 0;
+	}
+
+	if (!_refMsg.SerializeToArray(s_bytesBuffer + sizeof(int) * 2, sizeof(s_bytesBuffer) - sizeof(int) * 2))
+	{
+		return 0;
+	}
+
+	const char* pBuffer = s_bytesBuffer + 8;
+	DWORD* pWriteData = (DWORD*)s_bytesBuffer + 1;
+	DWORD dwOpCode = *pWriteData;
+	unsigned int uLen = nSize - 8;
+	WORD wCheckSum = DataEncryptor::GetCheckSum(dwOpCode, pBuffer, uLen);
+
+	DWORD dwData = MAKELONG(dwOpCode, wCheckSum);
+	*pWriteData = dwData;
+
+	return g_xClientSocket2.SendToServer((const char*)s_bytesBuffer, nSize);
+}
 //////////////////////////////////////////////////////////////////////////
 
 MirGame::MirGame() : SGameBase("BackMir", WINDOW_WIDTH, WINDOW_HEIGHT)
@@ -148,6 +216,11 @@ MirGame::MirGame() : SGameBase("BackMir", WINDOW_WIDTH, WINDOW_HEIGHT)
 	m_texDarkMode = 0;
 	m_bShowMapSnap = true;
 	m_nCursorResourceId = 0;
+
+	// initialize static variables
+	InitGameFonts();
+	MagicElement::InitRender();
+	EffectAttackNumber::InitRender();
 }
 
 MirGame::~MirGame()
@@ -169,15 +242,17 @@ bool MirGame::UserInitial()
 	{
 		MessageBox(NULL, "显示器显示位数不为真彩色(32位),请调整为真彩色,否则游戏将无法正常进行", MB_OK | MB_ICONERROR);
 	}*/
+#if _MSC_VER == 1500
+	// Set the double precision
+	unsigned int uPrevPrecision;
+	 _controlfp_s(&uPrevPrecision, 0, 0);
+	 _controlfp_s(0, _PC_53, MCW_PC);
+#endif
 	//	设置图标
 	HICON hIcon = LoadIcon(GetModuleHandle(NULL), LPCSTR(IDI_ICON1));
 	::SendMessage(m_hWin, WM_SETICON, FALSE, (LPARAM)hIcon);
 
 	CHAR strError[256] = {0}; 
-
-#ifdef _DEBUG
-	//::MessageBox(NULL, "Enter game!", "Info!", MB_OK);
-#endif
 	AfxInitHge(m_pHGE);
 	InitLogfile();
 	LoadIndexInfo();
@@ -289,7 +364,7 @@ bool MirGame::UserInitial()
 #ifdef _THEMIDA_
 	VM_START
 #endif
-	sprintf(szBuf, "%s\\GameRes.res",
+	sprintf(szBuf, "%s\\Data\\GameRes.res",
 		GetRootPath());
 	static char szPsw[10] = {0};
 	szPsw[0] = 'X';
@@ -338,7 +413,7 @@ bool MirGame::UserInitial()
 		AfxGetHge()->System_Log("魔法信息读取失败");
 	}
 
-	if(false == GetRunMapDataEx(m_xRunMapData))
+	/*if(false == GetRunMapDataEx(m_xRunMapData))
 	{
 		AfxGetHge()->System_Log("地图配置读取失败");
 		return false;
@@ -348,7 +423,7 @@ bool MirGame::UserInitial()
 		AfxGetHge()->System_Log("副本地图配置读取失败");
 		return false;
 	}
-	const char* pFirst = GetRunMap(0);
+	const char* pFirst = GetRunMap(0);*/
 
 	m_bInitialized = true;
 
@@ -1593,7 +1668,7 @@ bool MirGame::IsWindowMode()
 void MirGame::LoadGameSetting()
 {
 	char szBuf[MAX_PATH];
-	sprintf(szBuf, "%s\\game.ini",
+	sprintf(szBuf, "%s\\conf\\game.ini",
 		GetRootPath());
 
 	if(!PathFileExists(szBuf))
@@ -1622,7 +1697,7 @@ void MirGame::LoadGameSetting()
 void MirGame::WriteSettingsToFile()
 {
 	char szBuf[MAX_PATH];
-	sprintf(szBuf, "%s\\game.ini",
+	sprintf(szBuf, "%s\\conf\\game.ini",
 		GetRootPath());
 	m_xSettings.SaveToFile(szBuf);
 

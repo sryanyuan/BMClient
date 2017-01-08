@@ -41,22 +41,6 @@ void GameInteractiveDlg::Init(hgeResourceManager* _res, GameMainOptUI* _parent)
 	m_pFont = new GfxFont("宋体", 12, 0, 0, 0);
 //	m_pFont->SetLineFeedNumber(20);
 	m_pFont->SetKerningHeight(2.0f);
-	
-	/*char szScriptPath[MAX_PATH];
-	SKNL3GetCurrentAppPath(szScriptPath, MAX_PATH);
-#ifdef _USE_SCRIPT_
-	strcat(szScriptPath, "help\\proc.lua");
-	int nRet = m_pParent->GetScript()->DoFile(szScriptPath);
-	if(nRet != 0)
-	{
-		assert("脚本读取失败");
-		AfxGetHge()->System_Log("对话框脚本读取失败");
-	}
-	else
-	{
-		Script_RegisterMemberFunction();
-	}
-#endif*/
 }
 
 void GameInteractiveDlg::Render()

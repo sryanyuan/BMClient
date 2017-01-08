@@ -17,16 +17,25 @@ static HGE* pHGE = NULL;
 static GamePlayer* pPlayer = NULL;
 static GameMapManager* pMap = NULL;
 static GameTextureManager* texs = NULL;
-static GfxFont* font = new GfxFont("宋体", 12, FALSE, FALSE, FALSE);
-static GfxFont* font10 = new GfxFont("宋体", 10, FALSE, FALSE, FALSE);
-static GfxFont* font14 = new GfxFont("宋体", 14, TRUE, FALSE, FALSE);
-static GfxFont* gmfont = new GfxFont("宋体", 20, TRUE, FALSE, FALSE);
+static GfxFont* font = NULL;
+static GfxFont* font10 = NULL;
+static GfxFont* font14 = NULL;
+static GfxFont* gmfont = NULL;
 static char szRootPath[MAX_PATH] = {0};
-static TextPrinter* printer = new TextPrinter;
+static TextPrinter* printer = NULL;
 
 HDC g_hWndDC = 0;
 char g_szNameMask = 0x72;
 ObjRectCache g_xRectCache;
+
+void InitGameFonts()
+{
+	font = new GfxFont("宋体", 12, FALSE, FALSE, FALSE);
+	font10 = new GfxFont("宋体", 10, FALSE, FALSE, FALSE);
+	font14 = new GfxFont("宋体", 14, TRUE, FALSE, FALSE);
+	gmfont = new GfxFont("宋体", 20, TRUE, FALSE, FALSE);
+	printer = new TextPrinter;
+}
 
 int GetSelfPlayerHandlerID()
 {
@@ -41,10 +50,33 @@ const char* GetRootPath()
 // 	}
 	if(szRootPath[0] == 0)
 	{
-		GetModuleFileName(NULL, szRootPath, sizeof(szRootPath));
-		PathRemoveFileSpec(szRootPath);
+		GetRootPath(szRootPath, MAX_PATH);
 	}
 	return szRootPath;
+}
+
+void GetRootPath(char* _pszBuf, unsigned int _sz)
+{
+	GetModuleFileName(NULL, _pszBuf, _sz);
+	PathRemoveFileSpec(_pszBuf);
+#ifdef _BIN_PATH
+	// remove current path
+	size_t uStrlen = strlen(_pszBuf);
+	if (0 == uStrlen)
+	{
+		return;
+	}
+	for (size_t i = uStrlen - 1; i >= 0; --i)
+	{
+		if (_pszBuf[i] == '\\' ||
+			_pszBuf[i] == '/')
+		{
+			// done
+			break;
+		}
+		_pszBuf[i] = '\0';
+	}
+#endif
 }
 
 GfxFont* AfxGetFont()
@@ -661,4 +693,20 @@ void ClearRectCache()
 
 		g_xRectCache.clear();
 	}
+}
+
+std::string UTF8ToGBK(const std::string& strUTF8)
+{
+	int len = MultiByteToWideChar(CP_UTF8, 0, strUTF8.c_str(), -1, NULL, 0);
+	unsigned short * wszGBK = new unsigned short[len + 1]; memset(wszGBK, 0, len * 2 + 2);
+	MultiByteToWideChar(CP_UTF8, 0, (LPCTSTR)strUTF8.c_str(), -1, (LPWSTR)wszGBK, len);
+
+	len = WideCharToMultiByte(CP_ACP, 0, (LPCWSTR)wszGBK, -1, NULL, 0, NULL, NULL);
+	char *szGBK = new char[len + 1];
+	memset(szGBK, 0, len + 1);
+	WideCharToMultiByte(CP_ACP, 0, (LPCWSTR)wszGBK, -1, szGBK, len, NULL, NULL); //strUTF8 = szGBK; 
+	std::string strTemp(szGBK);
+	delete[]szGBK;
+	delete[]wszGBK;
+	return strTemp;
 }

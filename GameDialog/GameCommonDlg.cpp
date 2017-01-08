@@ -385,7 +385,7 @@ void GameCommonDlg::AddStaticTexture(int _id, int _x, int _y, int _nTexIndex, DW
 void GameCommonDlg::AddCommonButton(int _type, int _id, int _x, int _y, const char* _pszText, int _nTexIndex /* = 0 */, DWORD _dwColor /* = 0 */)
 {
 	if(_type < CBTN_NORMAL ||
-		_type > CBTN_CHECKBOX)
+		_type > CBTN_SLIDER)
 	{
 		return;
 	}
@@ -400,6 +400,14 @@ void GameCommonDlg::AddCommonButton(int _type, int _id, int _x, int _y, const ch
 	stButton.bVisible = true;
 	stButton.nGroup = 0;
 	stButton.dwOverColor = stButton.dwDownColor = stButton.dwCheckedColor = 0;
+	stButton.szText[0] = 0;
+	stButton.nSliderRangeX = 0;
+	stButton.nSliderRangeY = 0;
+	stButton.nSliderTotalUnit = 0;
+	stButton.nSliderCurrentUnit = 0;
+	memset(&stButton.stOriginClickPoint, 0, sizeof(stButton.stOriginClickPoint));
+	memset(&stButton.rcRenderScale9, 0, sizeof(stButton.rcRenderScale9));
+	stButton.bFocus = false;
 
 	if(_type == CBTN_CHECKBOX)
 	{
@@ -809,6 +817,85 @@ bool GameNewDlg::IsCaptionBar(int _x, int _y)
 	return false;
 }
 //////////////////////////////////////////////////////////////////////////
+bool GameNewDlg::ProcessSlider(const POINT& _refMousePoint)
+{
+	RECT rcTest = {0};
+	COMMONBUTTONS::iterator begiter = m_xButtons.begin();
+	for(begiter; begiter != m_xButtons.end();
+		++begiter)
+	{
+		CommonButton& refButton = *begiter;
+
+		if (refButton.nType != CBTN_SLIDER)
+		{
+			continue;
+		}
+		if (!refButton.bVisible)
+		{
+			continue;
+		}
+		if (!refButton.bFocus)
+		{
+			continue;
+		}
+
+		if (!AfxGetHge()->Input_GetKeyState(HGEK_LBUTTON))
+		{
+			// clear focus flag
+			refButton.bFocus = false;
+		}
+		else
+		{
+			// process move event
+			if (0 != refButton.nSliderTotalUnit)
+			{
+				int nOffsetUnit = 0;
+
+				if (0 != refButton.nSliderRangeX)
+				{
+					int nOffset = _refMousePoint.x - refButton.stOriginClickPoint.x;
+					nOffsetUnit = nOffset / (refButton.nSliderRangeX / refButton.nSliderTotalUnit);
+				}
+				else if (0 != refButton.nSliderRangeY)
+				{
+					int nOffset = _refMousePoint.y - refButton.stOriginClickPoint.y;
+					nOffsetUnit = nOffset / (refButton.nSliderRangeY / refButton.nSliderTotalUnit);
+				}
+
+				if (nOffsetUnit != refButton.nSliderCurrentUnit)
+				{
+					refButton.nSliderCurrentUnit = nOffsetUnit;
+					if (refButton.sliderCallback)
+					{
+						refButton.sliderCallback(nOffsetUnit);
+					}
+				}
+			}
+
+			return true;
+		}
+
+		// new focus slider
+		rcTest.left = RELATIVE_X(begiter->stPos.left);
+		rcTest.right = RELATIVE_X(begiter->stPos.right);
+		rcTest.top = RELATIVE_Y(begiter->stPos.top);
+		rcTest.bottom = RELATIVE_Y(begiter->stPos.bottom);
+
+		if (PtInRect(&rcTest, _refMousePoint))
+		{
+			if (AfxGetHge()->Input_KeyDown(HGEK_LBUTTON))
+			{
+				SetSwallowEvent(true);
+				SetNeedTopLevel(true);
+				refButton.bFocus = true;
+				refButton.stOriginClickPoint = _refMousePoint;
+			}
+		}
+	}
+
+	return false;
+}
+//////////////////////////////////////////////////////////////////////////
 bool GameNewDlg::ProcUserCmd(const POINT& _mp)
 {
 	m_bCloseState = BTN_STATE_NORMAL;
@@ -841,6 +928,10 @@ bool GameNewDlg::ProcUserCmd(const POINT& _mp)
 	if(!IsCaptionBar(_mp.x, _mp.y) &&
 		!m_bLButtonDown)
 	{
+		if (ProcessSlider(_mp))
+		{
+			return true;
+		}
 		//m_bFocus = false;
 		begiter = m_xButtons.begin();
 		for(begiter; begiter != m_xButtons.end();
@@ -1044,7 +1135,7 @@ CommonButton* GameNewDlg::GetCommonButtonData(int _id)
 void GameNewDlg::AddCommonButton(int _type, int _id, int _x, int _y, const char* _pszText, int _nTexIndex /* = 0 */, DWORD _dwColor /* = 0 */)
 {
 	if(_type < CBTN_NORMAL ||
-		_type > CBTN_OPTION)
+		_type > CBTN_SLIDER)
 	{
 		return;
 	}
@@ -1059,6 +1150,14 @@ void GameNewDlg::AddCommonButton(int _type, int _id, int _x, int _y, const char*
 	stButton.bVisible = true;
 	stButton.nGroup = 0;
 	stButton.dwOverColor = stButton.dwDownColor = stButton.dwCheckedColor = 0;
+	stButton.szText[0] = 0;
+	stButton.nSliderRangeX = 0;
+	stButton.nSliderRangeY = 0;
+	stButton.nSliderTotalUnit = 0;
+	stButton.nSliderCurrentUnit = 0;
+	memset(&stButton.stOriginClickPoint, 0, sizeof(stButton.stOriginClickPoint));
+	memset(&stButton.rcRenderScale9, 0, sizeof(stButton.rcRenderScale9));
+	stButton.bFocus = false;
 
 	if(_type == CBTN_CHECKBOX)
 	{
@@ -1623,10 +1722,52 @@ void GameNewDlg::Render()
 				}
 			}
 		}
+		else if (begiter->nType == CBTN_SLIDER)
+		{
+			if (0 != begiter->nSliderTotalUnit &&
+				(0 != begiter->nSliderRangeX || 0 != begiter->nSliderRangeY))
+			{
+				bCanRender = true;
+			}
+		}
 
 		if(bCanRender)
 		{
-			m_pRender->Render(RELATIVE_X(begiter->stPos.left), RELATIVE_Y(begiter->stPos.top));
+			if (begiter->nType == CBTN_SLIDER)
+			{
+				if (0 != xButton.nSliderRangeX)
+				{
+					// horizontal
+					int nTextWidth = xButton.nSliderRangeX / xButton.nSliderTotalUnit;
+
+					HTEXTURE texButton = 0;
+					if(xButton.nTexIndex != 0)
+					{
+						texButton = pPngMgr->GetTexture(xButton.nTexIndex + xButton.bState);
+					}
+
+					RECT rcBk = {0};
+					rcBk.right = RECT_WIDTH(xButton.stPos);
+					rcBk.top = RECT_HEIGHT(xButton.stPos);
+
+					if(texButton != 0)
+					{
+						m_pRender->SetTexture(texButton);
+						m_pRender->SetTextureRect(0, begiter->bState * RECT_HEIGHT(xButton.stPos), RECT_WIDTH(xButton.stPos), RECT_HEIGHT(xButton.stPos));
+
+						Gfx_SetRenderState(kGfx_9Path_CenterStretch, 0);
+						Gfx_Render9Path(m_pRender, tex, &rcBk, &xButton.rcRenderScale9, m_rcClient.left, m_rcClient.top, RECT_WIDTH(m_rcClient), RECT_HEIGHT(m_rcClient));
+					}
+				}
+				else
+				{
+					// vertical
+				}
+			}
+			else
+			{
+				m_pRender->Render(RELATIVE_X(begiter->stPos.left), RELATIVE_Y(begiter->stPos.top));
+			}
 
 			if(strlen(begiter->szText))
 			{

@@ -25,20 +25,8 @@
 //#define ZLIB_WINAPI
 #include <zlib.h>
 
-#ifdef _DEBUG
-#pragma comment(lib, "zlibwapi_d.lib")
-#else
-#pragma comment(lib, "zlibwapi.lib")
-#endif
-
 #ifdef _ZIPARCHIVE_
 #include <ZipArchive.h>
-#ifdef _DEBUG
-#pragma comment(lib, "ZipArchive_D.lib")
-#else
-#pragma comment(lib, "ZipArchive.lib")
-#endif
-
 #endif
 //////////////////////////////////////////////////////////////////////////
 //	bag sort

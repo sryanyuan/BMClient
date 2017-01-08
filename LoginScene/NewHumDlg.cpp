@@ -3,6 +3,8 @@
 #include "../../CommonModule/SaveFile.h"
 #include <ZipArchive.h>
 #include "../BackMir/BackMir.h"
+#include "../../CommonModule/ProtoType.h"
+#include "../../CommonModule/loginsvr.pb.h"
 //////////////////////////////////////////////////////////////////////////
 #define NHD_WIDTH	584
 #define NHD_HEIGHT	416
@@ -377,14 +379,25 @@ void NewHumDlg::LoginExecuteNewHum()
 
 	if(m_pParent->GetHumCount() < 3)
 	{
-		g_xBuffer.Reset();
-		g_xBuffer << (int)0;
-		g_xBuffer << (int)PKG_LOGIN_ADDGAMEROLE_REQ;
-		g_xBuffer << (char)strlen(pszHeroName);
-		g_xBuffer.Write(pszHeroName, strlen(pszHeroName));
-		g_xBuffer << (char)m_nSelJob;
-		g_xBuffer << (char)m_nSelSex;
-		SendBufferToLS(g_xBuffer);
+		if (GetProtoType() == ProtoType_ByteBuffer)
+		{
+			g_xBuffer.Reset();
+			g_xBuffer << (int)0;
+			g_xBuffer << (int)PKG_LOGIN_ADDGAMEROLE_REQ;
+			g_xBuffer << (char)strlen(pszHeroName);
+			g_xBuffer.Write(pszHeroName, strlen(pszHeroName));
+			g_xBuffer << (char)m_nSelJob;
+			g_xBuffer << (char)m_nSelSex;
+			SendBufferToLS(g_xBuffer);
+		}
+		else
+		{
+			protocol::MCreateHumReq req;
+			req.set_name(pszHeroName);
+			req.set_job(m_nSelJob);
+			req.set_sex(m_nSelSex);
+			SendProto(protocol::CreateHumReq, req);
+		}
 	}
 	else
 	{
