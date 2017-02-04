@@ -39,6 +39,8 @@ SelChrDlg::SelChrDlg()
 	m_bIsConnecting = false;
 	ZeroMemory(m_stHero, sizeof(m_stHero));
 
+	AddCommonButton(CBTN_NORMAL, 10, VIEW_WIDTH / 2 - 325 / 2 + 75 * 1 + 50 * 1, VIEW_HEIGHT + VIEW_OPERATE - 100, "捐助作者");
+
 	AddCommonButton(CBTN_NORMAL, 0, VIEW_WIDTH / 2 - 325 / 2 + 75 * 0 + 50 * 0, VIEW_HEIGHT + VIEW_OPERATE - 60, "创建人物");
 	AddCommonButton(CBTN_NORMAL, 1, VIEW_WIDTH / 2 - 325 / 2 + 75 * 1 + 50 * 1, VIEW_HEIGHT + VIEW_OPERATE - 60, "删除人物");
 	AddCommonButton(CBTN_NORMAL, 2, VIEW_WIDTH / 2 - 325 / 2 + 75 * 2 + 50 * 2, VIEW_HEIGHT + VIEW_OPERATE - 60, "进入游戏");
@@ -271,6 +273,31 @@ void SelChrDlg::Render()
 						HUM_POSY + m_pSelChrRes->GetTextureOffsetY(nTextIndex));
 				}
 			}
+		}
+	}
+
+	CommonButton* pDonateButton = GetCommonButtonData(10);
+	if (NULL != pDonateButton)
+	{
+		float mx, my;
+		AfxGetHge()->Input_GetMousePos(&mx, &my);
+		POINT ptMouse = {0};
+		ptMouse.x = mx;
+		ptMouse.y = my;
+		RECT rcTest = {0};
+		rcTest.left = RELATIVE_X(pDonateButton->stPos.left);
+		rcTest.right = RELATIVE_X(pDonateButton->stPos.right);
+		rcTest.top = RELATIVE_Y(pDonateButton->stPos.top);
+		rcTest.bottom = RELATIVE_Y(pDonateButton->stPos.bottom);
+		if(pDonateButton->bVisible &&
+			PtInRect(&rcTest, ptMouse))
+		{
+			tex = pPngMgr->GetTexture(35);
+			int nTexWidth = 640;
+			int nTexHeight = 360;
+			m_pRender->SetTexture(tex);
+			m_pRender->SetTextureRect(0, 0, nTexWidth, nTexHeight);
+			m_pRender->Render((WINDOW_WIDTH - nTexWidth) / 2, (WINDOW_HEIGHT - nTexHeight) / 2);
 		}
 	}
 

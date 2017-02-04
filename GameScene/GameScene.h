@@ -219,6 +219,8 @@ private:
 
 	bool m_bInit;
 
+	bool m_bShowDonate;
+
 private:
 	static HGE* s_hge;
 	char m_szCurMapName[15];

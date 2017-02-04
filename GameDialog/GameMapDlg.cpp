@@ -104,6 +104,7 @@ void GameMapDlg::Render()
 		m_pRender->SetTexture(tex);
 		m_pRender->SetTextureRect(m_ptLeftTopPos.x, m_ptLeftTopPos.y, nTexWidth > nViewWidth ? nViewWidth : nTexWidth, nTexHeight > nViewHeight ? nViewHeight : nTexHeight);
 		m_pRender->Render(RELATIVE_X(nDrawX + m_rcMapView.left), RELATIVE_Y(nDrawY + m_rcMapView.top));
+	}
 
 		/*if(m_nShowX != -1)
 		{
@@ -256,7 +257,6 @@ void GameMapDlg::Render()
 
 			m_pRender->SetColor(dwPreCol);
 		}
-	}
 
 	if(m_nShowX != -1)
 	{

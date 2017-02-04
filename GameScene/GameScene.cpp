@@ -205,6 +205,7 @@ static const char* g_MapTable[] =
 
 GameScene::GameScene()
 {
+	m_bShowDonate = true;
 	m_pPlayer = NULL;
 	m_pMainOpt = NULL;
 	m_pMiniMap = NULL;
@@ -1568,6 +1569,8 @@ bool GameScene::InsertNewMagic(MagicElement* _pMgc)
 /************************************************************************/
 /* 更新下挂的RenderObject                                                      
 /************************************************************************/
+static bool s_bShowDonate = true;
+
 void GameScene::Update(float _dt)
 {
 	//UpdateMapData(_dt);
@@ -2459,6 +2462,66 @@ bool GameScene::SendChatMessage()
 					PkgPlayerSpeOperateReq req;
 					req.uUserId = GamePlayer::GetInstance()->GetHandlerID();
 					req.dwOp = CMD_OP_NORESET;
+					req.dwParam = nX;
+					g_xBuffer.Reset();
+					g_xBuffer << req;
+					SendBufferToGS(&g_xBuffer);
+				}
+#endif
+			}
+			else if(0 == strcmp(szCmd, "setwingeff"))
+			{
+#ifdef _DEBUG
+				if(0 != sscanf(szText, "@setwingeff %d", &nX))
+				{
+					PkgPlayerSpeOperateReq req;
+					req.uUserId = GamePlayer::GetInstance()->GetHandlerID();
+					req.dwOp = CMD_OP_SETWINGEFF;
+					req.dwParam = nX;
+					g_xBuffer.Reset();
+					g_xBuffer << req;
+					SendBufferToGS(&g_xBuffer);
+				}
+#endif
+			}
+			else if(0 == strcmp(szCmd, "setweaponeff"))
+			{
+#ifdef _DEBUG
+				if(0 != sscanf(szText, "@setweaponeff %d", &nX))
+				{
+					PkgPlayerSpeOperateReq req;
+					req.uUserId = GamePlayer::GetInstance()->GetHandlerID();
+					req.dwOp = CMD_OP_SETWEAPONEFF;
+					req.dwParam = nX;
+					g_xBuffer.Reset();
+					g_xBuffer << req;
+					SendBufferToGS(&g_xBuffer);
+				}
+#endif
+			}
+			else if(0 == strcmp(szCmd, "sethaireff"))
+			{
+#ifdef _DEBUG
+				if(0 != sscanf(szText, "@sethaireff %d", &nX))
+				{
+					PkgPlayerSpeOperateReq req;
+					req.uUserId = GamePlayer::GetInstance()->GetHandlerID();
+					req.dwOp = CMD_OP_SETHAIREFF;
+					req.dwParam = nX;
+					g_xBuffer.Reset();
+					g_xBuffer << req;
+					SendBufferToGS(&g_xBuffer);
+				}
+#endif
+			}
+			else if(0 == strcmp(szCmd, "setclotheff"))
+			{
+#ifdef _DEBUG
+				if(0 != sscanf(szText, "@setclotheff %d", &nX))
+				{
+					PkgPlayerSpeOperateReq req;
+					req.uUserId = GamePlayer::GetInstance()->GetHandlerID();
+					req.dwOp = CMD_OP_SETCLOTHEFF;
 					req.dwParam = nX;
 					g_xBuffer.Reset();
 					g_xBuffer << req;

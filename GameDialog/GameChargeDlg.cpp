@@ -67,6 +67,7 @@ bool GameChargeDlg::OnCommonButtonClick(int _id)
 	{
 		if(m_ePage == kChargePage_Charge)
 		{
+			::MessageBox(NULL, "请将订单号以及角色发往553056120@qq.com", "提示", MB_OK | MB_ICONINFORMATION);
 			m_ePage = kChargePage_EnterOrderId;
 		}
 		else if(m_ePage == kChargePage_EnterOrderId)

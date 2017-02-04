@@ -17,9 +17,12 @@ typedef SASTAR::SAstarPoints	WALKPATH;
 typedef POINT					WALKELEMENT;
 #endif
 
+// Forward declaration
 class GameTextureManager;
 class GameMonsterManager;
 class GameMapManager;
+struct CExecuteContext;
+
 class GameMonster : public GameObject
 {
 	//friend class GameMonsterManager;
@@ -63,6 +66,11 @@ public:
 	inline int GetSlaveLevel()							{return LOBYTE(m_attrib.maxAC);}
 
 	void SetLastFrame();
+
+public:
+	void AddExecuteContext(CExecuteContext* _pCtx);
+	int ExecuteContext(CExecuteContext* _pCtx);
+	void RenderContext(const CExecuteContext* _pCtx);
 
 public:
 	virtual void Update(float _dt);
@@ -128,6 +136,9 @@ protected:
 	int m_nHatred;
 
 	int m_nMasterId;
+
+	// Execute context
+	std::map<int, CExecuteContext*> m_xExecuteContextMap;
 };
 
 //	´¥ÁúÉñ ³àÔÂ¶ñÄ§ µÈ

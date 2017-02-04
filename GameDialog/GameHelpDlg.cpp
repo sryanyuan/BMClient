@@ -1,6 +1,7 @@
 #include "GameHelpDlg.h"
 #include "GameDlgBase.h"
 #include <tolua++.h>
+#include "GameChargeDlg.h"
 #include "../BackMir/BackMir.h"
 //////////////////////////////////////////////////////////////////////////
 static const int nDrawBeginX = 18;
@@ -193,6 +194,18 @@ void GameHelpDlg::OnNativeCommand(DWORD _dwCmd)
 		g_xBuffer.Reset();
 		g_xBuffer << req;
 		SendBufferToGS(&g_xBuffer);
+	}
+	else if (_dwCmd == 10010)
+	{
+		// 微信支付
+		GameChargeDlg* pDlg = GameMainOptUI::GetInstance()->GetChargeDlg();
+		pDlg->ShowDialog();
+	}
+	else if (_dwCmd == 10011)
+	{
+		// 支付宝支付
+		GameChargeDlg* pDlg = GameMainOptUI::GetInstance()->GetChargeDlg();
+		pDlg->ShowDialog();
 	}
 }
 

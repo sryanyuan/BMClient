@@ -533,17 +533,20 @@ void GameDisplayDlg::GenShowItems()
 			// 传送戒指
 			nCurX = nDetailDrawX;
 			nCurY = nDetailDrawY + nDetailLine * s_nEachLineHeight;
-			int nDiv = 25;
+			int nDiv = 0;
 			if (pTheGame->GetGameMode() == GM_LOGIN)
 			{
 				nDiv = 100;
 			}
-			int nUseTimeLeft = LOWORD(m_stShowItem.maxHP) / nDiv;
-			sprintf(szText, "可使用次数：%d", nUseTimeLeft);
-			nCurWidth = GetTextWidth(szText, 12);
-			TEST_MAXWIDTH(nCurWidth);
-			AddStringItem(szText, nCurX, nCurY);
-			++nDetailLine;
+			if (0 != nDiv)
+			{
+				int nUseTimeLeft = LOWORD(m_stShowItem.maxHP) / nDiv;
+				sprintf(szText, "可使用次数：%d", nUseTimeLeft);
+				nCurWidth = GetTextWidth(szText, 12);
+				TEST_MAXWIDTH(nCurWidth);
+				AddStringItem(szText, nCurX, nCurY);
+				++nDetailLine;
+			}
 		}
 
 		//	quality

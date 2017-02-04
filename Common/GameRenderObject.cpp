@@ -1632,3 +1632,51 @@ int GameObject::GetSoundIndex()
 {
 	return 0;
 }
+
+void GameObject::DrawTexture(int _nResID, int _nIndex, int _nPosX, int _nPosY, bool _bAlpha)
+{
+	GameTextureManager* pTexMgr = GameResourceManager::GetInstance()->GetTexs(_nResID);
+	if (NULL == pTexMgr)
+	{
+		// Not found texture manager
+		return;
+	}
+
+	HTEXTURE tex = pTexMgr->GetTexture(_nIndex);
+	if (0 == tex)
+	{
+		// Not found texture
+		return;
+	}
+
+	hgeSprite* pRender = m_pRender;
+	if (_bAlpha)
+	{
+		// Using alpha render
+		pRender = MagicElement::pEffectRender;
+	}
+	if (NULL == pRender)
+	{
+		// Invalid render
+		return;
+	}
+
+	int nTexWidth = pTexMgr->GetTextureWidth(_nIndex);
+	int nTexHeight = pTexMgr->GetTextureHeight(_nIndex);
+	int nOffsetX = pTexMgr->GetTextureOffsetX(_nIndex);
+	int nOffsetY = pTexMgr->GetTextureOffsetY(_nIndex);
+
+	if (0 == nTexHeight &&
+		0 == nTexWidth)
+	{
+		return;
+	}
+
+	pRender->SetTexture(tex);
+	pRender->SetTextureRect(0, 0, float(nTexWidth), float(nTexHeight));
+
+	int nRenderX = _nPosX + nOffsetX;
+	int nRenderY = _nPosY + nOffsetY;
+
+	pRender->Render(float(nRenderX), float(nRenderY));
+}

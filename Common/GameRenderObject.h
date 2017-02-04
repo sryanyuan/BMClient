@@ -513,6 +513,8 @@ public:
 	int GetScreenPosX();
 	int GetScreenPosY();
 
+	void DrawTexture(int _nResID, int _nIndex, int _nPosX, int _nPosY, bool _bAlpha);
+
 	//	ÍøÂç°ü´¦Àí
 public:
 	virtual void OnPacket(const PacketHeader* _pPkt);

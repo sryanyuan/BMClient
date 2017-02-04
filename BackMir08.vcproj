@@ -228,6 +228,10 @@
 			Name="GameScene"
 			>
 			<File
+				RelativePath=".\GameScene\ExecuteContext.h"
+				>
+			</File>
+			<File
 				RelativePath=".\GameScene\GameInfoManager.cpp"
 				>
 			</File>

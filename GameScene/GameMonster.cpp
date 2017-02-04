@@ -7,6 +7,7 @@
 #include <assert.h>
 #include "GameResourceManager.h"
 #include "GameScene.h"
+#include "ExecuteContext.h"
 #include "../BackMir/BackMir.h"
 #include "../../CommonModule/SimpleActionHelper.h"
 #include "../Common/OutlineTextureManager.h"
@@ -41,6 +42,14 @@ GameMonster::GameMonster()
 GameMonster::~GameMonster()
 {
 	SAFE_DELETE(m_pRender);
+	// free execute context
+	std::map<int, CExecuteContext*>::iterator it = m_xExecuteContextMap.begin();
+	for (it; it != m_xExecuteContextMap.end(); ++it)
+	{
+		delete it->second;
+		it->second = NULL;
+	}
+	m_xExecuteContextMap.clear();
 }
 
 int GameMonster::CalMonIndex()
@@ -187,6 +196,19 @@ HTEXTURE GameMonster::GetCurTexture()
 
 void GameMonster::Render()
 {
+	// render with status context
+	const CExecuteContext* pContext = NULL;
+	std::map<int, CExecuteContext*>::const_iterator it = m_xExecuteContextMap.find(GetStatus());
+	if (it != m_xExecuteContextMap.end())
+	{
+		pContext = it->second;
+	}
+	if (NULL != pContext)
+	{
+		RenderContext(pContext);
+		return;
+	}
+
 	HGE* hge = AfxGetHge();
 	GamePlayer* pPlayer = GamePlayer::GetInstance();
 
@@ -427,6 +449,26 @@ void GameMonster::UpdateMove()
 
 void GameMonster::Update(float dt)
 {
+	// execute with status context
+	CExecuteContext* pContext = NULL;
+	std::map<int, CExecuteContext*>::const_iterator it = m_xExecuteContextMap.find(GetStatus());
+	if (it != m_xExecuteContextMap.end())
+	{
+		pContext = it->second;
+	}
+	if (NULL != pContext)
+	{
+		int nExecuteResult = ExecuteContext(pContext);
+		if (EXECUTERESULT_DONE == nExecuteResult)
+		{
+			SetStatus(PST_STAND);
+		}
+		else if (EXECUTERESULT_DOING == nExecuteResult)
+		{
+			return;
+		}
+	}
+
 	float fMoveOffsetX = 0.0f;
 	float fMoveOffsetY = 0.0f;
 	int nTotalFrame = 0;
@@ -467,25 +509,10 @@ void GameMonster::Update(float dt)
 		}
 		if(IsLastFrame())
 		{
-#ifdef _NET_GAME_
 			if(TEST_FLAG_BOOL(m_attrib.maxEXPR, MAXEXPR_MASK_DEADHIDE))
 			{
 				SetVisible(false);
 			}
-#else
-			ItemAttrib* pItems = NULL;
-			int nSum = 0;
-			GameInfoManager::GetInstance()->GetMonsterItems(m_attrib.id, &nSum, &pItems);
-			if(nSum > 0)
-			{
-				for(int i = 0; i < nSum; ++i)
-				{
-					GameMapManager::GetInstance()->AddFloorItem(GetCoordX(), GetCoordY(), &pItems[i]);
-				}
-				delete [] pItems;
-			}
-			//m_walkPath.clear();
-#endif
 		}
 	}
 
@@ -755,63 +782,6 @@ void GameMonster::Update(float dt)
 			}
 		}
 	}
-// 	else if(GetStatus() == PST_ATTACKED &&
-// 		!IsMoving() &&
-// 		IsLastFrame())
-// 	{
-// 		//	检测到不在站立状态
-// 		if(abs(m_fLastUpdateTime - 0.0f) < 0.00001f)
-// 		{
-// 			m_fLastUpdateTime = AfxGetHge()->Timer_GetTime();
-// 		}
-// 		else
-// 		{
-// 			if(abs(m_fLastUpdateTime - AfxGetHge()->Timer_GetTime()) > 0.2f)
-// 			{
-// 				SetStatus(PST_STAND);
-// 				SetCurFrame(0);
-// 				m_fLastUpdateTime = 0.0f;
-// 			}
-// 		}
-// 	}
-// 	else if(GetStatus() == PST_ATTACKWEAPON &&
-// 		!IsMoving() &&
-// 		IsLastFrame())
-// 	{
-// 		//	检测到不在站立状态
-// 		if(abs(m_fLastUpdateTime - 0.0f) < 0.00001f)
-// 		{
-// 			m_fLastUpdateTime = AfxGetHge()->Timer_GetTime();
-// 		}
-// 		else
-// 		{
-// 			if(abs(m_fLastUpdateTime - AfxGetHge()->Timer_GetTime()) > 0.2f)
-// 			{
-// 				SetStatus(PST_STAND);
-// 				SetCurFrame(0);
-// 				m_fLastUpdateTime = 0.0f;
-// 			}
-// 		}
-// 	}
-// 	else if(GetStatus() == PST_ATTACKNOWEAPON &&
-// 		!IsMoving() &&
-// 		IsLastFrame())
-// 	{
-// 		//	检测到不在站立状态
-// 		if(abs(m_fLastUpdateTime - 0.0f) < 0.00001f)
-// 		{
-// 			m_fLastUpdateTime = AfxGetHge()->Timer_GetTime();
-// 		}
-// 		else
-// 		{
-// 			if(abs(m_fLastUpdateTime - AfxGetHge()->Timer_GetTime()) > 0.2f)
-// 			{
-// 				SetStatus(PST_STAND);
-// 				SetCurFrame(0);
-// 				m_fLastUpdateTime = 0.0f;
-// 			}
-// 		}
-// 	}
 	else
 	{
 		m_fLastUpdateTime = 0.0f;
@@ -1918,7 +1888,29 @@ void GameMonster::OnObjectAction(const PkgObjectActionNot& not)
 			m_fMoveOffsetXTotal = m_fMoveOffsetYTotal = 0.0f;
 		}
 	}
-
+	else if (not.uAction >= ACTION_EXT1 &&
+		not.uAction <= ACTION_EXT4)
+	{
+		// ext status ?
+		CExecuteContext* pContext = NULL;
+		std::map<int, CExecuteContext*>::const_iterator it = m_xExecuteContextMap.find(not.uAction);
+		if (it != m_xExecuteContextMap.end())
+		{
+			pContext = it->second;
+		}
+		if (NULL != pContext)
+		{
+			SetStatus(PLAYER_STATUS(PST_EXT1 + not.uAction - ACTION_EXT1));
+			SetReallyCoord(LOWORD(not.uParam0), HIWORD(not.uParam0));
+			int nDrt = HIWORD(not.uParam1);
+			if(nDrt >= 0 &&
+				nDrt < 8)
+			{
+				SetDirection((PLAYER_DIRECTION)nDrt);
+			}
+		}
+	}
+	
 	if(not.uAction == ACTION_APPEAR ||
 		not.uAction == ACTION_GROUND)
 	{
@@ -2035,5 +2027,94 @@ void GameMonster::DoPacket(const PkgPlayerPlaySoundNtf& ntf)
 	if(ntf.bType == PLAYSOUND_OBJECTSOUND)
 	{
 		GameSoundManager::GetInstancePtr()->PlayObjectSoundDirect(GetSoundIndex(), ntf.dwData);
+	}
+}
+
+void GameMonster::AddExecuteContext(CExecuteContext* _pCtx)
+{
+	CExecuteContext* pContext = new CExecuteContext;
+	memcpy(pContext, _pCtx, sizeof(CExecuteContext));
+	m_xExecuteContextMap.insert(std::make_pair(_pCtx->nStatus, pContext));
+}
+
+int GameMonster::ExecuteContext(CExecuteContext* _pCtx)
+{
+	// check switch frame
+	bool bEnterFirstFrame = false;
+	if (0xffffffff == _pCtx->uLastUpdateTime)
+	{
+		// first frame
+		_pCtx->uLastUpdateTime = GetTickCount();
+		bEnterFirstFrame = true;
+	}
+
+	DWORD dwTick = GetTickCount();
+	if (dwTick - _pCtx->uLastUpdateTime < _pCtx->uFrmIntervalMS &&
+		!bEnterFirstFrame)
+	{
+		// nothing
+		return EXECUTERESULT_DOING;
+	}
+
+	// first frame do not need to switch frame
+	if (!bEnterFirstFrame)
+	{
+		int nNextFrm = _pCtx->nCurrentFrm + 1;
+		if (nNextFrm >= _pCtx->nFrmTotal)
+		{
+			// last frame , done
+			_pCtx->nCurrentFrm = 0;
+			_pCtx->uLastUpdateTime = 0xffffffff;
+		}
+		else
+		{
+			_pCtx->nCurrentFrm = nNextFrm;
+			_pCtx->uLastUpdateTime = dwTick;
+		}
+	}
+
+	// check eff trigger
+	if (0xffffffff != _pCtx->uLastUpdateTime)
+	{
+		if (_pCtx->nCurrentFrm == _pCtx->nFrmTriggerFrm)
+		{
+			// trigger the eff
+			if (0 != _pCtx->nFrmTriggerEffID)
+			{
+
+			}
+			else if (0 != _pCtx->nFrmTriggerStart)
+			{
+				// new eff
+			}
+		}
+	}
+
+	return _pCtx->uLastUpdateTime == 0xffffffff ? EXECUTERESULT_DONE : EXECUTERESULT_DOING;
+}
+
+void GameMonster::RenderContext(const CExecuteContext* _pCtx)
+{
+	// calc the frame with direction info
+	int nDrt = 0;
+	int nRenderFrame = _pCtx->nFrmStart + _pCtx->nFrmTotal * nDrt + _pCtx->nCurrentFrm;
+
+	// render the frame
+
+	// if in transparent mode , draw effect
+	if (0 != _pCtx->nEffStart)
+	{
+		// ignore some frame
+		if (_pCtx->nCurrentFrm >= _pCtx->nEffIgnore)
+		{
+			// draw eff
+			int nEffFrame = _pCtx->nEffStart + _pCtx->nEffTotal * nDrt + _pCtx->nCurrentFrm;
+		}
+	}
+
+	// draw eff with offset
+	if (0 != _pCtx->nEffOffset)
+	{
+		int nEffFrame = nRenderFrame + _pCtx->nEffOffset;
 	}
 }
