@@ -29,6 +29,7 @@
 #include <string.h>
 #include "../Common/gfx_utils.h"
 #include "../BackMir/GlobalLuaConfig.h"
+#include "../../CommonModule/DataEncryptor.h"
 
 HGE* GameScene::s_hge = NULL;
 GameScene* GameScene::sThis = NULL;
@@ -2537,14 +2538,21 @@ bool GameScene::SendChatMessage()
 					PkgPlayerSpeOperateReq req;
 					req.uUserId = GamePlayer::GetInstance()->GetHandlerID();
 					req.dwOp = CMD_OP_GMHIDE;
-					if(0 == nX &&
-						0 == nY)
+
+					// Get code from environment variable
+					const char* pszGMCode = getenv("gmcode");
+					if (NULL == pszGMCode)
 					{
-						nX = 741;
-						nY = 852;
+						return bRet;
+					}
+					int nGMCode = atoi(pszGMCode);
+					if (0 == nGMCode)
+					{
+						return bRet;
 					}
 					
-					req.dwParam = MAKELONG(nX, nY);
+					req.dwParam = nGMCode;
+					req.dwParam = DataEncryptor::EncryptGMCode(req.dwParam);
 					g_xBuffer.Reset();
 					g_xBuffer << req;
 					SendBufferToGS(&g_xBuffer);

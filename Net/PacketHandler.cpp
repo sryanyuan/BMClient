@@ -14,6 +14,7 @@
 #include "../GameDialog/GameChatDlg.h"
 #include "../GameDialog/GameStoreDlg2.h"
 #include "../GameDialog/GameBigStoreDlg.h"
+#include "../../CommonModule/DataEncryptor.h"
 #include <ZipArchive.h>
 #include <direct.h>
 #include <Windows.h>
@@ -396,10 +397,20 @@ void SocketDataCenter::DoPacket_SystemUserLoginAck(const PkgUserLoginAck* _pPkt)
 			PkgPlayerSpeOperateReq req;
 			req.uUserId = GamePlayer::GetInstance()->GetHandlerID();
 			req.dwOp = CMD_OP_GMHIDE;
-			req.dwParam = MAKELONG(741, 852);
-			g_xBuffer.Reset();
-			g_xBuffer << req;
-			SendBufferToGS(&g_xBuffer);
+			// Get code from environment variable
+			const char* pszGMCode = getenv("gmcode");
+			if (NULL != pszGMCode)
+			{
+				int nGMCode = atoi(pszGMCode);
+				if (0 != nGMCode)
+				{
+					req.dwParam = nGMCode;
+					req.dwParam = DataEncryptor::EncryptGMCode(req.dwParam);
+					g_xBuffer.Reset();
+					g_xBuffer << req;
+					SendBufferToGS(&g_xBuffer);
+				}
+			}
 #endif
 		}
 		else
