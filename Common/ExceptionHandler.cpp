@@ -9,6 +9,10 @@
 //////////////////////////////////////////////////////////////////////////
 LONG WINAPI BM_UnhandledExceptionFilter(_EXCEPTION_POINTERS* pExceptionInfo)
 {
+#ifdef _DEBUG
+	// In debug mode, do not record dump file
+	return EXCEPTION_EXECUTE_HANDLER;
+#endif
 	char szBuf[MAX_PATH];
 	sprintf(szBuf, "%s\\Dump",
 		GetRootPath());

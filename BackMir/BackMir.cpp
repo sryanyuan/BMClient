@@ -31,6 +31,7 @@
 #include "../../CommonModule/DataEncryptor.h"
 #include <UIlib.h>
 #include <float.h>
+#include "GlobalLuaConfig.h"
 
 #ifdef DEMO
 #undef DEMO
@@ -1210,7 +1211,7 @@ bool MirGame::LoadScript(int _nMapID)
 //////////////////////////////////////////////////////////////////////////
 bool MirGame::GetMapName(int _id, std::string& _xName)
 {
-	int nMapID = _id;
+	/*int nMapID = _id;
 	const char* pLetterName = GetRunMap(nMapID);
 	if(NULL == pLetterName)
 	{
@@ -1231,7 +1232,15 @@ bool MirGame::GetMapName(int _id, std::string& _xName)
 	{
 		_xName = szMapName;
 		return true;
+	}*/
+	const LuaMapInfo* pMapInfo = GetMapConfigManager().GetLuaMapInfo(_id);
+	if (NULL == pMapInfo) {
+		// Map info not found
+		return false;
 	}
+	_xName = pMapInfo->szMapChName;
+
+	return true;
 }
 
 //////////////////////////////////////////////////////////////////////////

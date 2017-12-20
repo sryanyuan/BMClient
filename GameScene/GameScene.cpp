@@ -2799,6 +2799,24 @@ bool GameScene::SendChatMessage()
 					}
 				}
 			}
+			else if(0 == strcmp(szCmd, "mapinfo"))
+			{
+				// Show map info 
+				char szMapInfo[MAX_PATH];
+				szMapInfo[0] = 0;
+
+				int nPlayerMapID = GamePlayer::GetInstance()->GetMapID();
+				const LuaMapInfo* pInfo = GetMapConfigManager().GetLuaMapInfo(nPlayerMapID);
+
+				if (NULL == pInfo) {
+					strcpy(szMapInfo, "未找到地图基础信息");
+				} else {
+					sprintf(szMapInfo, "MapType[%d] ResID[%d] MapResFile[%s] MapChName[%s]",
+						pInfo->nMapType, pInfo->nResID, pInfo->szMapResFile, pInfo->szMapChName);
+				}
+
+				m_pMainOpt->GetChatDlg()->GetHistoryDlg()->InsertChatMessage(szMapInfo, ARGB_RED);
+			}
 			else
 			{
 				m_pMainOpt->GetChatDlg()->GetHistoryDlg()->InsertChatMessage("[错误]无效指令", ARGB_RED);
