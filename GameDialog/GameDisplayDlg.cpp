@@ -1123,9 +1123,10 @@ void GameDisplayDlg::GenShowItems()
 
 		int nHideAttribCount = HideAttribHelper::GetAllAttribCount(m_stShowItem.maxMP);
 		int nActiveAttribCount = HideAttribHelper::GetActiveAttribCount(m_stShowItem.maxMP);
+		UINT uHideAttr = m_stShowItem.maxMP;
 
 #ifdef _DEBUG
-		nActiveAttribCount = nHideAttribCount;
+		//nActiveAttribCount = nHideAttribCount;
 #endif
 
 		for(int i = 0; i < nHideAttribCount; ++i)
@@ -1154,7 +1155,15 @@ void GameDisplayDlg::GenShowItems()
 				nCurY += s_nEachLineHeight * nDetailLine;
 				AddStringItem("*Î´¼ø¶¨", nCurX, nCurY, ARGB_RED);
 				++nDetailLine;
+
+				// Hide attrib
+				HideAttribHelper::SetActiveAttribType(uHideAttr, i, 0);
+				HideAttribHelper::SetActiveAttribValue(uHideAttr, i, 0);
 			}
+		}
+
+		if (uHideAttr != m_stShowItem.maxMP) {
+			m_stShowItem.maxMP = uHideAttr;
 		}
 	}
 

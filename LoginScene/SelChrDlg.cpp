@@ -8,6 +8,8 @@
 #include "../GameScene/GameResourceManager.h"
 #include "../Common/gfx_utils.h"
 #include "../../CommonModule/ProtoType.h"
+#include "../../CommonModule/CommandLineHelper.h"
+#include "../BackMir/BMDonateWnd.h"
 //////////////////////////////////////////////////////////////////////////
 const char* g_szHeader[] =
 {
@@ -277,7 +279,8 @@ void SelChrDlg::Render()
 	}
 
 	CommonButton* pDonateButton = GetCommonButtonData(10);
-	if (NULL != pDonateButton)
+	if (NULL != pDonateButton &&
+		pTheGame->GetGameMode() != GM_LOGIN)
 	{
 		float mx, my;
 		AfxGetHge()->Input_GetMousePos(&mx, &my);
@@ -467,6 +470,16 @@ bool SelChrDlg::OnCommonButtonClick(int _id)
 		}
 
 		GameSoundManager::GetInstancePtr()->PlayGameSound(SDGAME_CLICKBUTTON);
+	}
+	else if (_id == 10) {
+		// Press donate button
+		if (pTheGame->GetGameMode() != GM_LOGIN) {
+			return true;
+		}
+		
+		//pTheGame->GetDonateWnd()->ShowDonateWnd(0);
+		pTheGame->GetDonateValueWnd()->ShowWindow(true);
+		pTheGame->GetDonateValueWnd()->CenterWindow();
 	}
 	return true;
 }

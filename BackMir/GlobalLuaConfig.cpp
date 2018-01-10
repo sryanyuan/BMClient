@@ -35,6 +35,7 @@ int LoadGlobalLuaConfig()
 	}
 
 	// get global config
+	// http kv
 	std::string xCfgKey = "gHTTPKVAddress";
 	lua_getglobal(L, xCfgKey.c_str());
 	if (!lua_isstring(L, -1))
@@ -43,6 +44,18 @@ int LoadGlobalLuaConfig()
 		return -1;
 	}
 	std::string xValue;
+	xValue = lua_tostring(L, -1);
+	lua_pop(L, 1);
+	s_xGlobalLuaConfigMap.insert(std::make_pair(xCfgKey, xValue));
+	// donate
+	xCfgKey = "gHTTPDonateURL";
+	lua_getglobal(L, xCfgKey.c_str());
+	if (!lua_isstring(L, -1))
+	{
+		lua_pop(L, 1);
+		return -1;
+	}
+	xValue;
 	xValue = lua_tostring(L, -1);
 	lua_pop(L, 1);
 	s_xGlobalLuaConfigMap.insert(std::make_pair(xCfgKey, xValue));

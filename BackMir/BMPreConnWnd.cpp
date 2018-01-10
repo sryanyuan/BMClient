@@ -11,6 +11,7 @@
 #include "../../CommonModule/ProtoType.h"
 #include "BMSelServerWnd.h"
 #include "BMPasswordWnd.h"
+#include "../Common/strutils.h"
 //////////////////////////////////////////////////////////////////////////
 bool g_bPrepared = false;
 bool g_bDataLoaded = false;
@@ -610,6 +611,7 @@ void __stdcall BMPreConnWnd::OnFullMsgLoginSvr(const void* _pData, unsigned int 
 				DO_LOGINSVR_PACKET(PKG_LOGIN_VERIFYRESULT_ACK, PkgLoginVerifyResultAck)
 				DO_LOGINSVR_PACKET(PKG_LOGIN_QUICKMSG_NOT, PkgLoginQuickMsgNot)
 				DO_LOGINSVR_PACKET(PKG_LOGIN_SERVERADDR_NOT, PkgLoginServerAddrNot)
+				DO_LOGINSVR_PACKET(PKG_LOGIN_SERVERADDRV2_RSP, PkgLoginServerAddrV2Not)
 				//DO_LOGINSVR_PACKET(PKG_LOGIN_HEADDATA_NOT, PkgLoginHeadDataNot)
 		}
 	}
@@ -909,6 +911,92 @@ void BMPreConnWnd::DoLoginSvrPacket(const PkgLoginServerAddrNot& not)
 	}
 }
 
+void BMPreConnWnd::DoLoginSvrPacket(const PkgLoginServerAddrV2Not& not) {
+	if (not.vecServers.empty()) {
+		MessageBox(NULL, "无可用的游戏服务器", "错误", MB_OK | MB_ICONERROR);
+		return;
+	}
+
+	std::vector<std::string> vecResult;
+	BMSelServerWnd wnd;
+
+	for (int i = 0; i < not.vecServers.size(); i++) {
+		vecResult.clear();
+		const std::string& refServerInfo = not.vecServers[i];
+
+		SplitString(refServerInfo, vecResult, "_");
+		if (vecResult.size() != 3) {
+			continue;
+		}
+
+		// serverid_serveraddr_servername
+		int nServerID = atoi(vecResult[0].c_str());
+		if (0 == nServerID) {
+			continue;
+		}
+		const std::string &refAddr = vecResult[1];
+		if (refAddr.empty()) {
+			continue;
+		}
+		const std::string &refServerName = vecResult[2];
+		if (refServerName.empty()) {
+			continue;
+		}
+
+		wnd.AddServer(nServerID, refAddr, refServerName);
+	}
+
+	//	选择服务器
+	KillTimer(m_hWnd, TIMER_VERIFYTIMEOUT);
+	AppendString("OK\n");
+	wnd.Create(NULL, "SelServerWnd", UI_WNDSTYLE_FRAME, 0, 0, 0, 200, 350, 0);
+	wnd.CenterWindow();
+	int nSel = wnd.ShowModal();
+	int nServerIndex = wnd.GetSelServerIndex();
+
+	if (IDOK == nSel &&
+		nServerIndex >= 0 &&
+		nServerIndex < not.vecServers.size())
+	{
+		const protocol::MServerListItem& refServer = wnd.GetServerList().servers(nServerIndex);
+
+		// Send gs serverid to ls
+		PkgLoginClientSelGSRsp rsp;
+		rsp.uGSServerID = (short)refServer.serverid();
+		g_xBuffer.Reset();
+		g_xBuffer << rsp;
+		SendBuffer(&g_xBuffer);
+
+		// Show select server wnd
+		AppendString("\nConnecting to Game server ...");
+		const char* pServerAddr = refServer.serveraddress().c_str();
+		char* pAddr = new char[strlen(pServerAddr) + 1];
+		strcpy(pAddr, pServerAddr);
+		char* pszColon = strchr(pAddr, ':');
+		if (NULL == pszColon)
+		{
+			delete []pAddr;
+			pAddr = NULL;
+			return;
+		}
+
+		*pszColon = '\0';
+		int nPort = atoi(pszColon + 1);
+
+		g_xClientSocket2.ConnectToServer(m_hWnd, pAddr, nPort);
+		delete []pAddr;
+		pAddr = NULL;
+
+		SetTimer(m_hWnd, TIMER_CONNTIMEOUT, 15000, NULL);
+		AppendString("\rConnect GameServer...");
+	}
+	else
+	{
+		MessageBox(NULL, "不可用的游戏服务器", "错误", MB_OK | MB_ICONERROR);
+		PrepareCloseGame();
+	}
+}
+
 void BMPreConnWnd::DoLoginSvrPacket(const PkgLoginVerifyResultAck& ack)
 {
 
@@ -1021,9 +1109,10 @@ void BMPreConnWnd::DoPacket(const PkgLoginGameTypeNot& not)
 
 			m_xSndBuf.Reset();
 			m_xSndBuf << (int)0;
-			m_xSndBuf << (int)PKG_LOGIN_CLIENTVERIFY_REQ;
-			//std::string xAccount = "test1";
-			//std::string xPsw = "test1";
+			// Verify v1
+			//m_xSndBuf << (int)PKG_LOGIN_CLIENTVERIFY_REQ;
+			// Verify v2
+			m_xSndBuf << (int)PKG_LOGIN_CLIENTVERIFYV2_REQ;
 			m_xSndBuf << (char)m_xAct.length();
 			m_xSndBuf.Write(m_xAct.c_str(), m_xAct.length());
 			m_xSndBuf << (char)m_xPsw.length();

@@ -32,6 +32,7 @@
 #include <UIlib.h>
 #include <float.h>
 #include "GlobalLuaConfig.h"
+#include "BMDonateWnd.h"
 
 #ifdef DEMO
 #undef DEMO
@@ -213,6 +214,8 @@ MirGame::MirGame() : SGameBase("BackMir", WINDOW_WIDTH, WINDOW_HEIGHT)
 	m_nFps = 0;
 	m_dwLastCheckMemoryStatus = GetTickCount();
 	m_pAssistPaneWnd = NULL;
+	m_pDonateValueWnd = NULL;
+	m_pDonateWnd = NULL;
 	m_nDarkMode = 1;
 	m_texDarkMode = 0;
 	m_bShowMapSnap = true;
@@ -460,6 +463,15 @@ bool MirGame::UserInitial()
 	m_pAssistPaneWnd->CreateDuiWindow(hWnd, "AssistPane");
 	m_pAssistPaneWnd->ShowWindow();
 	m_pAssistPaneWnd->AdjustWindowPos();
+
+	// Initialize donate wnd
+	m_pDonateWnd = new BMDonateWnd;
+	m_pDonateWnd->CreateDuiWindow(hWnd, "DonateWnd");
+	m_pDonateWnd->SetLoginAccount(m_xLoginAccount);
+
+	m_pDonateValueWnd = new BMDonateValueWnd;
+	m_pDonateValueWnd->m_pDonateWnd = m_pDonateWnd;
+	m_pDonateValueWnd->CreateDuiWindow(hWnd, "DonateValueWnd");
 
 	//	选择纹理的hge指针
 	SelectedTextureManager::GetInstance()->SetHGE(m_pHGE);
@@ -1584,6 +1596,15 @@ void MirGame::OnGameSvrMsg(SOCKET _s, LPARAM lParam)
 				m_pxLoginScene->m_szHero = m_szHero;
 				m_pxLoginScene->Init(m_pxResMgr);
 				m_pxLoginScene->OnPressNetButton();
+			}
+		}break;
+	case WM_HIDE_ASSITWND:
+		{
+			if (GetCurStage() == SCENE_GAME) {
+				// Notify GameScene to show open assit wnd button
+				if (NULL != m_pGameScene) {
+					m_pGameScene->OnAssistWndClose();
+				}
 			}
 		}break;
  	}

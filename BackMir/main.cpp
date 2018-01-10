@@ -73,6 +73,7 @@ int CALLBACK WinMain( IN HINSTANCE hInstance, IN HINSTANCE hPrevInstance, IN LPS
 	BMPreConnWnd* pPreConnWnd = new BMPreConnWnd;
 	pPreConnWnd->Create(NULL, "PreConnWnd", UI_WNDSTYLE_FRAME, 0, 0, 0, 300, 180, 0);
 	pPreConnWnd->CenterWindow();
+	std::string xLoginAccount = pPreConnWnd->GetAccount();
 	pPreConnWnd->ShowModal();
 
 	if(!g_bPrepared)
@@ -92,6 +93,7 @@ int CALLBACK WinMain( IN HINSTANCE hInstance, IN HINSTANCE hPrevInstance, IN LPS
 	//	Run the game
 	MirGame game;
 	game.SetGameMode(g_eGameMode);
+	game.SetLoginAccount(xLoginAccount);
 	game.Init();
 	game.Exec();
 

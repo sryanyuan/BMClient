@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window mininfo="380,200" size="380,200" caption="0,0,0,36" >
+	<!--Font name="幼圆" size="12" default="true" /-->
+	<Font name="宋体" size="12" bold="false" default="true" />
+	<Font name="微软雅黑" size="14" bold="true" default="false" />
+	<Font name="宋体" size="14" bold="false" default="false" />
+	<Font name="微软雅黑" size="12" bold="false" default="false" />
+
+	<!--这一层是用来设置背景的-->
+	<HorizontalLayout name="bg" bkcolor="0xFF1e90ff" hole="true" >
+		<!--这一层是用来设置边框的-->
+		<VerticalLayout bkimage="file='AssistPane/border.png' corner='2,2,2,2'" hole="true">
+			<!--游戏内容页面-->
+			<HorizontalLayout>
+					<Label width="3" />
+					
+					<VerticalLayout>
+						<Label height="3" />
+						
+						<!--标题栏-->
+						<HorizontalLayout height="34">
+							<Label name="label_caption" text="BackMIR捐赠" textcolor="0xffffffff" font="1" float="true" pos="15,10,200,25" />
+							<Label />
+							<Button name="closebtn" width="41" height="35" normalimage="file='donatewnd/btn_msgdlgClose.png' source='0,0,41,35'" hotimage="file='donatewnd/btn_msgdlgClose.png' source='0,35,41,70'" pushedimage="file='donatewnd/btn_msgdlgClose.png' source='0,70,41,105'" />
+						</HorizontalLayout>
+						
+						<HorizontalLayout bkcolor="0xffe9f0f4" >
+							<Label width="5" />
+							
+								<HorizontalLayout>
+									<Label width="10" />
+									
+									
+										<!--内容页面-->
+										<VerticalLayout width="250">
+											<Label height="5" />
+											<Label text="如果您喜欢该游戏，支持作者的开发与维护，可以选择捐赠游戏:" font="3" />
+											<Control height="5" />
+											<RichEdit name="edit_value" height="32" width="230" maxchar="1" bkimage="file='donatewnd/edit_bk.png' corner='2,2,2,2'" inset="2,2,2,2" />
+											<Control height="5" />
+											<Button name="button_donate" font="3" width="120" text="捐赠" normalimage="file='donatewnd/button.png' source='0,0,177,52' corner='8,8,8,8'" hotimage="file='donatewnd/button.png' source='0,52,177,104' corner='8,8,8,8'" pushedimage="file='donatewnd/button.png' source='0,104,177,156' corner='8,8,8,8'" selectedimage="file='donatewnd/button.png' source='0,104,177,156' corner='8,8,8,8'" />
+											<Label height="5" />
+										</VerticalLayout>
+									
+									<Label width="10" />
+								</HorizontalLayout>
+							
+							<Label width="5" />
+						</HorizontalLayout>
+						
+						<Label height="3" />
+					</VerticalLayout>
+					
+					<Label width="3" />
+			</HorizontalLayout>
+		</VerticalLayout>
+	</HorizontalLayout>
+</Window>

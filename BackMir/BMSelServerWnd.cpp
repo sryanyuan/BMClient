@@ -15,6 +15,13 @@ void BMSelServerWnd::SetServerList(protocol::MServerListNtf& _refList)
 	m_serverList = _refList;
 }
 
+void BMSelServerWnd::AddServer(int _nServerID, const std::string &_refAddr, const std::string &_refName) {
+	protocol::MServerListItem* pNewServer = m_serverList.add_servers();
+	pNewServer->set_serverid(_nServerID);
+	pNewServer->set_serveraddress(_refAddr);
+	pNewServer->set_servername(_refName);
+}
+
 int BMSelServerWnd::GetSelServerIndex()
 {
 	return m_nSelServerIndex;

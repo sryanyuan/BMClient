@@ -23,6 +23,7 @@ protected:
 	virtual DuiLib::CDuiString GetSkinFile();
 	virtual LPCTSTR GetWindowClassName() const;
 	virtual LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam);
+	virtual void OnFinalMessage( HWND hWnd );
 
 	virtual void Notify(DuiLib::TNotifyUI& msg);
 

@@ -397,6 +397,7 @@ bool GameStaticDlg::ProcUserCmd(const POINT& _mp)
 						GamePlayer::GetInstance()->SetMagicKey(m_dwMgc, HGEK_F1 + m_nSkillDown);
 						SetVisible(false);
 						GameSoundManager::GetInstancePtr()->PlayGameSound(SDGAME_CLICKBUTTON);
+						GamePlayer::GetInstance()->WriteAccMagicKeyCfg();
 						//m_pParent->GetDlgControl()->SetUnBlock();
 					}
 				}

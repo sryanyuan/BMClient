@@ -131,6 +131,8 @@ private:
 	GameTextureManager* m_pSelChrRes;
 	hgeSprite* m_pEffRender;
 
+	std::string m_xAccount;
+
 	float m_fHumUpdateTime;
 	DWORD m_dwHumFrame;
 	float m_fFireUpdateTime;

@@ -7,12 +7,14 @@
 #include "../BackMir/BackMir.h"
 #include "GameInputDlg.h"
 #include "../Common/gfx_utils.h"
+#include "../BackMir/BMDonateWnd.h"
 //////////////////////////////////////////////////////////////////////////
 #define BID_SELLITEM	0
 #define BID_CHECKSOLD	3
 #define BID_LEFT		1
 #define BID_RIGHT		2
 #define BID_TAKEBACK	4
+#define BID_DONATE		5
 
 #define START_POS_X		(10+15)
 #define START_POS_Y		(77+10)
@@ -21,6 +23,9 @@
 
 #define MONEY_LABEL_X	62
 #define MONEY_LABEL_Y	404
+
+#define DONATE_BUTTON_X (MONEY_LABEL_X + 250)
+#define DONATE_BUTTON_Y (MONEY_LABEL_Y - 4)
 //////////////////////////////////////////////////////////////////////////
 OlShopDlg::OlShopDlg()
 {
@@ -39,6 +44,11 @@ OlShopDlg::OlShopDlg()
 
 	AddCommonButton(CBTN_LEFTARROW, BID_LEFT, 30 - 10 + 200, RECT_HEIGHT(m_rcClient) - 45 - 30, "");
 	AddCommonButton(CBTN_RIGHTARROW, BID_RIGHT, RECT_WIDTH(m_rcClient) - 30 - 200, RECT_HEIGHT(m_rcClient) - 45 - 30, "");
+	AddCommonButton(CBTN_NORMAL, BID_DONATE, DONATE_BUTTON_X, DONATE_BUTTON_Y, "¾èÔù");
+
+	if (pTheGame->GetGameMode() != GM_LOGIN) {
+		GetCommonButtonData(BID_DONATE)->bVisible = false;
+	}
 
 	m_pRender = new hgeSprite(0, 0, 0, 0, 0);
 
@@ -127,6 +137,9 @@ bool OlShopDlg::OnCommonButtonClick(int _id)
 		g_xBuffer.Reset();
 		g_xBuffer << req;
 		SendBufferToGS(g_xBuffer);
+	} else if (BID_DONATE == _id) {
+		pTheGame->GetDonateValueWnd()->ShowWindow(true);
+		pTheGame->GetDonateValueWnd()->CenterWindow();
 	}
 
 	return true;

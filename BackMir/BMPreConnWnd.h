@@ -50,6 +50,10 @@ public:
 
 	void AskForSignIn();
 
+	inline std::string& GetAccount() {
+		return m_xAct;
+	}
+
 public:
 	void DoGameSvrPacket(const PkgLoginGameTypeNot& not);
 	void DoPacket(const PkgLoginGameTypeNot& not);
@@ -58,6 +62,7 @@ public:
 	void DoLoginSvrPacket(const PkgLoginVerifyResultAck& ack);
 	void DoLoginSvrPacket(const PkgLoginQuickMsgNot& not);
 	void DoLoginSvrPacket(const PkgLoginServerAddrNot& not);
+	void DoLoginSvrPacket(const PkgLoginServerAddrV2Not& not);
 	void DoLoginSvr_HeadData(const char* _pData, unsigned int _len);
 
 	void DoLoginSvrPacketProtobuf(const char* _pData, size_t _uLength);

@@ -85,8 +85,6 @@ void AssistPaneWnd::AdjustWindowPos()
 
 void AssistPaneWnd::Notify(DuiLib::TNotifyUI& msg)
 {
-	__super::Notify(msg);
-
 	if(msg.sType == DUI_MSGTYPE_SELECTCHANGED)
 	{
 		COptionUI* pOption = (COptionUI*)msg.pSender->GetInterface(DUI_CTR_OPTION);
@@ -136,6 +134,10 @@ void AssistPaneWnd::Notify(DuiLib::TNotifyUI& msg)
 		else if(msg.pSender->GetName() == "closebtn")
 		{
 			ShowWindow(false);
+			// Notify
+			::PostMessage(m_hParentHWND, WM_HIDE_ASSITWND, 0, 0);
+			// ui with name closebtn will be closed by default notify handler
+			return;
 		}
 	}
 	else if(msg.sType == DUI_MSGTYPE_TIMER)
@@ -145,6 +147,12 @@ void AssistPaneWnd::Notify(DuiLib::TNotifyUI& msg)
 			m_PaintManager.KillTimer(m_pTabLayout, TIMER_REFRESHUI);
 		}
 	}
+
+	__super::Notify(msg);
+}
+
+void AssistPaneWnd::OnFinalMessage( HWND hWnd ) {
+	__super::OnFinalMessage(hWnd);
 }
 
 void AssistPaneWnd::ProcessPageOK(DuiLib::TNotifyUI& msg)

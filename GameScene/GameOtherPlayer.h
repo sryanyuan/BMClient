@@ -259,6 +259,9 @@ protected:
 
 	//	扩展人物属性
 	ExtendHeroAttrib m_stExtAttrib;
+
+	// 坐骑
+	bool m_bInRider;
 };
 //////////////////////////////////////////////////////////////////////////
 #endif

@@ -128,6 +128,8 @@ public:
 
 	void PlayTransAnimation(int _nId, int _nX, int _nY);
 
+	void OnAssistWndClose();
+
 public:
 	void OnMessage(PacketBase* _pPacket);
 	void RequestCloseGame();

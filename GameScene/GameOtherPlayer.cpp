@@ -64,6 +64,8 @@ GameOtherPlayer::GameOtherPlayer()
 	m_nLastNameColorIndex = 0;
 
 	ZeroMemory(&m_stExtAttrib, sizeof(m_stExtAttrib));
+
+	m_bInRider = 0;
 }
 
 GameOtherPlayer::~GameOtherPlayer()

@@ -17,10 +17,13 @@
 #include "../DuiWnd/AssistPaneWnd.h"
 #include "../Common/SelectedTextureManager.h"
 #include <google/protobuf/message.h>
+//#include "BMDonateWnd.h"
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 class MirGame;
+class BMDonateValueWnd;
 class AssistPaneWnd;
+class BMDonateWnd;
 
 extern MirGame* pTheGame;
 
@@ -168,6 +171,12 @@ public:
 	{
 		return m_pAssistPaneWnd;
 	}
+	inline BMDonateWnd* GetDonateWnd() {
+		return m_pDonateWnd;
+	}
+	inline BMDonateValueWnd* GetDonateValueWnd() {
+		return m_pDonateValueWnd;
+	}
 
 	bool SetGameCursor(int _nResourceId);
 
@@ -211,6 +220,10 @@ public:
 	void UpdateWindowTitle(int _nDifficultyLevel);
 
 	void RequestSmallQuit();
+
+	inline void SetLoginAccount(std::string& _refAccount) {
+		m_xLoginAccount = _refAccount;
+	}
 
 	//////////////////////////////////////////////////////////////////////////
 	//	Quick config helper
@@ -305,6 +318,9 @@ private:
 
 	//	辅助窗口
 	AssistPaneWnd* m_pAssistPaneWnd;
+	// 捐赠窗口
+	BMDonateWnd* m_pDonateWnd;
+	BMDonateValueWnd* m_pDonateValueWnd;
 
 	//	内存检测释放计时
 	DWORD m_dwLastCheckMemoryStatus;
@@ -318,6 +334,9 @@ private:
 
 	//	鼠标
 	int m_nCursorResourceId;
+
+	// 登陆相关
+	std::string m_xLoginAccount;
 };
 
 //////////////////////////////////////////////////////////////////////////

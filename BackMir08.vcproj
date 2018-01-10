@@ -724,6 +724,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Common\strutils.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\strutils.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Common\SWilFile.cpp"
 				>
 			</File>
@@ -1141,6 +1149,14 @@
 			</File>
 			<File
 				RelativePath=".\BackMir\BackMir.h"
+				>
+			</File>
+			<File
+				RelativePath=".\BackMir\BMDonateWnd.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\BackMir\BMDonateWnd.h"
 				>
 			</File>
 			<File

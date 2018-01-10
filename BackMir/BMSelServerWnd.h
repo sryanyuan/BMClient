@@ -25,7 +25,11 @@ public:
 public:
 	void OnPrepare();
 	void SetServerList(protocol::MServerListNtf& _refList);
+	void AddServer(int _nServerID, const std::string &_refAddr, const std::string &_refName);
 	int GetSelServerIndex();
+	protocol::MServerListNtf& GetServerList() {
+		return m_serverList;
+	}
 
 protected:
 	CPaintManagerUI m_pm;

@@ -253,6 +253,8 @@ enum GAME_RES
 #define WM_ENTER_GAMESCENE	(0x0400 + 4)
 //	小退 回到人物界面
 #define WM_BACK_SELCHR		(0x0400 + 5)
+// 关闭辅助窗口
+#define WM_HIDE_ASSITWND	(0x0400 + 6)
 
 //	定时器
 #define TIMER_CONNECTSVR	(101)

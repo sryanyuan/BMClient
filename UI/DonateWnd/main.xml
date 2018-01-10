@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window mininfo="800,600" size="800,600" caption="0,0,0,36" >
+	<!--Font name="幼圆" size="12" default="true" /-->
+	<Font name="宋体" size="12" bold="false" default="true" />
+	<Font name="微软雅黑" size="14" bold="true" default="false" />
+	<Font name="宋体" size="14" bold="false" default="false" />
+	<Font name="微软雅黑" size="12" bold="false" default="false" />
+
+	<!--这一层是用来设置背景的-->
+	<HorizontalLayout name="bg" bkcolor="0xFF1e90ff" hole="true" >
+		<!--这一层是用来设置边框的-->
+		<VerticalLayout bkimage="file='AssistPane/border.png' corner='2,2,2,2'" hole="true">
+			<!--游戏内容页面-->
+			<HorizontalLayout>
+					<Label width="3" />
+					
+					<VerticalLayout>
+						<Label height="3" />
+						
+						<!--标题栏-->
+						<HorizontalLayout height="34">
+							<Label name="label_caption" text="BackMIR捐赠" textcolor="0xffffffff" font="1" float="true" pos="15,10,200,25" />
+							<Label />
+							<Button name="closebtn" width="41" height="35" normalimage="file='assistpane/btn_msgdlgClose.png' source='0,0,41,35'" hotimage="file='assistpane/btn_msgdlgClose.png' source='0,35,41,70'" pushedimage="file='assistpane/btn_msgdlgClose.png' source='0,70,41,105'" />
+						</HorizontalLayout>
+						
+						<HorizontalLayout bkcolor="0xffe9f0f4" >
+							<Label width="5" />
+							
+							<VerticalLayout>
+								<Label height="5" />
+									
+									<!--内容页面-->
+									<VerticalLayout>
+										<HorizontalLayout height="34">
+											<Label text="支持作者的更新与开发，可以选择捐助作者，假设此页面无法使用，点击访问捐助页面" font="3" />
+											<Button name="button_web" font="3" width="120" height="32" text="点此访问" normalimage="file='donatewnd/button.png' source='0,0,177,52' corner='8,8,8,8'" hotimage="file='donatewnd/button.png' source='0,52,177,104' corner='8,8,8,8'" pushedimage="file='donatewnd/button.png' source='0,104,177,156' corner='8,8,8,8'" selectedimage="file='donatewnd/button.png' source='0,104,177,156' corner='8,8,8,8'" />
+										</HorizontalLayout>
+										<Control height="5" />
+										<WebBrowser name="browser" autonavi="true" />  
+									</VerticalLayout>
+									
+								<Label height="5" />
+							</VerticalLayout>
+							
+							<Label width="5" />
+						</HorizontalLayout>
+						
+						<Label height="3" />
+					</VerticalLayout>
+					
+					<Label width="3" />
+			</HorizontalLayout>
+		</VerticalLayout>
+	</HorizontalLayout>
+</Window>

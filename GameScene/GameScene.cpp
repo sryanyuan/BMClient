@@ -2817,6 +2817,13 @@ bool GameScene::SendChatMessage()
 
 				m_pMainOpt->GetChatDlg()->GetHistoryDlg()->InsertChatMessage(szMapInfo, ARGB_RED);
 			}
+			else if (0 == stricmp(szCmd, "assist")) {
+				AssistPaneWnd* pWnd = pTheGame->GetAssistPaneWnd();
+				if (NULL != pWnd) {
+					pWnd->ShowWindow(true);
+					pWnd->AdjustWindowPos();
+				}
+			}
 			else
 			{
 				m_pMainOpt->GetChatDlg()->GetHistoryDlg()->InsertChatMessage("[错误]无效指令", ARGB_RED);
@@ -3634,6 +3641,10 @@ void GameScene::PlayTransAnimation(int _nId, int _nX, int _nY)
 	{
 		GameSoundManager::GetInstancePtr()->PlayGameSound(SDGAME_OBJECTFLY);
 	}
+}
+
+void GameScene::OnAssistWndClose() {
+	GetMainOpt()->GetChatDlg()->GetHistoryDlg()->InsertChatMessage("[提示]您已关闭辅助窗口，请输入 @assist 来再次打开窗口", ARGB_RED);
 }
 
 
