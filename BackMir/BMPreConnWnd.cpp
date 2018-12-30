@@ -12,6 +12,12 @@
 #include "BMSelServerWnd.h"
 #include "BMPasswordWnd.h"
 #include "../Common/strutils.h"
+
+#include <mutex>
+#include <condition_variable>
+#include <thread>
+#include <atomic>
+#include <chrono>
 //////////////////////////////////////////////////////////////////////////
 bool g_bPrepared = false;
 bool g_bDataLoaded = false;
@@ -364,17 +370,9 @@ void BMPreConnWnd::PrepareLoadData()
 
 void BMPreConnWnd::LoadData()
 {
-	//char szSrcBuf[MAX_PATH];
-	char szFile[MAX_PATH];
-
-	for(int i = 0; i < RES_TOTAL; ++i)
+	for (int i = 0; i < RES_TOTAL; ++i)
 	{
-		sprintf(szFile, "%s\\Data\\%s", GetRootPath(), g_szResFile[i]);
-		//if(!GameResourceManager::GetInstance()->LoadFile(szFile))
-		if(!GameResourceManager::GetInstance()->LoadFileWithFilename(g_szResFile[i]))
-		{
-
-		}
+		GameResourceManager::GetInstance()->LoadFileWithFilename(g_szResFile[i]);
 	}
 }
 

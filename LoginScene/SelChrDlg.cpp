@@ -10,6 +10,7 @@
 #include "../../CommonModule/ProtoType.h"
 #include "../../CommonModule/CommandLineHelper.h"
 #include "../BackMir/BMDonateWnd.h"
+#include "../GameScene/GameResourceUtil.h"
 //////////////////////////////////////////////////////////////////////////
 const char* g_szHeader[] =
 {
@@ -63,7 +64,7 @@ SelChrDlg::SelChrDlg()
 	m_pSelChrRes = new GameTextureManagerSib;
 	char szPath[MAX_PATH];
 	sprintf(szPath, "%s\\Data\\selchr.sib",
-		GetRootPath());
+		GetGameResourceDir());
 	if(!m_pSelChrRes->LoadPackage(szPath))
 	{
 		AfxGetHge()->System_Log("can't load package [selchr.sib]");

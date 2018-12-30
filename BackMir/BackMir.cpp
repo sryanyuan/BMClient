@@ -360,12 +360,6 @@ bool MirGame::UserInitial()
 	//	读取分解信息
 	//InitItemGrade();
 
-	//	读取锻造信息
-	if(!StoveManager::GetInstance()->Init(pTheGame->GetScriptEngine()->GetVM()))
-	{
-		::MessageBox(NULL, "读取锻造信息失败", "错误", MB_ICONERROR | MB_TASKMODAL);
-		return false;
-	}
 
 	//	读取全局配置
 	/*sprintf(szBuf, "%s\\cfg.ini",
@@ -452,6 +446,13 @@ bool MirGame::UserInitial()
 #endif
 	m_xScript.SetLuaLoadPath(szBuf);
 	LoadScript(0);
+
+	//	读取锻造信息
+	if(!StoveManager::GetInstance()->Init(pTheGame->GetScriptEngine()->GetVM()))
+	{
+		::MessageBox(NULL, "读取锻造信息失败", "错误", MB_ICONERROR | MB_TASKMODAL);
+		return false;
+	}
 
 	//	读取任务脚本
 	if(!LoadQuestScript())

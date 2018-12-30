@@ -501,6 +501,9 @@
     <ClInclude Include="..\CommonModule\LuaDataLoader.h">
       <Filter>Module</Filter>
     </ClInclude>
+    <ClInclude Include="GameScene\GameResourceUtil.h">
+      <Filter>GameScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resource\arrow\attack.cur">
@@ -1075,6 +1078,9 @@
     </ClCompile>
     <ClCompile Include="..\CommonModule\LuaDataLoader.cpp">
       <Filter>Module</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene\GameResourceUtil.cpp">
+      <Filter>GameScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

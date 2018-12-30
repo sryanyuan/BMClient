@@ -234,6 +234,7 @@
     <ClInclude Include="GameScene\GameOtherPlayer.h" />
     <ClInclude Include="GameScene\GamePlayer.h" />
     <ClInclude Include="GameScene\GameResourceManager.h" />
+    <ClInclude Include="GameScene\GameResourceUtil.h" />
     <ClInclude Include="GameScene\GameScene.h" />
     <ClInclude Include="GameScene\GameSoundManager.h" />
     <ClInclude Include="GameScene\GameTextureManager.h" />
@@ -429,6 +430,7 @@
     <ClCompile Include="GameScene\GameOtherPlayer.cpp" />
     <ClCompile Include="GameScene\GamePlayer.cpp" />
     <ClCompile Include="GameScene\GameResourceManager.cpp" />
+    <ClCompile Include="GameScene\GameResourceUtil.cpp" />
     <ClCompile Include="GameScene\GameScene.cpp" />
     <ClCompile Include="GameScene\GameSoundManager.cpp" />
     <ClCompile Include="GameScene\GameTextureManager.cpp" />

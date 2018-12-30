@@ -41,163 +41,6 @@ using namespace LuaPlus;
 //////////////////////////////////////////////////////////////////////////
 extern ByteBuffer g_xBuffer;
 
-/*
-#ifdef _DEBUG
-const char* g_szResFile[] = 
-{
-	"Tiles.wil",
-	"SmTiles.wil",
-	"Hum.wil",
-	"Objects.wil",
-	"Objects2.wil",
-	"Objects3.wil",
-	"Objects4.wil",
-	"Objects5.wil",
-	"Objects6.wil",
-	"Objects7.wil",
-	"Objects8.wil",
-	"Objects9.wil",
-	"Objects10.sib",
-	"Objects11.wil",
-	"Objects12.wil",
-	"Objects13.sib",
-	"Hair.wil",
-	"Weapon.sib",
-	//"Prguse.wil",
-	//"Prguse2.wil",
-	"OpUI.sib",
-	"Items.wil",
-	"DnItems.wil",
-	"Mon1.wil",
-	"Mon2.sib",	//	just for evil dragon
-	"Mon3.wil",
-	"Mon4.wil",
-	"Mon5.wil",
-	"Mon6.wil",
-	"Mon7.wil",
-	"Mon8.wil",
-	"Mon9.wil",
-	"Mon10.wil",
-	"Mon11.wil",
-	"Mon12.wil",
-	"Mon13.wil",
-	"Mon14.wil",
-	"Mon15.wil",
-	"Mon16.wil",
-	"Mon17.wil",
-	"Mon18.wil",
-	"Mon19.sib",
-	"Mon20.wil",
-	"Mon21.wil",
-	"Mon22.wil",
-	"Mon23.sib",
-	"Mon24.wil",
-	"Mon25.wil",
-	"Mon26.sib",
-	"Mon27.wil",
-	"Mon28.wil",
-	"Mon29.sib",
-	"Mon30.wil",
-	"Mon31.sib",
-	"Mon32.sib",
-	"Mon33.sib",
-	"mmap.sib",
-	"bmap.sib",
-	"Magic.wil",
-	"Magic2.sib",
-	"Magic3.wil",
-	"Magic4.wil",
-	"Magic5.wil",
-	"Magic6.wil",
-	"Magic7.wil",
-	"Magic8.wil",
-	"Magic9.wil",
-	"Magic10.wil",
-	"npc.sib",
-	"StateItem.sib",
-	"HumEffect.wil",
-	"MagicIcon.sib"
-	//"ChrSel.wil"
-};
-#else
-const char* g_szResFile[] = 
-{
-	"Tiles.sib",
-	"SmTiles.sib",
-	"Hum.sib",
-	"Objects.sib",
-	"Objects2.sib",
-	"Objects3.sib",
-	"Objects4.sib",
-	"Objects5.sib",
-	"Objects6.sib",
-	"Objects7.sib",
-	"Objects8.sib",
-	"Objects9.sib",
-	"Objects10.sib",
-	"Objects11.sib",
-	"Objects12.sib",
-	"Objects13.sib",
-	"Hair.sib",
-	"Weapon.sib",
-	//"Prguse.wil",
-	//"Prguse2.wil",
-	"OpUI.sib",
-	"Items.sib",
-	"DnItems.sib",
-	"Mon1.sib",
-	"Mon2.sib",		//	just for evil dragon
-	"Mon3.sib",
-	"Mon4.sib",
-	"Mon5.sib",
-	"Mon6.sib",
-	"Mon7.sib",
-	"Mon8.sib",
-	"Mon9.sib",
-	"Mon10.sib",
-	"Mon11.sib",
-	"Mon12.sib",
-	"Mon13.sib",
-	"Mon14.sib",
-	"Mon15.sib",
-	"Mon16.sib",
-	"Mon17.sib",
-	"Mon18.sib",
-	"Mon19.sib",
-	"Mon20.sib",
-	"Mon21.sib",
-	"Mon22.sib",
-	"Mon23.sib",
-	"Mon24.sib",
-	"Mon25.sib",
-	"Mon26.sib",
-	"Mon27.sib",
-	"Mon28.sib",
-	"Mon29.sib",
-	"Mon30.sib",
-	"Mon31.sib",
-	"Mon32.sib",
-	"Mon33.sib",
-	"mmap.sib",
-	"bmap.sib",
-	"Magic.sib",
-	"Magic2.sib",
-	"Magic3.sib",
-	"Magic4.sib",
-	"Magic5.sib",
-	"Magic6.sib",
-	"Magic7.sib",
-	"Magic8.sib",
-	"Magic9.sib",
-	"Magic10.sib",
-	"npc.sib",
-	"StateItem.sib",
-	"HumEffect.sib",
-	"MagicIcon.sib"
-	//"ChrSel.wil"
-};
-#endif*/
-
 static const char* g_MapTable[] = 
 {
 	//	0 新手村
@@ -260,7 +103,6 @@ bool GameScene::Init(HGE* _hge)
  	//	负责初始化所有资源
  	s_hge = _hge;
  	char szSrcBuf[MAX_PATH];
- 	char szFile[MAX_PATH];
  	GetRootPath(szSrcBuf, MAX_PATH);
 	//	初始化人物数据
  	m_pPlayer = GamePlayer::GetInstance();
@@ -273,21 +115,6 @@ bool GameScene::Init(HGE* _hge)
 
 	//	初始化GameTextureManager
 	HWND hWnd = _hge->System_GetState(HGE_HWND);
-	//HDC hdc = ::GetDC(hWnd);
-	//GameTextureManager::Init(hdc, _hge);
-	//::ReleaseDC(hWnd, hdc);
-
- 	/*for(int i = 0; i < RES_TOTAL; ++i)
- 	{
- 		sprintf(szFile, "%sData\\%s", szSrcBuf, g_szResFile[i]);
- 		if(!GameResourceManager::GetInstance()->LoadFile(szFile))
- 		{
- 			_hge->System_Log("加载资源失败 : %s", szFile);
- 			//return false;
- 		}
- 		::PostMessage(hWnd, WM_SCENE_PROG, RES_TOTAL - 1, i);
- 	}
-*/
 
 	//	初始化小地图
 	m_pMiniMap = new GameMiniMapDlg;
@@ -296,10 +123,6 @@ bool GameScene::Init(HGE* _hge)
 	//	初始化状态栏
 	m_pStatusDlg = new GameStatusDlg;
 	InsertObject(m_pStatusDlg);
-
-	/*m_pStatusDlg->AddStatus(200, 14 * 1000);
-	m_pStatusDlg->AddStatus(1, 25 * 1000);
-	m_pStatusDlg->AddStatus(3, 60 * 1000);*/
 
 	//	魔法
 	//InsertObject(&GamePlayer::GetInstance()->m_mgcs);

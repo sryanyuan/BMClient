@@ -10,9 +10,6 @@
 #define LOADING_TEX_SUM		150
 #define EXTRA_OBJECTS_SUM	30
 
-extern const char* g_szResFile[RES_TOTAL];
-
-//typedef std::map<int, GameTextureManager*> TEXMAP;
 
 class GameResourceManager
 {

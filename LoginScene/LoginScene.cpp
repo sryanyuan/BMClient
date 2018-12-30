@@ -19,6 +19,7 @@
 #include "../../CommonModule/CommandLineHelper.h"
 #include "../../CommonModule/version.h"
 #include "../BackMir/GlobalLuaConfig.h"
+#include "../GameScene/GameResourceUtil.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -154,7 +155,7 @@ bool LoginScene::Init(hgeResourceManager* _pRes)
 	m_pTexMgr = new GameTextureManagerSib;
 	char szPath[MAX_PATH];
 	sprintf(szPath, "%s\\Data\\Ani.sib",
-		GetRootPath());
+		GetGameResourceDir());
 	if(!m_pTexMgr->LoadPackage(szPath))
 	{
 		AfxGetHge()->System_Log("can't load package [Ani.sib]");

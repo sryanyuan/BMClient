@@ -6,6 +6,7 @@
 #include <map>
 #include <list>
 #include <string>
+#include "../GameScene/GameResourceUtil.h"
 
 typedef std::list<std::string> StringList;
 

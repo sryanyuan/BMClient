@@ -595,73 +595,6 @@ void GameMapManager::RenderBk()
 				}
 			}
 
-// 			{
-// 				//	画小的 48*32的FrImg
-// 				int nObjectsIndex = 0;
-// 				nObjectsIndex = m_mapData.GetCellData(i, j)->bArea;
-// 				if(nObjectsIndex > RES_OBJECTS7 - RES_OBJECTS)
-// 				{
-// 					if(!GameResourceManager::GetInstance()->IsExtraObjectsExist(nObjectsIndex + 1))
-// 					{
-// 						sprintf(szWilPath, "%s\\data\\objects%d.wil", GetRootPath(), nObjectsIndex + 1);
-// 						if(GameResourceManager::GetInstance()->LoadWilFileEx(szWilPath))
-// 						{
-// 							//	跨越式objects读取成功
-// 							bEspRead = true;
-// 						}
-// 						else
-// 						{
-// 							AfxGetHge()->System_Log("非法的Objects索引: %d", nObjectsIndex);
-// 							return;
-// 						}
-// 					}
-// 					else
-// 					{
-// 						bEspRead = true;
-// 					}
-// 				}
-// 
-// 				wTile = m_mapData.GetCellData(i, j)->wFrImg;
-// 				//	最高位是否能行走 忽略
-// 				wTile &= (~0x8000);
-// 				if(wTile > 0)
-// 				{
-// 					--wTile;
-// 					if(bEspRead)
-// 					{
-// 						ttexObjects = GameResourceManager::GetInstance()->GetTexsEx(nObjectsIndex + 1);
-// 					}
-// 					else
-// 					{
-// 						ttexObjects = GameResourceManager::GetInstance()->GetTexs(RES_OBJECTS + nObjectsIndex);
-// 					}
-// 					
-// 					if(ttexObjects)
-// 					{
-// 						if(ttexObjects->GetTextureWidthEx(wTile) == UNIT_WIDTH &&
-// 							ttexObjects->GetTextureHeightEx(wTile) == UNIT_HEIGHT)
-// 						{
-// 							//	小的
-// 							tex = ttexObjects->GetTexture(wTile);
-// 							if(!m_pSpr)
-// 							{
-// 								m_pSpr = new hgeSprite(tex, 0, 0, UNIT_WIDTH, UNIT_HEIGHT);
-// 							}
-// 							else
-// 							{
-// 								m_pSpr->SetTexture(tex);
-// 								m_pSpr->SetTextureRect(0, 0, UNIT_WIDTH, UNIT_HEIGHT);
-// 							}
-// 							m_pSpr->Render((j - m_rcClient.left) * UNIT_WIDTH - pPlayer->GetShiftX(),
-// 								(i- m_rcClient.top) * UNIT_HEIGHT - pPlayer->GetShiftY());
-// 						}
-// 						else
-// 						{
-// 							//AfxGetHge()->System_Log("not 48*32");
-// 						}
-// 					}
-// 				}
-// 			}
 			{	//	新增动画
 				//	画小的 48*32的FrImg
 				if(i >= m_rcClient.top - 1 &&
@@ -679,25 +612,6 @@ void GameMapManager::RenderBk()
 					if(nObjectsIndex > MAX_OBJECTS - RES_OBJECTS &&
 						nObjectsIndex < 20)
 					{
-						/*if(!GameResourceManager::GetInstance()->IsExtraObjectsExist(nObjectsIndex + 1))
-						{
-						sprintf(szWilPath, "%s\\data\\objects%d.wil", GetRootPath(), nObjectsIndex + 1);
-						if(GameResourceManager::GetInstance()->LoadWilFileEx(szWilPath))
-						{
-						//	跨越式objects读取成功
-						bEspRead = true;
-						}
-						else
-						{
-						AfxGetHge()->System_Log("非法的Objects索引: %d", nObjectsIndex);
-						return;
-						}
-						}
-						else
-						{
-						bEspRead = true;
-						}*/
-						//AfxGetHge()->System_Log("非法的Object index[%d]", nObjectsIndex);
 						continue;
 					}
 					else if(nObjectsIndex >= 20)

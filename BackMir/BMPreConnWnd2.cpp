@@ -78,7 +78,7 @@ void BMPreConnWnd2::SetConnStep(PreConnStepType _eType)
 	}
 	else if(_eType == kPreConnStep_ConnectServerResultTimeout)
 	{
-		AppendString("\Timeout...");
+		AppendString("\rTimeout...");
 	}
 }
 

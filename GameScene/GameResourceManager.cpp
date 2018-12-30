@@ -1,183 +1,8 @@
 #include "GameResourceManager.h"
 #include "../Common/GlobalFunction.h"
+#include "../GameScene/GameResourceUtil.h"
 
 //////////////////////////////////////////////////////////////////////////
-#ifdef _DEBUG
-const char* g_szResFile[] = 
-{
-	"Tiles.sib",
-	"SmTiles.sib",
-	"Hum.sib",
-	"Hum2.sib",
-	"Objects.sib",
-	"Objects2.sib",
-	"Objects3.sib",
-	"Objects4.sib",
-	"Objects5.sib",
-	"Objects6.sib",
-	"Objects7.sib",
-	"Objects8.sib",
-	"Objects9.sib",
-	"Objects10.sib",
-	"Objects11.sib",
-	"Objects12.sib",
-	"Objects13.sib",
-	"Objects14.sib",
-	"Hair.sib",
-	"Hair2.sib",
-	"Weapon.sib",
-	"Weapon2.sib",
-	"Weapon_Effect.sib",
-	//"Prguse.wil",
-	//"Prguse2.wil",
-	"OpUI.sib",
-	"Items.sib",
-	"DnItems.sib",
-	"Mon1.sib",
-	"Mon2.sib",	//	just for evil dragon
-	"Mon3.sib",
-	"Mon4.sib",
-	"Mon5.sib",
-	"Mon6.sib",
-	"Mon7.sib",
-	"Mon8.sib",
-	"Mon9.sib",
-	"Mon10.sib",
-	"Mon11.sib",
-	"Mon12.sib",
-	"Mon13.sib",
-	"Mon14.sib",
-	"Mon15.sib",
-	"Mon16.sib",
-	"Mon17.sib",
-	"Mon18.sib",
-	"Mon19.sib",
-	"Mon20.sib",
-	"Mon21.sib",
-	"Mon22.sib",
-	"Mon23.sib",
-	"Mon24.sib",
-	"Mon25.sib",
-	"Mon26.sib",
-	"Mon27.sib",
-	"Mon28.sib",
-	"Mon29.sib",
-	"Mon30.sib",
-	"Mon31.sib",
-	"Mon32.sib",
-	"Mon33.sib",
-	"mmap.sib",
-	"bmap.sib",
-	"Magic.sib",
-	"Magic2.sib",
-	"Magic3.sib",
-	"Magic4.sib",
-	"Magic5.sib",
-	"Magic6.sib",
-	"Magic7.sib",
-	"Magic8.sib",
-	"Magic9.sib",
-	"Magic10.sib",
-	"npc.sib",
-	"StateItem.sib",
-	"HumEffect.sib",
-	"HumEffect2.sib",
-	"MagicIcon.sib",
-	"Status.sib",
-	"Effect.sib",
-	"Custom.spb",
-	"Ani.sib"
-	//"ChrSel.wil"
-};
-#else
-const char* g_szResFile[] = 
-{
-	"Tiles.sib",
-	"SmTiles.sib",
-	"Hum.sib",
-	"Hum2.sib",
-	"Objects.sib",
-	"Objects2.sib",
-	"Objects3.sib",
-	"Objects4.sib",
-	"Objects5.sib",
-	"Objects6.sib",
-	"Objects7.sib",
-	"Objects8.sib",
-	"Objects9.sib",
-	"Objects10.sib",
-	"Objects11.sib",
-	"Objects12.sib",
-	"Objects13.sib",
-	"Objects14.sib",
-	"Hair.sib",
-	"Hair2.sib",
-	"Weapon.sib",
-	"Weapon2.sib",
-	"Weapon_Effect.sib",
-	//"Prguse.wil",
-	//"Prguse2.wil",
-	"OpUI.sib",
-	"Items.sib",
-	"DnItems.sib",
-	"Mon1.sib",
-	"Mon2.sib",		//	just for evil dragon
-	"Mon3.sib",
-	"Mon4.sib",
-	"Mon5.sib",
-	"Mon6.sib",
-	"Mon7.sib",
-	"Mon8.sib",
-	"Mon9.sib",
-	"Mon10.sib",
-	"Mon11.sib",
-	"Mon12.sib",
-	"Mon13.sib",
-	"Mon14.sib",
-	"Mon15.sib",
-	"Mon16.sib",
-	"Mon17.sib",
-	"Mon18.sib",
-	"Mon19.sib",
-	"Mon20.sib",
-	"Mon21.sib",
-	"Mon22.sib",
-	"Mon23.sib",
-	"Mon24.sib",
-	"Mon25.sib",
-	"Mon26.sib",
-	"Mon27.sib",
-	"Mon28.sib",
-	"Mon29.sib",
-	"Mon30.sib",
-	"Mon31.sib",
-	"Mon32.sib",
-	"Mon33.sib",
-	"mmap.sib",
-	"bmap.sib",
-	"Magic.sib",
-	"Magic2.sib",
-	"Magic3.sib",
-	"Magic4.sib",
-	"Magic5.sib",
-	"Magic6.sib",
-	"Magic7.sib",
-	"Magic8.sib",
-	"Magic9.sib",
-	"Magic10.sib",
-	"npc.sib",
-	"StateItem.sib",
-	"HumEffect.sib",
-	"HumEffect2.sib",
-	"MagicIcon.sib",
-	"Status.sib",
-	"Effect.sib",
-	"Custom.spb",
-	"Ani.sib"
-	//"ChrSel.wil"
-};
-#endif
-
 void GameResourceManager::ReleaseAllFile()
 {
 	for(int i = 0; i < GetTexsCount(); ++i)
@@ -214,9 +39,9 @@ bool GameResourceManager::LoadFileWithFilename(const char* _pszFileName)
 	char szFilePath[MAX_PATH];
 	
 	if (m_szCustomDir[0] != 0) {
-		sprintf(szFilePath, "%s/%s\\Data\\%s", GetRootPath(), m_szCustomDir, _pszFileName);
+		sprintf(szFilePath, "%s/%s\\Data\\%s", GetGameResourceDir(), m_szCustomDir, _pszFileName);
 	} else {
-		sprintf(szFilePath, "%s\\Data\\%s", GetRootPath(), _pszFileName);
+		sprintf(szFilePath, "%s\\Data\\%s", GetGameResourceDir(), _pszFileName);
 	}
 	return LoadFile(szFilePath);
 }
@@ -314,7 +139,7 @@ bool GameResourceManager::LoadFileSibMapPackage(int _index)
 
 	char szPath[MAX_PATH];
 	sprintf(szPath, "%s\\Data\\Map\\map%03d.sib",
-		GetRootPath(), _index - 20);
+		GetGameResourceDir(), _index - 20);
 	m_extratexs[_index - 20] = new GameTextureManagerSib;
 	if(!m_extratexs[_index - 20]->LoadPackage(szPath))
 	{
