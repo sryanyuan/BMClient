@@ -209,6 +209,18 @@ int GameResourceManager::GetResourceIndex(const char* _pszFileName)
 	return -1;
 }
 
+bool GameResourceManager::LoadFileWithFilename(const char* _pszFileName)
+{
+	char szFilePath[MAX_PATH];
+	
+	if (m_szCustomDir[0] != 0) {
+		sprintf(szFilePath, "%s/%s\\Data\\%s", GetRootPath(), m_szCustomDir, _pszFileName);
+	} else {
+		sprintf(szFilePath, "%s\\Data\\%s", GetRootPath(), _pszFileName);
+	}
+	return LoadFile(szFilePath);
+}
+
 bool GameResourceManager::LoadFile(const char* _pszFileName)
 {
 	size_t nLen = strlen(_pszFileName);

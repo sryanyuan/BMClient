@@ -387,7 +387,7 @@ void BMPreConnWnd2::LoadData()
 	for(int i = 0; i < RES_TOTAL; ++i)
 	{
 		sprintf(szFile, "%s\\Data\\%s", GetRootPath(), g_szResFile[i]);
-		if(!GameResourceManager::GetInstance()->LoadFile(szFile))
+		if(!GameResourceManager::GetInstance()->LoadFileWithFilename(g_szResFile[i]))
 		{
 			//_hge->System_Log("º”‘ÿ◊ ‘¥ ß∞‹ : %s", szFile);
 			//return false;

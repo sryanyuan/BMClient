@@ -1,5 +1,6 @@
 #include "GameStatusDlg.h"
 #include "../GameScene/GameResourceManager.h"
+#include "../Common/view.h"
 //////////////////////////////////////////////////////////////////////////
 GameStatusDlg::GameStatusDlg()
 {

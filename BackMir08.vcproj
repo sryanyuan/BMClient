@@ -44,7 +44,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(DEVLIB_DIR)\Inc\DuiLib&quot;;&quot;$(DEVLIB_DIR)\Inc\luajit&quot;;&quot;$(DEVLIB_DIR)\Inc\ZipArchive&quot;;&quot;$(DEVLIB_DIR)\Inc\fomdex&quot;;&quot;$(DEVLIB_DIR)\Inc\Sqlite&quot;;&quot;$(DEVLIB_DIR)\Inc\Zlib&quot;;&quot;$(DEVLIB_DIR)\inc\hge&quot;;&quot;$(DEVLIB_DIR)\inc\DX8.1\&quot;;&quot;$(DEVLIB_DIR)\Inc\fastdelegate&quot;;&quot;$(DEVLIB_DIR)\Inc\protobuf&quot;;&quot;$(DEVLIB_DIR)\Inc\curl&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;ZLIB_WINAPI;_NET_GAME_;_ZIPARCHIVE_;_SELCHR_;POINTER_64=__ptr64;_BIN_PATH"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;ZLIB_WINAPI;_NET_GAME_;_ZIPARCHIVE_;_SELCHR_;POINTER_64=__ptr64;_BIN_PATH;_CRT_SECURE_NO_WARNINGS"
 				StringPooling="true"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -128,7 +128,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				AdditionalIncludeDirectories="&quot;$(DEVLIB_DIR)\Inc\DuiLib&quot;;&quot;$(DEVLIB_DIR)\Inc\ZipArchive&quot;;&quot;$(DEVLIB_DIR)\Inc\fomdex&quot;;&quot;$(DEVLIB_DIR)\Inc\luajit&quot;;&quot;$(DEVLIB_DIR)\Inc\Zlib&quot;;&quot;$(DEVLIB_DIR)\Inc\Sqlite&quot;;&quot;$(DEVLIB_DIR)\Inc\hge&quot;;&quot;$(DEVLIB_DIR)\inc\DX8.1\&quot;;&quot;$(DEVLIB_DIR)\Inc\protobuf&quot;;&quot;$(DEVLIB_DIR)\Inc\fastdelegate&quot;;&quot;$(DEVLIB_DIR)\Inc\curl&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;ZLIB_WINAPI;_NET_GAME_;_ZIPARCHIVE_;_SELCHR_;_THEMIDA_;POINTER_64=__ptr64;_BIN_PATH"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;ZLIB_WINAPI;_NET_GAME_;_ZIPARCHIVE_;_SELCHR_;_THEMIDA_;POINTER_64=__ptr64;_BIN_PATH;_CRT_SECURE_NO_WARNINGS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -757,6 +757,10 @@
 			</File>
 			<File
 				RelativePath=".\Common\TimerCounter.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\view.h"
 				>
 			</File>
 		</Filter>
@@ -1513,6 +1517,10 @@
 			</File>
 			<File
 				RelativePath="..\CommonModule\utils.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CommonModule\version.h"
 				>
 			</File>
 			<File

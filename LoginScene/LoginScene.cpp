@@ -17,6 +17,7 @@
 #include "../../CommonModule/BMHttpManager.h"
 #include "../../CommonModule/cJSON.h"
 #include "../../CommonModule/CommandLineHelper.h"
+#include "../../CommonModule/version.h"
 #include "../BackMir/GlobalLuaConfig.h"
 
 //////////////////////////////////////////////////////////////////////////

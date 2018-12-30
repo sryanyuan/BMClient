@@ -1,6 +1,7 @@
 #include "MapSurface.h"
 #include "../GameScene/GameMapManager.h"
 #include "../GameScene/GameResourceManager.h"
+#include "view.h"
 
 //////////////////////////////////////////////////////////////////////////
 GameMapManager* MapSurface::s_pMapMgr = NULL;

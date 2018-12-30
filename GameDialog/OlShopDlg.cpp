@@ -46,9 +46,11 @@ OlShopDlg::OlShopDlg()
 	AddCommonButton(CBTN_RIGHTARROW, BID_RIGHT, RECT_WIDTH(m_rcClient) - 30 - 200, RECT_HEIGHT(m_rcClient) - 45 - 30, "");
 	AddCommonButton(CBTN_NORMAL, BID_DONATE, DONATE_BUTTON_X, DONATE_BUTTON_Y, "¾èÔù");
 
+#ifndef _DEBUG
 	if (pTheGame->GetGameMode() != GM_LOGIN) {
 		GetCommonButtonData(BID_DONATE)->bVisible = false;
 	}
+#endif
 
 	m_pRender = new hgeSprite(0, 0, 0, 0, 0);
 
@@ -138,8 +140,10 @@ bool OlShopDlg::OnCommonButtonClick(int _id)
 		g_xBuffer << req;
 		SendBufferToGS(g_xBuffer);
 	} else if (BID_DONATE == _id) {
-		pTheGame->GetDonateValueWnd()->ShowWindow(true);
-		pTheGame->GetDonateValueWnd()->CenterWindow();
+		//pTheGame->GetDonateValueWnd()->ShowWindow(true);
+		//pTheGame->GetDonateValueWnd()->CenterWindow();
+		pTheGame->GetDonateWnd();
+		pTheGame->GetDonateWnd()->ShowDonateWnd(0);
 	}
 
 	return true;

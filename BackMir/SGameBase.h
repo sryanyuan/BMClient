@@ -88,6 +88,8 @@ protected:
 	//
 	virtual void                    UserRenderFunc(); 
 	virtual bool                    UserProcCommand(); 
+	// Gfx restore
+	virtual void					UserGfxRestore();
 
 public:  
 	SGameBase(const char* szTitle=NULL,int nViewWidth=800,int nViewHeight=600);  

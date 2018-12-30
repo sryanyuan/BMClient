@@ -58,6 +58,7 @@ public:
 	virtual void UserUninitial();
 	virtual void UserFrameFunc();
 	virtual void UserRenderFunc();
+	virtual void UserGfxRestore();
 
 	virtual LRESULT                 WinEventFilter(HWND h, UINT u, WPARAM w, LPARAM l); 
 
@@ -245,6 +246,8 @@ public:
 	bool Config_DisableRenderNameFrame();
 	bool Config_DisableRenderChatFrame();
 
+	void MessageLoop();
+
 public:
 	void Log(const char* _plog);
 	bool LoadScript(int _nMapID);
@@ -272,6 +275,25 @@ private:
 	void LoginQuickMessage(const char* _pData, unsigned int _len);
 
 	void RenderCursor(float _fx, float _fy);
+
+	static BOOL WINAPI MyPeekMessage(
+		__out LPMSG lpMsg,
+		__in_opt HWND hWnd,
+		__in UINT wMsgFilterMin,
+		__in UINT wMsgFilterMax,
+		__in UINT wRemoveMsg);
+	void HookPeekMessage();
+	// Vars of old PeekMessage proc
+	typedef BOOL (WINAPI *PeekMessageFunc) (
+		__out LPMSG lpMsg,
+		__in_opt HWND hWnd,
+		__in UINT wMsgFilterMin,
+		__in UINT wMsgFilterMax,
+		__in UINT wRemoveMsg);
+	PeekMessageFunc m_pOldPeekMessage;
+
+	// Pump all message with PeekMessage, if get WM_QUIT, return false
+	static bool PumpMessage();
 
 private:
 	//	”Œœ∑≥°æ∞

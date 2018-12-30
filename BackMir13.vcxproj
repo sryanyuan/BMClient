@@ -44,13 +44,13 @@
     <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)..\BackMir\</OutDir>
+    <OutDir>$(SolutionDir)..\BackMir\BinDebug</OutDir>
     <IntDir>Debug\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>BackMir</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)..\BackMir\</OutDir>
+    <OutDir>$(SolutionDir)..\BackMir\Bin</OutDir>
     <IntDir>Release\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>BackMir</TargetName>
@@ -59,7 +59,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(DEVLIB_DIR)\Incvc12\DuiLib;$(DEVLIB_DIR)\Inc\luajit;$(DEVLIB_DIR)\Inc\ZipArchive;$(DEVLIB_DIR)\Inc\fomdex;$(DEVLIB_DIR)\Inc\Sqlite;$(DEVLIB_DIR)\Inc\Zlib;$(DEVLIB_DIR)\inc\hge;$(DEVLIB_DIR)\inc\DX8.1\;$(DEVLIB_DIR)\Inc\fastdelegate;$(DEVLIB_DIR)\Inc\protobuf;$(DEVLIB_DIR)\Inc\curl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;ZLIB_WINAPI;_NET_GAME_;_ZIPARCHIVE_;_SELCHR_;POINTER_64=__ptr64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;ZLIB_WINAPI;_NET_GAME_;_ZIPARCHIVE_;_SELCHR_;POINTER_64=__ptr64;_BIN_PATH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -67,11 +67,12 @@
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4018;4244;4996;4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalOptions>/nodefaultlib:libci /SAFESEH:NO %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>gdi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(SolutionDir)..\BackMir\BackMir.exe</OutputFile>
+      <OutputFile>$(SolutionDir)..\BackMir\BinDebug\BackMir.exe</OutputFile>
       <AdditionalLibraryDirectories>$(DEVLIB_DIR)\Libvc12\luajit;$(DEVLIB_DIR)\Libvc12\DX8.1;$(DEVLIB_DIR)\Libvc12\hge;$(DEVLIB_DIR)\Libvc12\duilib;$(DEVLIB_DIR)\Libvc12\fmodex;$(DEVLIB_DIR)\Libvc12\sqlite3;$(DEVLIB_DIR)\Libvc12\ziparchive;$(DEVLIB_DIR)\Libvc12\zlib;$(DEVLIB_DIR)\Libvc12\protobuf;$(DEVLIB_DIR)\Libvc12\curl;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>LIBC.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -80,22 +81,23 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
-      <DelayLoadDLLs>duilibvc12_d.dll;zlibwapivc12_d.dll;hge.dll;sqlite3.dll;fmodex.dll;lua51vc12_d.dll;libcurlvc12d.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <AdditionalIncludeDirectories>$(DEVLIB_DIR)\Incvc12\DuiLib;$(DEVLIB_DIR)\Inc\ZipArchive;$(DEVLIB_DIR)\Inc\fomdex;$(DEVLIB_DIR)\Inc\luajit;$(DEVLIB_DIR)\Inc\Zlib;$(DEVLIB_DIR)\Inc\Sqlite;$(DEVLIB_DIR)\Inc\hge;$(DEVLIB_DIR)\inc\DX8.1\;$(DEVLIB_DIR)\Inc\fastdelegate;$(DEVLIB_DIR)\Inc\protobuf;$(DEVLIB_DIR)\Inc\curl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;ZLIB_WINAPI;_NET_GAME_;_ZIPARCHIVE_;_SELCHR_;_THEMIDA_;POINTER_64=__ptr64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;ZLIB_WINAPI;_NET_GAME_;_ZIPARCHIVE_;_SELCHR_;_THEMIDA_;POINTER_64=__ptr64;_BIN_PATH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4018;4244;4996;4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalOptions>/nodefaultlib:libci /SAFESEH:NO %(AdditionalOptions)</AdditionalOptions>
-      <OutputFile>$(SolutionDir)..\BackMir\BackMir.exe</OutputFile>
+      <OutputFile>$(SolutionDir)..\BackMir\Bin\BackMir.exe</OutputFile>
       <AdditionalLibraryDirectories>$(DEVLIB_DIR)\Libvc12\luajit;$(DEVLIB_DIR)\Libvc12\DX8.1;$(DEVLIB_DIR)\Libvc12\hge;$(DEVLIB_DIR)\Libvc12\duilib;$(DEVLIB_DIR)\Libvc12\fmodex;$(DEVLIB_DIR)\Libvc12\sqlite3;$(DEVLIB_DIR)\Libvc12\ziparchive;$(DEVLIB_DIR)\Libvc12\zlib;$(DEVLIB_DIR)\Libvc12\themida;$(DEVLIB_DIR)\Libvc12\protobuf;$(DEVLIB_DIR)\Libvc12\curl;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>LIBC.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -105,7 +107,7 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
-      <DelayLoadDLLs>duilibvc12.dll;zlibwapivc12.dll;hge.dll;sqlite3.dll;fmodex.dll;lua51vc12.dll;libcurlvc12.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -125,8 +127,12 @@
     <ClInclude Include="..\CommonModule\loginsvr.pb.h" />
     <ClInclude Include="..\CommonModule\LuaBaseEngine.h" />
     <ClInclude Include="..\CommonModule\LuaBaseExecutor.h" />
+    <ClInclude Include="..\CommonModule\LuaConfigLoader.h" />
+    <ClInclude Include="..\CommonModule\LuaDataLoader.h" />
+    <ClInclude Include="..\CommonModule\LuaIterator.h" />
     <ClInclude Include="..\CommonModule\lua_extend.h" />
     <ClInclude Include="..\CommonModule\MagicEffectID.h" />
+    <ClInclude Include="..\CommonModule\MapConfigManager.h" />
     <ClInclude Include="..\CommonModule\ObjectData.h" />
     <ClInclude Include="..\CommonModule\PotentialAttribHelper.h" />
     <ClInclude Include="..\CommonModule\ProtoType.h" />
@@ -138,10 +144,12 @@
     <ClInclude Include="..\CommonModule\SimpleIni.h" />
     <ClInclude Include="..\CommonModule\StackWalker\StackWalker.h" />
     <ClInclude Include="..\CommonModule\StoveManager.h" />
+    <ClInclude Include="..\CommonModule\utils.h" />
     <ClInclude Include="..\CommonModule\xxtea.h" />
     <ClInclude Include="..\CommonModule\ZipDataReader.h" />
     <ClInclude Include="Astar\SAstar.h" />
     <ClInclude Include="BackMir\BackMir.h" />
+    <ClInclude Include="BackMir\BMDonateWnd.h" />
     <ClInclude Include="BackMir\BMPasswordWnd.h" />
     <ClInclude Include="BackMir\BMPreConnWnd.h" />
     <ClInclude Include="BackMir\BMPreConnWnd2.h" />
@@ -179,6 +187,7 @@
     <ClInclude Include="Common\SPBFile.h" />
     <ClInclude Include="Common\StatusDefine.h" />
     <ClInclude Include="Common\StructDefine.h" />
+    <ClInclude Include="Common\strutils.h" />
     <ClInclude Include="Common\TextPrinter.h" />
     <ClInclude Include="Common\TextureCache.h" />
     <ClInclude Include="Common\TimeCounter.h" />
@@ -274,8 +283,12 @@
     <ClCompile Include="..\CommonModule\LuaBaseEngine.cpp" />
     <ClCompile Include="..\CommonModule\LuaBaseEngine_Dispatcher.cpp" />
     <ClCompile Include="..\CommonModule\LuaBaseExecutor.cpp" />
+    <ClCompile Include="..\CommonModule\LuaConfigLoader.cpp" />
+    <ClCompile Include="..\CommonModule\LuaDataLoader.cpp" />
+    <ClCompile Include="..\CommonModule\LuaIterator.cpp" />
     <ClCompile Include="..\CommonModule\lua_extend.cpp" />
     <ClCompile Include="..\CommonModule\MagicEffectID.cpp" />
+    <ClCompile Include="..\CommonModule\MapConfigManager.cpp" />
     <ClCompile Include="..\CommonModule\ProtoType.cpp" />
     <ClCompile Include="..\CommonModule\QuestContext.cpp" />
     <ClCompile Include="..\CommonModule\SaveFile.cpp" />
@@ -283,10 +296,12 @@
     <ClCompile Include="..\CommonModule\ShareData.cpp" />
     <ClCompile Include="..\CommonModule\StackWalker\StackWalker.cpp" />
     <ClCompile Include="..\CommonModule\StoveManager.cpp" />
+    <ClCompile Include="..\CommonModule\utils.cpp" />
     <ClCompile Include="..\CommonModule\xxtea.cpp" />
     <ClCompile Include="..\CommonModule\ZipDataReader.cpp" />
     <ClCompile Include="Astar\SAstarImpl.cpp" />
     <ClCompile Include="BackMir\BackMir.cpp" />
+    <ClCompile Include="BackMir\BMDonateWnd.cpp" />
     <ClCompile Include="BackMir\BMPasswordWnd.cpp" />
     <ClCompile Include="BackMir\BMPreConnWnd.cpp" />
     <ClCompile Include="BackMir\BMPreConnWnd2.cpp" />
@@ -316,6 +331,7 @@
     <ClCompile Include="Common\SIBFile.cpp" />
     <ClCompile Include="Common\SKnl3Helper.cpp" />
     <ClCompile Include="Common\SPBFile.cpp" />
+    <ClCompile Include="Common\strutils.cpp" />
     <ClCompile Include="Common\SWilFile.cpp" />
     <ClCompile Include="Common\TextPrinter.cpp" />
     <ClCompile Include="Common\TextureCache.cpp" />

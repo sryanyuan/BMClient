@@ -256,6 +256,7 @@ bool                SGameBase::RealFocusLostFunc()
 
 bool				SGameBase::RealGfxRestoreFunc()  
 {  
+	UserGfxRestore();
 	return true;  
 }  
 
@@ -312,7 +313,12 @@ void                SGameBase::UserFrameFunc()
 void                SGameBase::UserRenderFunc()  
 {  
 	//用户实现  
-}  
+} 
+
+void				SGameBase::UserGfxRestore()
+{
+
+}
 
 void				SGameBase::OnGameTimer(UINT nEventID)
 {

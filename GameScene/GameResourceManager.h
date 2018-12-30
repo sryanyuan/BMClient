@@ -21,6 +21,7 @@ public:
 	{
 		ZeroMemory(m_texs, sizeof(m_texs));
 		ZeroMemory(m_extratexs, sizeof(m_extratexs));
+		m_szCustomDir[0] = 0;
 	}
 	~GameResourceManager()
 	{
@@ -30,9 +31,23 @@ public:
 public:
 	int GetResourceIndex(const char* _pszFileName);
 	bool LoadFile(const char* _pszFileName);
+	bool LoadFileWithFilename(const char* _pszFileName);
 	bool LoadFileSibMapPackage(int _index);
 	GameTextureManager* GetSibMapPackage(int _index);
 	//bool LoadWilFileEx(const char* lpszFileName);
+
+	void SetCustomDir(const char* szPath) {
+		if (strlen(szPath) > MAX_PATH - 1) {
+			return;
+		}
+		strcpy(m_szCustomDir, szPath);
+	}
+	const char* GetCustomDir() {
+		if (0 == m_szCustomDir[0]) {
+			return NULL;
+		}
+		return m_szCustomDir;
+	}
 
 	void ReleaseAllFile();
 	GameTextureManager* GetTexs(int _index)
@@ -113,6 +128,7 @@ protected:
 private:
 	GameTextureManager* m_texs[LOADING_TEX_SUM];
 	GameTextureManager* m_extratexs[EXTRA_OBJECTS_SUM];
+	char m_szCustomDir[MAX_PATH];
 };
 
 #endif

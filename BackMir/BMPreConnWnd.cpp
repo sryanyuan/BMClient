@@ -41,6 +41,11 @@ BMPreConnWnd::BMPreConnWnd()
 		{
 			m_xPsw = pszValue;
 		}
+		// Set the custom res dir
+		const char* szCustomResDir = xHelper.GetParam("resdir");
+		if (NULL != szCustomResDir) {
+			GameResourceManager::GetInstance()->SetCustomDir(szCustomResDir);
+		}
 	}
 
 	m_nLID = 0;
@@ -365,14 +370,12 @@ void BMPreConnWnd::LoadData()
 	for(int i = 0; i < RES_TOTAL; ++i)
 	{
 		sprintf(szFile, "%s\\Data\\%s", GetRootPath(), g_szResFile[i]);
-		if(!GameResourceManager::GetInstance()->LoadFile(szFile))
+		//if(!GameResourceManager::GetInstance()->LoadFile(szFile))
+		if(!GameResourceManager::GetInstance()->LoadFileWithFilename(g_szResFile[i]))
 		{
-			//_hge->System_Log("º”‘ÿ◊ ‘¥ ß∞‹ : %s", szFile);
-			//return false;
-		}
-		//::PostMessage(hWnd, WM_SCENE_PROG, RES_TOTAL - 1, i);
-	}
 
+		}
+	}
 }
 
 void BMPreConnWnd::OnSocketMsg(SOCKET _s, LPARAM _l)

@@ -3,6 +3,7 @@
 #include "../Common/GlobalFunction.h"
 #include <hgeresource.h>
 #include "../../CommonModule/GDefine.h"
+#include "../Common/view.h"
 
 //////////////////////////////////////////////////////////////////////////
 SelChrScene::SelChrScene()

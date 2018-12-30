@@ -480,6 +480,27 @@
     <ClInclude Include="BackMir\GlobalLuaConfig.h">
       <Filter>BackMir</Filter>
     </ClInclude>
+    <ClInclude Include="..\CommonModule\utils.h">
+      <Filter>Module</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonModule\LuaConfigLoader.h">
+      <Filter>Module</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonModule\MapConfigManager.h">
+      <Filter>Module</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonModule\LuaIterator.h">
+      <Filter>Module</Filter>
+    </ClInclude>
+    <ClInclude Include="BackMir\BMDonateWnd.h">
+      <Filter>BackMir</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\strutils.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonModule\LuaDataLoader.h">
+      <Filter>Module</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resource\arrow\attack.cur">
@@ -1033,6 +1054,27 @@
     </ClCompile>
     <ClCompile Include="BackMir\GlobalLuaConfig.cpp">
       <Filter>BackMir</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonModule\utils.cpp">
+      <Filter>Module</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonModule\LuaConfigLoader.cpp">
+      <Filter>Module</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonModule\MapConfigManager.cpp">
+      <Filter>Module</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonModule\LuaIterator.cpp">
+      <Filter>Module</Filter>
+    </ClCompile>
+    <ClCompile Include="BackMir\BMDonateWnd.cpp">
+      <Filter>BackMir</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\strutils.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonModule\LuaDataLoader.cpp">
+      <Filter>Module</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

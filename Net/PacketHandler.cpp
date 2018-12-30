@@ -15,6 +15,7 @@
 #include "../GameDialog/GameStoreDlg2.h"
 #include "../GameDialog/GameBigStoreDlg.h"
 #include "../../CommonModule/DataEncryptor.h"
+#include "../../CommonModule/version.h"
 #include <ZipArchive.h>
 #include <direct.h>
 #include <Windows.h>
@@ -1410,7 +1411,8 @@ void SocketDataCenter::DoPacket(const PkgSystemNewItemNot& not)
 	item.wPosY = HIWORD(not.dwPos);
 	item.stAttrib.level = not.uUserId;
 	item.stAttrib.maxMP = not.dwItemHideAttrib;
-	if(!pTheGame->GetAssistPaneWnd()->CheckItemVisible(item.stAttrib.name))
+	if(!pTheGame->GetAssistPaneWnd()->CheckItemVisible(item.stAttrib.name) &&
+		0 == GetItemUpgrade(item.stAttrib.level))
 	{
 		item.bVisible = false;
 	}

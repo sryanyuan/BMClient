@@ -301,14 +301,10 @@ public:
 	{
 		m_fPosy += _oft;
 	}
-	inline int GetShiftX() const
-	{
-		return (int)m_fPosx % UNIT_WIDTH;
-	}
-	inline int GetShiftY() const
-	{
-		return (int)m_fPosy % UNIT_HEIGHT;
-	}
+
+	int GetShiftX() const;
+	int GetShiftY() const;
+
 	inline void SetDirection(PLAYER_DIRECTION _pd)
 	{
 		m_drt = _pd;
@@ -351,22 +347,10 @@ public:
 	{
 		return m_ptPos.y;
 	}
-	inline int GetReallyCoordX() const
-	{
-		//	获取所在格子实际的坐标
-		return (int)m_fPosx / UNIT_WIDTH;
-	}
-	inline int GetReallyCoordY() const
-	{
-		return (int)m_fPosy / UNIT_HEIGHT;
-	}
-	inline void SetReallyCoord(int _x, int _y)
-	{
-		m_ptPos.x = _x;
-		m_ptPos.y = _y;
-		m_fPosx = (float)_x * UNIT_WIDTH;
-		m_fPosy = (float)_y * UNIT_HEIGHT;
-	}
+	int GetReallyCoordX() const;
+	int GetReallyCoordY() const;
+	void SetReallyCoord(int _x, int _y);
+
 	inline void SetPlayerSex(PLAYER_SEX _ps)
 	{
 		m_sex = _ps;
@@ -379,15 +363,7 @@ public:
 	{
 		return &m_attrib;
 	}
-	bool IsMoving()
-	{
-		if(GetObjx() == GetCoordX() * UNIT_WIDTH &&
-			GetObjy() == GetCoordY() * UNIT_HEIGHT)
-		{
-			return false;
-		}
-		return true;
-	}
+	bool IsMoving();
 	inline int GetSpeed() const
 	{
 		return m_attrib.moveSpeed;
@@ -454,19 +430,19 @@ public:
 	}
 	void DecreaseHealth(int _dam)
 	{
-		if(_dam >= m_attrib.HP)
+		if(_dam >= int(m_attrib.HP))
 		{
 			m_attrib.HP = 0;
 			Dead();
 		}
 		else
 		{
-			m_attrib.HP -= _dam;
+			m_attrib.HP -= UINT(_dam);
 		}
 	}
 	void DecreaseSpell(int _dec)
 	{
-		if(_dec >= m_attrib.MP)
+		if(_dec >= int(m_attrib.MP))
 		{
 			m_attrib.MP = 0;
 			Dead();

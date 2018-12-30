@@ -42,13 +42,13 @@
 #define FONT_WIDTH_NUMBER		6
 #define FONT_HEIGHT_NUMBER		6
 
-#define VIEW_OPERATE			120
-
-#define CENTRAL_X				(48 * 8 - 8)
-#define CENTRAL_Y				(32 * 7)
-
-#define WINDOW_WIDTH			800
-#define WINDOW_HEIGHT			600
+// #define VIEW_OPERATE			120
+// 
+// #define CENTRAL_X				(48 * 8 - 8)
+// #define CENTRAL_Y				(32 * 7)
+// 
+// #define WINDOW_WIDTH			800
+// #define WINDOW_HEIGHT			600
 
 #define VIEW_OFFSET				25
 #define INVALID_ITEM_ID			-1

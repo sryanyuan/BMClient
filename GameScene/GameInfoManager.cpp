@@ -11,6 +11,7 @@
 #ifdef _THEMIDA_
 #include "../Themida/ThemidaSDK.h"
 #endif
+#include "../../CommonModule/LuaDataLoader.h"
 
 static const char* g_szAttribName[] = 
 {
@@ -25,6 +26,7 @@ GameInfoManager::GameInfoManager()
 #ifdef _THEMIDA_
 	VM_START
 #endif
+	m_bLuaConfig = false;
 	m_sql = NULL;
 	//	判断数据库文件是否存在 存在启用数据库 不存在用INI文件存取
 	char szDBFile[MAX_PATH];
@@ -94,6 +96,20 @@ GameInfoManager::~GameInfoManager()
 	}
 }
 
+bool GameInfoManager::DataFromLua(lua_State *L) {
+	m_bLuaConfig = true;
+	if (!LuaDataLoader::LoadItemAttrib(L, pszDefaultItemFullAttribTableName, m_xItemFullAttribMap)) {
+		return false;
+	}
+	if (!LuaDataLoader::LoadMonsAttrib(L, pszDefaultMonsFullAttribTableName, m_xMonsFullAttribMap)) {
+		return false;
+	}
+	if (!LuaDataLoader::LoadSuitAttrib(L, pszDefaultSuitAttribTableName, m_xItemExtraSuitAttribMap)) {
+		return false;
+	}
+	return true;
+}
+
 bool GameInfoManager::CanUseSQL() const
 {
 	return m_sql != NULL;
@@ -114,6 +130,25 @@ bool GameInfoManager::GetItemDesc(int _id, ItemDesc* _pDesc)
 	if(NULL != pDesc)
 	{
 		memcpy(_pDesc, pDesc, sizeof(ItemDesc));
+		return true;
+	}
+
+	if (m_bLuaConfig) {
+		auto it = m_xItemFullAttribMap.find(_id);
+		if (it == m_xItemFullAttribMap.end()) {
+			return false;
+		}
+		size_t uDescLength = strlen(it->second.strDesc.c_str());
+		char* pszDesc = new char[uDescLength + 1];
+		strcpy(pszDesc, it->second.strDesc.c_str());
+
+		ItemDesc* pDesc = new ItemDesc;
+		pDesc->pszDesc = pszDesc;
+		pDesc->nTextLength = int(uDescLength);
+		pDesc->nTextLine = GetTextLine(pszDesc, 12, ITEM_DESC_TEXT_WIDTH);
+		pDesc->nTextWidth = GetTextWidth(pszDesc, 12);
+		m_pItemDescCache[_id] = pDesc;
+		*_pDesc = *pDesc;
 		return true;
 	}
 
@@ -161,7 +196,7 @@ bool GameInfoManager::GetItemDescINI(int _id, ItemDesc* _pDesc)
 
 	ItemDesc* pDesc = new ItemDesc;
 	pDesc->pszDesc = pszDesc;
-	pDesc->nTextLength = uDescLength;
+	pDesc->nTextLength = int(uDescLength);
 	pDesc->nTextLine = GetTextLine(pszDesc, 12, ITEM_DESC_TEXT_WIDTH);
 	pDesc->nTextWidth = GetTextWidth(pszDesc, 12);
 	m_pItemDescCache[_id] = pDesc;
@@ -204,6 +239,15 @@ bool GameInfoManager::GetItemAttrib(int _id, ItemAttrib* _pitem)
 	if(_id < 0)
 	{
 		return false;
+	}
+
+	if (m_bLuaConfig) {
+		auto it = m_xItemFullAttribMap.find(_id);
+		if (it == m_xItemFullAttribMap.end()) {
+			return false;
+		}
+		*_pitem = it->second.baseAttrib;
+		return true;
 	}
 
 	if(m_sql)
@@ -349,6 +393,15 @@ bool GameInfoManager::GetMonsterAttrib(int _id, ItemAttrib* _pitem)
 		return false;
 	}
 
+	if (m_bLuaConfig) {
+		auto it = m_xMonsFullAttribMap.find(_id);
+		if (it == m_xMonsFullAttribMap.end()) {
+			return false;
+		}
+		*_pitem = it->second.baseAttrib;
+		return true;
+	}
+
 	if(m_sql)
 	{
 		return GetMonsterAttribSQL(_id, _pitem);
@@ -420,6 +473,162 @@ bool GameInfoManager::GetMonsterAttribSQL(int _id, ItemAttrib* _pitem)
 	if(SQLITE_OK != sqlite3_exec(m_sql, szExpr, &GameInfoManager::DBCallbackItemAttrib, _pitem, &pErr))
 	{
 		AfxGetHge()->System_Log("数据库查询[%d]怪物失败,%s", _id, pErr);
+		return false;
+	}
+
+	return true;
+}
+
+bool GameInfoManager::GetMonsterIDs(std::vector<int>& _refMonsIDs) {
+	if (m_bLuaConfig) {
+		for (auto &pa : m_xMonsFullAttribMap) {
+			_refMonsIDs.push_back(pa.first);
+		}
+		return true;
+	}
+	if (NULL != m_sql) {
+		return GetMonsterIDsSQL(_refMonsIDs);
+	}
+	return GetMonsterIDsINI(_refMonsIDs);
+}
+
+bool GameInfoManager::GetMonsterIDsINI(std::vector<int>& _refMonsIDs) {
+	char szPath[MAX_PATH];
+	sprintf(szPath, "%s\\Config\\monsa.ini", GetRootPath());
+
+	char szIDs[4096];
+	DWORD dwBufferWrite = ::GetPrivateProfileSectionNames(szIDs, sizeof(szIDs), szPath);
+	if (dwBufferWrite == 0) {
+		return true;
+	}
+
+	if (dwBufferWrite == sizeof(szIDs) - 2) {
+		// Buffer not enough
+		return false;
+	}
+
+	char szID[8];
+	int nIDWPtr = 0;
+	size_t uBufferLen = sizeof(szIDs);
+
+	int nTermCnt = 0;
+	for (size_t i = 0; i < uBufferLen; i++) {
+		if (szIDs[i] == '\0') {
+			// Check the id write ptr to save the id buffer
+			if (0 != nIDWPtr) {
+				szIDs[nIDWPtr] = '\0';
+				int nID = 0;
+				nID = atoi(szID);
+				if (0 == nID) {
+					return false;
+				}
+				_refMonsIDs.push_back(nID);
+				nIDWPtr = 0;
+			}
+			// Meet terminate, count it
+			++nTermCnt;
+			if (nTermCnt >= 2) {
+				// Done
+				break;
+			}
+			continue;
+		}
+		// Not terminate, reset the counter
+		nTermCnt = 0;
+		// Copy into id buffer
+		szID[nIDWPtr++] = szIDs[i];
+	}
+
+	return true;
+}
+
+bool GameInfoManager::GetItemIDs(std::vector<int>& _refItemIDs) {
+	if (m_bLuaConfig) {
+		for (auto &pa : m_xItemFullAttribMap) {
+			_refItemIDs.push_back(pa.first);
+		}
+		return true;
+	}
+	if (NULL != m_sql) {
+		return GetItemIDsSQL(_refItemIDs);
+	}
+	return GetItemIDsINI(_refItemIDs);
+}
+
+bool GameInfoManager::GetItemIDsINI(std::vector<int>& _refItemIDs) {
+	char szPath[MAX_PATH];
+	sprintf(szPath, "%s\\Config\\items.ini", GetRootPath());
+
+	char szIDs[4096];
+	DWORD dwBufferWrite = ::GetPrivateProfileSectionNames(szIDs, sizeof(szIDs), szPath);
+	if (dwBufferWrite == 0) {
+		return true;
+	}
+
+	if (dwBufferWrite == sizeof(szIDs) - 2) {
+		// Buffer not enough
+		return false;
+	}
+
+	char szID[8];
+	int nIDWPtr = 0;
+	size_t uBufferLen = sizeof(szIDs);
+
+	int nTermCnt = 0;
+	for (size_t i = 0; i < uBufferLen; i++) {
+		if (szIDs[i] == '\0') {
+			// Check the id write ptr to save the id buffer
+			if (0 != nIDWPtr) {
+				szIDs[nIDWPtr] = '\0';
+				int nID = 0;
+				nID = atoi(szID);
+				if (0 == nID) {
+					return false;
+				}
+				_refItemIDs.push_back(nID);
+				nIDWPtr = 0;
+			}
+			// Meet terminate, count it
+			++nTermCnt;
+			if (nTermCnt >= 2) {
+				// Done
+				break;
+			}
+			continue;
+		}
+		// Not terminate, reset the counter
+		nTermCnt = 0;
+		// Copy into id buffer
+		szID[nIDWPtr++] = szIDs[i];
+	}
+
+	return true;
+}
+
+bool GameInfoManager::GetMonsterIDsSQL(std::vector<int>& _refMonsIDs) {
+	char szExpr[MAX_PATH];
+	sprintf(szExpr, "SELECT id from Monsters");
+	char* pErr = NULL;
+
+	if(SQLITE_OK != sqlite3_exec(m_sql, szExpr, &GameInfoManager::DBCallbackMonsID, &_refMonsIDs, &pErr))
+	{
+		// Free errmsg
+		delete[] pErr;
+		return false;
+	}
+
+	return true;
+}
+
+bool GameInfoManager::GetItemIDsSQL(std::vector<int>& _refItemIDs) {
+	char szExpr[MAX_PATH];
+	sprintf(szExpr, "SELECT id from Items");
+	char* pErr = NULL;
+	
+	if(SQLITE_OK != sqlite3_exec(m_sql, szExpr, &GameInfoManager::DBCallbackItemID, &_refItemIDs, &pErr))
+	{
+		// Free errmsg
+		delete[] pErr;
 		return false;
 	}
 
@@ -673,11 +882,27 @@ bool GameInfoManager::GetMgcInfo(int _id, MagicInfo* _mgc)
 	return true;
 }*/
 
+int GameInfoManager::GetItemGradeInFullAttrib(int id) {
+	auto it = m_xItemFullAttribMap.find(id);
+	if (it == m_xItemFullAttribMap.end()) {
+		return 0;
+	}
+	return it->second.nGrade;
+}
+
+ItemExtraAttribList* GameInfoManager::GetItemExtraSuitAttribList(int nSuitID) {
+	auto it = m_xItemExtraSuitAttribMap.find(nSuitID);
+	if (it == m_xItemExtraSuitAttribMap.end()) {
+		return nullptr;
+	}
+	return it->second;
+}
+
 
 bool GameInfoManager::GetMiniMapIndex(const char* lpMapName, int* _pvalue)
 {
 	bool bIsFullPath = false;
-	for(int i = 0; i < strlen(lpMapName); ++i)
+	for(size_t i = 0; i < strlen(lpMapName); ++i)
 	{
 		if(lpMapName[i] == '\\')
 		{
@@ -690,7 +915,7 @@ bool GameInfoManager::GetMiniMapIndex(const char* lpMapName, int* _pvalue)
 	if(bIsFullPath)
 	{
 		int nName = 0;
-		for(int i = strlen(lpMapName) - 1; i >= 0; --i)
+		for(size_t i = strlen(lpMapName) - 1; i >= 0; --i)
 		{
 			if(lpMapName[i] == '\\')
 			{
@@ -743,6 +968,30 @@ int GameInfoManager::DBCallbackItemDesc(void* _param, int _count, char** _value,
 	pItem->nTextLength = uLength;
 	pItem->nTextWidth = GetTextWidth(pszDesc, 12);
 	pItem->nTextLine = GetTextLine(pszDesc, 12, ITEM_DESC_TEXT_WIDTH);
+
+	return 0;
+}
+
+int GameInfoManager::DBCallbackItemID(void* _pParam, int _nCnt, char **_value, char** _name) {
+	if (_nCnt != 1) {
+		return -1;
+	}
+
+	int nID = atoi(_value[0]);
+	std::vector<int>* pIDVec = (std::vector<int>*)(_pParam);
+	pIDVec->push_back(nID);
+
+	return 0;
+}
+
+int GameInfoManager::DBCallbackMonsID(void* _pParam, int _nCnt, char **_value, char** _name) {
+	if (_nCnt != 1) {
+		return -1;
+	}
+
+	int nID = atoi(_value[0]);
+	std::vector<int>* pIDVec = (std::vector<int>*)(_pParam);
+	pIDVec->push_back(nID);
 
 	return 0;
 }

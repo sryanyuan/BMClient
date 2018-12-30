@@ -559,7 +559,7 @@ void GameDisplayDlg::GenShowItems()
 		++nDetailLine;
 
 		//	level
-		int nLevel = GetItemGrade(m_stShowItem.id);
+		int nLevel = GameInfoManager::GetInstance()->GetItemGradeInFullAttrib(m_stShowItem.id);
 		nCurX = nDrawRectX;
 		nCurY = nDetailDrawY + nDetailLine * s_nEachLineHeight;
 		sprintf(szText, "¼¶±ð£º%d", nLevel);
@@ -1348,7 +1348,7 @@ void GameDisplayDlg::GenShowItems()
 	if(IsEquipItem(&m_stShowItem) &&
 		m_stShowItem.atkPalsy != 0)
 	{
-		const ItemExtraAttribList* pExtraAttribList = GetGlobalSuitExtraAttrib(m_stShowItem.atkPalsy);
+		const ItemExtraAttribList* pExtraAttribList = GameInfoManager::GetInstance()->GetItemExtraSuitAttribList(m_stShowItem.atkPalsy);
 
 		if(pExtraAttribList)
 		{

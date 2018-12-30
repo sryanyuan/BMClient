@@ -12,6 +12,7 @@
 #include "../GameDialog/GameStatusDlg.h"
 #include "../GameScene/MagicEffect.h"
 #include "../GameDialog/GameFloatDlg.h"
+#include "../Common/view.h"
 #include <assert.h>
 
 class GameMonster;

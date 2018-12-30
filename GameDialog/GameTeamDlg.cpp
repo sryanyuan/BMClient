@@ -1,4 +1,5 @@
 #include "GameTeamDlg.h"
+#include "../Common/view.h"
 //////////////////////////////////////////////////////////////////////////
 static const int s_nWindowWidth = 550;
 static const int s_nWindowHeight = 350;

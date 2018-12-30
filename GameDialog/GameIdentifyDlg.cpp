@@ -177,7 +177,7 @@ void GameIdentifyDlg::SetItem(ItemAttrib* _pItem)
 		if(pTheGame->IsEquipItem(*_pItem))
 		{
 			int nLevel = GetItemUpgrade(_pItem->level);
-			int nEquipLevel = GetItemGrade(_pItem->id);
+			int nEquipLevel = GameInfoManager::GetInstance()->GetItemGradeInFullAttrib(_pItem->id);
 
 			if (nEquipLevel == 0 ||
 				nEquipLevel > 3)

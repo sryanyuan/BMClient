@@ -28,6 +28,16 @@ protected:
 	virtual void Notify(DuiLib::TNotifyUI& msg);
 
 public:
+	void OnNotifyTextChanged(DuiLib::TNotifyUI& msg);
+	void OnNotifySelectChanged(DuiLib::TNotifyUI& msg);
+	void OnNotifyWindowInit(DuiLib::TNotifyUI& msg);
+	void OnNotifyClick(DuiLib::TNotifyUI& msg);
+	void OnNotifyTimer(DuiLib::TNotifyUI& msg);
+	void OnNotifyReturn(DuiLib::TNotifyUI& msg);
+	void OnNotifySetFocus(DuiLib::TNotifyUI& msg);
+	void OnNotifyItemClick(DuiLib::TNotifyUI& msg);
+
+public:
 	inline void SetParentHWND(HWND _hParent)
 	{
 		m_hParentHWND = _hParent;
@@ -35,6 +45,7 @@ public:
 
 public:
 	void AdjustWindowPos();
+	void TranslateDispatchMessage(const MSG* pMsg);
 
 public:
 	//	Game interface
@@ -66,6 +77,9 @@ private:
 	void CopyKeySettingToUI(int _nKey, int _nMappedKey);
 	void InsertItemVisible(const char* _pszItem);
 
+	void ApplyItemNamesSearch(const char* _pszPattern);
+	void ApplyMonsNamesSearch(const char* _pszPattern);
+
 protected:
 	HWND m_hParentHWND;
 
@@ -75,12 +89,18 @@ protected:
 	StringSet m_xItemAlertSet;
 	//	for monster alert using
 	StringSet m_xMonsterAlertSet;
+	// for quick search item id and monster id
+	std::map<std::string, int> m_xItemNamesSearchMap;
+	std::map<std::string, int> m_xMonsNamesSearchMap;
 
 	//	for key map
 	KintVintMap m_xKeyMap;
 
 	//	controls
 	DuiLib::CTabLayoutUI* m_pTabLayout;
+
+	// Last focus edit
+	DuiLib::CEditUI* m_pLastFocusEdit;
 };
 
 //////////////////////////////////////////////////////////////////////////

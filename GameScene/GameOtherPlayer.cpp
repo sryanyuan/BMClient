@@ -20,6 +20,7 @@
 #include "../GameDialog/GameStoveDlg.h"
 #include "../GameDialog/GameBigStoreDlg.h"
 #include "../GameDialog/GameSkillDlg.h"
+#include "../../CommonModule/version.h"
 #include <zlib.h>
 #include "../../CommonModule/cJSON.h"
 //////////////////////////////////////////////////////////////////////////
@@ -3792,7 +3793,8 @@ void GameOtherPlayer::DoPacket(const PkgPlayerDropItemNot& not)
 		item.wPosX = not.wCoordX;
 		item.wPosY = not.wCoordY;
 
-		if(!pTheGame->GetAssistPaneWnd()->CheckItemVisible(item.stAttrib.name))
+		if(!pTheGame->GetAssistPaneWnd()->CheckItemVisible(item.stAttrib.name) &&
+			0 == GetItemUpgrade(item.stAttrib.level))
 		{
 			item.bVisible = false;
 		}
@@ -3918,7 +3920,7 @@ void GameOtherPlayer::DoPacket(const PkgPlayerDressItemAck& ack)
 				{
 					pItem->type = ITEM_WEAPON;
 
-					if (ack.dwFlag & 0x1 != 0)
+					if ((ack.dwFlag & 0x1) != 0)
 					{
 						pItem->level = MakeItemUpgrade(0, 6);
 					}
@@ -3929,7 +3931,7 @@ void GameOtherPlayer::DoPacket(const PkgPlayerDressItemAck& ack)
 				}
 				else if (ack.bPos == PLAYER_ITEM_CLOTH)
 				{
-					pItem->type == ITEM_CLOTH;
+					pItem->type = ITEM_CLOTH;
 				}
 				pItem->tex = ack.dwTex;
 				pItem->id = ack.uUserId;

@@ -265,13 +265,13 @@ public:
 	}
 	int GetBagTotalRoom()
 	{
-		return m_items.size();
+		return int(m_items.size());
 	}
 	int CountItem(int _nItemId)
 	{
 		int nCount = 0;
 
-		for(int i = 0; i < m_items.size(); ++i)
+		for(size_t i = 0; i < m_items.size(); ++i)
 		{
 			if(m_items[i].type == ITEM_NO)
 			{

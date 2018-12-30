@@ -99,9 +99,10 @@ void BMDonateWnd::Notify(TNotifyUI& msg)
 		m_xDonateURL += "?account=";
 		m_xDonateURL += m_xLoginAccount;
 
-		std::string xDonateURL = m_xDonateURL + "&value=10";
+		std::string xDonateURL = m_xDonateURL;
 
 		m_pWeb->Navigate2(xDonateURL.c_str());
+		m_pWeb->Refresh();
 	}
 	else if (msg.sType == "click")
 	{
@@ -119,7 +120,8 @@ void BMDonateWnd::Notify(TNotifyUI& msg)
 
 void BMDonateWnd::ShowDonateWnd(int _nValue) {
 	char szDonateURL[MAX_PATH];
-	sprintf(szDonateURL, "%s&value=%d", m_xDonateURL.c_str(), _nValue);
+	//sprintf(szDonateURL, "%s&value=%d", m_xDonateURL.c_str(), _nValue);
+	strcpy(szDonateURL, m_xDonateURL.c_str());
 
 	if (NULL != m_pWeb) {
 		m_pWeb->Navigate2(szDonateURL);

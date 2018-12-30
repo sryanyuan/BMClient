@@ -5,6 +5,7 @@
 #include "../GameDialog/GameInfoBoardDlg.h"
 #include "../GameScene/GameScene.h"
 #include "../BackMir/BackMir.h"
+#include "view.h"
 #include "../../CommonModule/SimpleActionHelper.h"
 /*
  *	GameRenderObject 抽象了玩家 其它玩家 怪物 以及各种窗口绘图对象
@@ -140,6 +141,45 @@ void GameObject::SetObjectAction(PLAYER_STATUS _ps, PLAYER_DIRECTION _pd, DWORD 
 GameObject::~GameObject()
 {
 	ClearAttackNumberList();
+}
+
+int GameObject::GetReallyCoordX() const
+{
+	//	获取所在格子实际的坐标
+	return (int)m_fPosx / UNIT_WIDTH;
+}
+
+int GameObject::GetReallyCoordY() const
+{
+	return (int)m_fPosy / UNIT_HEIGHT;
+}
+
+void GameObject::SetReallyCoord(int _x, int _y)
+{
+	m_ptPos.x = _x;
+	m_ptPos.y = _y;
+	m_fPosx = (float)_x * UNIT_WIDTH;
+	m_fPosy = (float)_y * UNIT_HEIGHT;
+}
+
+int GameObject::GetShiftX() const
+{
+	return (int)m_fPosx % UNIT_WIDTH;
+}
+
+int GameObject::GetShiftY() const
+{
+	return (int)m_fPosy % UNIT_HEIGHT;
+}
+
+bool GameObject::IsMoving()
+{
+	if(GetObjx() == GetCoordX() * UNIT_WIDTH &&
+		GetObjy() == GetCoordY() * UNIT_HEIGHT)
+	{
+		return false;
+	}
+	return true;
 }
 
 /************************************************************************/

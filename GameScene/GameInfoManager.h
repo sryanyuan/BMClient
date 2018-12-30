@@ -11,6 +11,8 @@
 struct MagicInfo;
 struct MagicRenderInfo;
 struct EffectHumInfo;
+struct lua_State;
+struct ItemExtraAttribList;
 
 struct ItemDesc
 {
@@ -56,6 +58,9 @@ public:
 	bool GetItemDesc(int _id, ItemDesc* _pDesc);
 	bool GetItemDescINI(int _id, ItemDesc* _pDesc);
 	bool GetItemDescSQL(int _id, ItemDesc* _pDesc);
+	// 物品等级信息
+	int GetItemGradeInFullAttrib(int id);
+	ItemExtraAttribList *GetItemExtraSuitAttribList(int nSuitID);
 
 	//	NPC脚本信息
 
@@ -69,8 +74,18 @@ public:
 	void ReloadRenderInfo();
 	void ReloadMagicRenderInfo();
 
+	// 获取所有Item id
+	bool GetItemIDs(std::vector<int>& _refItemIDs);
+	bool GetItemIDsINI(std::vector<int>& _refItemIDs);
+	bool GetItemIDsSQL(std::vector<int>& _refItemIDs);
+
+	bool GetMonsterIDs(std::vector<int>& _refMonsIDs);
+	bool GetMonsterIDsINI(std::vector<int>& _refMonsIDs);
+	bool GetMonsterIDsSQL(std::vector<int>& _refMonsIDs);
+
 public:
 	bool CanUseSQL() const;
+	bool DataFromLua(lua_State *L);
 
  public:
  	static GameInfoManager* GetInstance()
@@ -84,12 +99,19 @@ public:
  	}
 
 private:
+	static int DBCallbackMonsID(void* _pParam, int _nCnt, char **_value, char** _name);
+	static int DBCallbackItemID(void* _pParam, int _nCnt, char **_value, char** _name);
 	static int DBCallbackItemAttrib(void* _param, int _count, char** _value,char** _name);
 	static int DBCallbackItemDesc(void* _param, int _count, char** _value,char** _name);
 	static int DBCallbackShopItems(void* _param, int _count, char** _value,char** _name);
 	static int DBCallbackMagicCost(void* _param, int _count, char** _value,char** _name);
 
 private:
+	bool m_bLuaConfig;
+	std::map<int, ItemFullAttrib> m_xItemFullAttribMap;
+	std::map<int, MonsFullAttrib> m_xMonsFullAttribMap;
+	std::map<int, ItemExtraAttribList*> m_xItemExtraSuitAttribMap;
+
 	sqlite3* m_sql;
 	std::map<int, RenderInfo*> m_xMonsterRenderInfo;
 	std::map<int, MagicRenderInfo*> m_xMagicRenderInfo;

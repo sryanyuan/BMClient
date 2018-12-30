@@ -66,14 +66,9 @@ public:
 // 	int CalTextureIndex(int* _ptexsum = NULL);
 // 	int CalHairTexIndex(int* _ptexsum = NULL);
 // 	int CalWeaponTexIndex(int* _ptexsum = NULL);
-	int GetScreenOffsetX()
-	{
-		return (int)m_fPosx - VIEW_WIDTH / 2;
-	}
-	int GetScreenOffsetY()
-	{
-		return (int)m_fPosy - VIEW_HEIGHT / 2;
-	}
+	int GetScreenOffsetX();
+	int GetScreenOffsetY();
+
 	PlayerEquipAttrib* GetEquip()
 	{
 		return &m_equipAttrib;

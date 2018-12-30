@@ -935,7 +935,7 @@ void GameIntroDlg::CalcSuitAttrib()
 	}
 
 	m_stSuitAttribRenderInfo.bCanShow = true;
-	m_stSuitAttribRenderInfo.pExtraAttribList = GetGlobalSuitExtraAttrib(m_pItemAttrib->atkPalsy);
+	m_stSuitAttribRenderInfo.pExtraAttribList = GameInfoManager::GetInstance()->GetItemExtraSuitAttribList(m_pItemAttrib->atkPalsy);
 
 	if(NULL == m_stSuitAttribRenderInfo.pExtraAttribList)
 	{
@@ -1261,8 +1261,8 @@ bool GameIntroDlg::CalcItemAttribRect()
 		rcItem.bottom += s_nEachLineHeight;
 
 		//	level
-		int nLevel = GetItemGrade(m_pItemAttrib->id);
-		nCurWidth = 3 * 12 + GetItemGrade(nLevel);
+		int nLevel = GameInfoManager::GetInstance()->GetItemGradeInFullAttrib(m_pItemAttrib->id);
+		nCurWidth = 3 * 12 + GameInfoManager::GetInstance()->GetItemGradeInFullAttrib(nLevel);
 		if(nCurWidth > nMaxWidth)
 		{
 			nMaxWidth = nCurWidth;
@@ -1556,7 +1556,7 @@ bool GameIntroDlg::CalcItemAttribRect()
 		//	Get the rect
 		ZeroMemory(&m_stSuitAttribRenderInfo, sizeof(SuitAttribRenderInfo));
 		m_stSuitAttribRenderInfo.bCanShow = true;
-		m_stSuitAttribRenderInfo.pExtraAttribList = GetGlobalSuitExtraAttrib(m_pItemAttrib->atkPalsy);
+		m_stSuitAttribRenderInfo.pExtraAttribList = GameInfoManager::GetInstance()->GetItemExtraSuitAttribList(m_pItemAttrib->atkPalsy);
 
 		if(NULL == m_stSuitAttribRenderInfo.pExtraAttribList)
 		{
@@ -2038,7 +2038,7 @@ bool GameIntroDlg::RenderItemAttribSec()
 		++nDetailLine;
 
 		//	Level
-		int nLevel = GetItemGrade(m_pItemAttrib->id);
+		int nLevel = GameInfoManager::GetInstance()->GetItemGradeInFullAttrib(m_pItemAttrib->id);
 		nCurX = D_POS_LEFT;
 		nCurY = D_POS_TOP;
 		nCurY += s_nEachLineHeight * nDetailLine;

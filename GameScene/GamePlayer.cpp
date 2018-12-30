@@ -8,6 +8,7 @@
 #include "../GameDialog/GameInteractiveDlg.h"
 #include "../GameScene/GameScene.h"
 #include "../Common/SKnl3Helper.h"
+#include "../Common/view.h"
 #include "../../CommonModule/SaveFile.h"
 #include "../../CommonModule/ByteBuffer.h"
 #include "../GameDialog/GameChatDlg.h"
@@ -151,6 +152,16 @@ GamePlayer::~GamePlayer()
 	delete m_pSprState;
 	delete m_pSprWeapon;
 	delete m_pSprMgc;
+}
+
+int GamePlayer::GetScreenOffsetX()
+{
+	return (int)m_fPosx - VIEW_WIDTH / 2;
+}
+
+int GamePlayer::GetScreenOffsetY()
+{
+	return (int)m_fPosy - VIEW_HEIGHT / 2;
 }
 
 bool GamePlayer::CanAttack()
@@ -3956,7 +3967,7 @@ void GamePlayer::UpdateSuitAttrib()
 		{
 			if(m_equip[i].atkPalsy != 0)
 			{
-				pCurAttribList = GetGlobalSuitExtraAttrib(m_equip[i].atkPalsy);
+				pCurAttribList = GameInfoManager::GetInstance()->GetItemExtraSuitAttribList(m_equip[i].atkPalsy);
 
 				if(pCurAttribList != NULL)
 				{
@@ -3977,7 +3988,7 @@ void GamePlayer::UpdateSuitAttrib()
 
 					if(!bExist)
 					{
-						xSuitAttribInfoList.push_back(GetGlobalSuitExtraAttrib(m_equip[i].atkPalsy));
+						xSuitAttribInfoList.push_back(GameInfoManager::GetInstance()->GetItemExtraSuitAttribList(m_equip[i].atkPalsy));
 					}
 				}
 			}

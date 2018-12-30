@@ -29,6 +29,7 @@
 #include "../Common/OutlineTextureManager.h"
 #include "../Common/CursorManager.h"
 #include "../../CommonModule/DataEncryptor.h"
+#include "../../CommonModule/version.h"
 #include <UIlib.h>
 #include <float.h>
 #include "GlobalLuaConfig.h"
@@ -220,6 +221,7 @@ MirGame::MirGame() : SGameBase("BackMir", WINDOW_WIDTH, WINDOW_HEIGHT)
 	m_texDarkMode = 0;
 	m_bShowMapSnap = true;
 	m_nCursorResourceId = 0;
+	m_pOldPeekMessage = NULL;
 
 	// initialize static variables
 	InitGameFonts();
@@ -232,6 +234,14 @@ MirGame::~MirGame()
 
 }
 
+void MirGame::UserGfxRestore() {
+#if _MSC_VER >= 1500
+	// Set the double precision
+ 	unsigned int uPrevPrecision;
+ 	_controlfp_s(&uPrevPrecision, 0, 0);
+ 	_controlfp_s(0, _PC_53, MCW_PC);
+#endif
+}
 
 bool MirGame::UserInitial()
 {
@@ -246,7 +256,7 @@ bool MirGame::UserInitial()
 	{
 		MessageBox(NULL, "显示器显示位数不为真彩色(32位),请调整为真彩色,否则游戏将无法正常进行", MB_OK | MB_ICONERROR);
 	}*/
-#if _MSC_VER == 1500
+#if _MSC_VER >= 1500
 	// Set the double precision
 	unsigned int uPrevPrecision;
 	 _controlfp_s(&uPrevPrecision, 0, 0);
@@ -345,13 +355,13 @@ bool MirGame::UserInitial()
 	}
 
 	//	读取套装信息
-	InitItemExtraAttrib();
+	//InitItemExtraAttrib();
 
 	//	读取分解信息
-	InitItemGrade();
+	//InitItemGrade();
 
 	//	读取锻造信息
-	if(!StoveManager::GetInstance()->Init())
+	if(!StoveManager::GetInstance()->Init(pTheGame->GetScriptEngine()->GetVM()))
 	{
 		::MessageBox(NULL, "读取锻造信息失败", "错误", MB_ICONERROR | MB_TASKMODAL);
 		return false;
@@ -368,8 +378,14 @@ bool MirGame::UserInitial()
 #ifdef _THEMIDA_
 	VM_START
 #endif
-	sprintf(szBuf, "%s\\Data\\GameRes.res",
-		GetRootPath());
+		if (NULL == GameResourceManager::GetInstance()->GetCustomDir()) {
+			sprintf(szBuf, "%s\\Data\\GameRes.res",
+				GetRootPath());
+		} else {
+			sprintf(szBuf, "%s\\%s\\Data\\GameRes.res",
+				GetRootPath(), GameResourceManager::GetInstance()->GetCustomDir());
+		}
+	
 	static char szPsw[10] = {0};
 	szPsw[0] = 'X';
 	szPsw[1] = 't';
@@ -417,21 +433,7 @@ bool MirGame::UserInitial()
 		AfxGetHge()->System_Log("魔法信息读取失败");
 	}
 
-	/*if(false == GetRunMapDataEx(m_xRunMapData))
-	{
-		AfxGetHge()->System_Log("地图配置读取失败");
-		return false;
-	}
-	if(false == GetInstanceMapDataEx(m_xInsMapData))
-	{
-		AfxGetHge()->System_Log("副本地图配置读取失败");
-		return false;
-	}
-	const char* pFirst = GetRunMap(0);*/
-
 	m_bInitialized = true;
-
-	//GameSoundManager::GetInstancePtr()->PlayBkSound(3);
 
 	sprintf(szBuf, "%s\\Snapshot",
 		GetRootPath());
@@ -478,10 +480,10 @@ bool MirGame::UserInitial()
 	OutlineTextureManager::GetInstance()->SetHGE(m_pHGE);
 
 	//	鼠标
-	//CursorManager::GetInstance()->UpdateCursor(hWnd, kCursor_Default);
-	//HTEXTURE texCursor = GameResourceManager::GetInstance()->GetTexs(RES_CUSTOM)->GetTexture(42);
-	//SetGameCursor(texCursor);
 	SetGameCursor(42);
+
+	//ShowWindow(hWnd, SW_HIDE);
+	m_pHGE->System_SetState(hgeFuncState(HGE_EXITFUNC + 1), &MirGame::PumpMessage);
 
 	return true;
 }
@@ -696,61 +698,57 @@ bool MirGame::CheckParam()
 		::MessageBox(NULL, "游戏启动失败，请使用登陆器登陆", "错误", MB_ICONERROR);
 		return false;
 	}
-	else
-	{
-		const char* pszLauncherKey = xHelper.GetParam("lk");
-		if(pszLauncherKey == NULL ||
-			0 != strcmp(pszLauncherKey, "lk0x"))
-		{
-			::MessageBox(NULL, "游戏启动失败，请使用登陆器(BMLauncher.exe)登陆", "错误", MB_ICONERROR);
-			return false;
-		}
 
-		const char* pszValue = xHelper.GetParam("svrip");
-		if(pszValue == NULL)
+	const char* pszLauncherKey = xHelper.GetParam("lk");
+	if(pszLauncherKey == NULL ||
+		0 != strcmp(pszLauncherKey, "lk0x"))
+	{
+		::MessageBox(NULL, "游戏启动失败，请使用登陆器(BMLauncher.exe)登陆", "错误", MB_ICONERROR);
+		return false;
+	}
+
+	const char* pszValue = xHelper.GetParam("svrip");
+	if(pszValue == NULL)
+	{
+		::MessageBox(NULL, "游戏启动失败，请使用登陆器登陆", "错误", MB_ICONERROR);
+		return false;
+	}
+
+	char szIP[16];
+	szIP[15] = 0;
+	int nPortPos = 0;
+	for(int i = 0; i < 16; ++i)
+	{
+		if(pszValue[i] == ':')
 		{
-			::MessageBox(NULL, "游戏启动失败，请使用登陆器登陆", "错误", MB_ICONERROR);
-			return false;
+			nPortPos = i;
+			szIP[i] = 0;
+			break;
 		}
 		else
 		{
-			char szIP[16];
-			szIP[15] = 0;
-			int nPortPos = 0;
-			for(int i = 0; i < 16; ++i)
-			{
-				if(pszValue[i] == ':')
-				{
-					nPortPos = i;
-					szIP[i] = 0;
-					break;
-				}
-				else
-				{
-					szIP[i] = pszValue[i];
-				}
-			}
-			strcpy(m_szIP, szIP);
-			++nPortPos;
-
-			for(int i = nPortPos; ; ++i)
-			{
-				if(pszValue[i] == 0)
-				{
-					szIP[i - nPortPos] = 0;
-					break;
-				}
-				szIP[i - nPortPos] = pszValue[i];
-			}
-			m_wPort = (WORD)atoi(szIP);
-#ifdef _DEBUG
-			AfxGetHge()->System_Log("%s:%d",
-				m_szIP, m_wPort);
-#endif
-
-			return true;
+			szIP[i] = pszValue[i];
 		}
 	}
+	strcpy(m_szIP, szIP);
+	++nPortPos;
+
+	for(int i = nPortPos; ; ++i)
+	{
+		if(pszValue[i] == 0)
+		{
+			szIP[i - nPortPos] = 0;
+			break;
+		}
+		szIP[i - nPortPos] = pszValue[i];
+	}
+	m_wPort = (WORD)atoi(szIP);
+#ifdef _DEBUG
+	AfxGetHge()->System_Log("%s:%d",
+		m_szIP, m_wPort);
+#endif
+
+	return true;
 
 	return false;
 
@@ -1161,6 +1159,11 @@ bool MirGame::LoadScript(int _nMapID)
 		return false;
 	}
 
+	// Initialize lua config
+	if (!GameInfoManager::GetInstance()->DataFromLua(m_xScript.GetVM())) {
+		return false;
+	}
+
 	return true;
 
 #ifdef _DEBUG
@@ -1327,42 +1330,6 @@ void MirGame::OnSocketMessage(SOCKET _s, LPARAM lParam)
 			OnGameSvrMsg(_s, lParam);
 		}
 	}
-
-	/*switch(WSAGETSELECTEVENT(lParam))
-	{
-	case FD_CONNECT:
-		{
-			m_pxLoginScene->OnConnect();
-		}break;
-	case FD_READ:
-		{
-			int nRead = recv(_s, s_szBuf, 1024 * 5, 0);
-			if(nRead == SOCKET_ERROR)
-			{
-				closesocket(_s);
-
-				ALERT_MSGBOX("与服务器断开连接");
-#ifdef _DEBUG
-#else
-				PostQuitMessage(0);
-#endif
-			}
-			else
-			{
-				SocketDataCenter::GetInstance().PushData(s_szBuf, nRead);
-			}
-		}break;
-	case FD_CLOSE:
-		{
-			closesocket(_s);
-
-			ALERT_MSGBOX("与服务器断开连接");
-#ifdef _DEBUG
-#else
-			PostQuitMessage(0);
-#endif
-		}break;
-	}*/
 }
 
 void MirGame::OnLoginSvrMsg(SOCKET _s, LPARAM lParam)
@@ -1461,7 +1428,72 @@ void MirGame::OnGameSvrMsg(SOCKET _s, LPARAM lParam)
 		}break;
 	}
 }
- 
+
+/*
+Hook PeekMessage
+*/
+BOOL WINAPI MirGame::MyPeekMessage(__out LPMSG lpMsg, __in_opt HWND hWnd, __in UINT wMsgFilterMin, __in UINT wMsgFilterMax, __in UINT wRemoveMsg) {
+	if (NULL == MirGame::GetInstance()->m_pOldPeekMessage) {
+		return PeekMessage(lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
+	}
+	
+	BOOL bRet = MirGame::GetInstance()->m_pOldPeekMessage(lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
+	return bRet;
+}
+
+void MirGame::HookPeekMessage() {
+	HMODULE hMod = LoadLibrary("user32.dll");
+	if (NULL == hMod) {
+		return;
+	}
+	FARPROC fpFunc = GetProcAddress(hMod, "PeekMessage");
+	if (NULL == fpFunc) {
+		FreeLibrary(hMod);
+		return;
+	}
+
+	m_pOldPeekMessage = (PeekMessageFunc)fpFunc;
+}
+
+void MirGame::MessageLoop() {
+	MSG msg;
+
+	for (;;) {
+		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+			if (msg.message == WM_QUIT) {
+				break;
+			}
+		} else {
+			m_pHGE->System_Start();
+		}
+	}
+}
+
+bool MirGame::PumpMessage() {
+	MSG msg;
+
+	while (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+		if (msg.message == WM_QUIT) {
+			return false;
+		}
+		// Process assit panel messages
+		if (NULL != MirGame::GetInstance()->m_pAssistPaneWnd &&
+			MirGame::GetInstance()->m_pAssistPaneWnd->GetHWND() == msg.hwnd) {
+			MirGame::GetInstance()->m_pAssistPaneWnd->TranslateDispatchMessage(&msg);
+			continue;
+		}
+
+		// If not game hwnd message, translate it
+		if (msg.hwnd != MirGame::GetInstance()->m_hWin) {
+			::TranslateMessage(&msg);
+		}
+
+		::DispatchMessage(&msg);
+	}
+
+	return true;
+}
+
 /************************************************************************/
 /* 过滤windows消息
 /************************************************************************/
@@ -1474,14 +1506,8 @@ void MirGame::OnGameSvrMsg(SOCKET _s, LPARAM lParam)
 	msg.lParam = l;
 	msg.hwnd = h;
 	//DuiLib::CPaintManagerUI::TranslateMessage(&msg);
-
-	if(m_pAssistPaneWnd)
-	{
-		if(h == m_pAssistPaneWnd->GetHWND())
-		{
-			TranslateMessage(&msg);
-		}
-	}
+//
+	//::TranslateMessage(&msg);
 
  	switch (u)
  	{

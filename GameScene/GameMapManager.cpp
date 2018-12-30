@@ -938,37 +938,6 @@ void GameMapManager::RenderFrImg()
 				else if(nObjectsIndex > MAX_OBJECTS - RES_OBJECTS &&
 					nObjectsIndex < 20)
 				{
-// 					sprintf(szWilPath, "%s\\data\\objects%d.wil", GetRootPath(), nObjectsIndex + 1);
-// 					if(GameResourceManager::GetInstance()->LoadWilFileEx(szWilPath))
-// 					{
-// 						//	跨越式objects读取成功
-// 						bEspRead = true;
-// 					}
-// 					else
-// 					{
-// 						AfxGetHge()->System_Log("非法的Objects索引: %d", nObjectsIndex);
-// 						return;
-// 					}
-					/*if(!GameResourceManager::GetInstance()->IsExtraObjectsExist(nObjectsIndex + 1))
-					{
-						sprintf(szWilPath, "%s\\data\\map%03d.sib", GetRootPath(), nObjectsIndex - 20);
-						if(GameResourceManager::GetInstance()->LoadFile(szWilPath))
-						{
-							//	跨越式objects读取成功
-							bEspRead = true;
-						}
-						else
-						{
-							AfxGetHge()->System_Log("非法的Objects索引: %d", nObjectsIndex);
-							return;
-						}
-					}
-					else
-					{
-						bEspRead = true;
-					}*/
-					//AfxGetHge()->System_Log("非法的Object index[%d]",
-						//nObjectsIndex);
 					continue;
 				}
 				else if(nObjectsIndex >= 20)

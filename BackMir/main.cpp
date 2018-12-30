@@ -4,6 +4,12 @@
 #include <direct.h>
 #include <Windows.h>
 
+// Disable warnings
+#pragma warning(disable:4018)
+#pragma warning(disable:4244)
+#pragma warning(disable:4996)
+#pragma warning(disable:4005)
+
 int CreateGameDirs()
 {
 	char szRoot[MAX_PATH];

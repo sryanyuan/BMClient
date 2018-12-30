@@ -378,7 +378,7 @@ void GameDecomposeDlg::ParseItemDecompose(ItemAttrib* _pItem)
 
 		if(GameInfoManager::GetInstance()->GetItemAttrib(_pItem->id, &oriItem))
 		{
-			int nItemLevel = GetItemGrade(_pItem->id);
+			int nItemLevel = GameInfoManager::GetInstance()->GetItemGradeInFullAttrib(_pItem->id);
 			if(0 != nItemLevel)
 			{
 				int nACUp = 0;
@@ -712,7 +712,7 @@ void GameDecomposeDlg::ParseItemForge()
 		if(nCounter == 1 &&
 			nStoneIndex != -1)
 		{
-			int nItemGrade = GetItemGrade(m_stItems[5].id);
+			int nItemGrade = GameInfoManager::GetInstance()->GetItemGradeInFullAttrib(m_stItems[5].id);
 
 			if(0 != nItemGrade)
 			{

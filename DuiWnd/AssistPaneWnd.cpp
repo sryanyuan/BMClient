@@ -5,12 +5,19 @@
 #include <sstream>
 #include <hge.h>
 #include "../Common/GlobalFunction.h"
+#include "../GameScene/GameInfoManager.h"
+#include "../BackMir/BackMir.h"
 //////////////////////////////////////////////////////////////////////////
 using namespace DuiLib;
 using std::string;
 using std::stringstream;
 //////////////////////////////////////////////////////////////////////////
 static const int s_nMaxTabButtons = 5;
+//////////////////////////////////////////////////////////////////////////
+#define EDIT_COLOR_NORMAL 0xFF000000
+#define EDIT_COLOR_ERROR 0xFFFF0000
+#define LIST_ITEM_ITEMS "list_item_items"
+#define LIST_ITEM_MONSS "list_item_monss"
 //////////////////////////////////////////////////////////////////////////
 int TranslateKey(int _nKey)
 {
@@ -35,6 +42,7 @@ AssistPaneWnd::AssistPaneWnd()
 	m_hParentHWND = NULL;
 
 	m_pTabLayout = NULL;
+	m_pLastFocusEdit = NULL;
 }
 
 AssistPaneWnd::~AssistPaneWnd()
@@ -83,69 +91,321 @@ void AssistPaneWnd::AdjustWindowPos()
 	MoveWindow(GetHWND(), rcPane.left, rcPane.top, rcPane.GetWidth(), rcPane.GetHeight(), TRUE);
 }
 
-void AssistPaneWnd::Notify(DuiLib::TNotifyUI& msg)
-{
-	if(msg.sType == DUI_MSGTYPE_SELECTCHANGED)
-	{
-		COptionUI* pOption = (COptionUI*)msg.pSender->GetInterface(DUI_CTR_OPTION);
-
-		if(pOption)
-		{
-			int nSelIndex = -1;
-			if(1 == sscanf(pOption->GetName(), "option_tab_%d", &nSelIndex))
-			{
-				m_pTabLayout->SelectItem(nSelIndex);
-			}
-		}
+void AssistPaneWnd::TranslateDispatchMessage(const MSG* pMsg) {
+	if (!m_PaintManager.TranslateMessage((const LPMSG)pMsg)) {
+		::TranslateMessage(pMsg);
+		::DispatchMessage(pMsg);
 	}
-	else if(msg.sType == DUI_MSGTYPE_WINDOWINIT)
-	{
-		m_pTabLayout = (CTabLayoutUI*)m_PaintManager.FindControl("layout_content");
+}
 
-		//	F1-F11
-		char szEditName[32] = {0};
-
-		for(int i = 1; i <= 11; ++i)
-		{
-			sprintf(szEditName, "edit_f%dmap", i);
-
-			CRichEditUI* pEdit = (CRichEditUI*)m_PaintManager.FindControl(szEditName)->GetInterface(DUI_CTR_RICHEDIT);
-
-			if(pEdit)
-			{
-				pEdit->SetLimitText(1);
-			}
-		}
-
-		//m_PaintManager.SetTimer(m_pTabLayout, TIMER_REFRESHUI, 2000);
-		LoadConfigFromLocal();
-	}
-	else if(msg.sType == DUI_MSGTYPE_CLICK)
-	{
-		if(msg.pSender->GetName() == "button_tableft" ||
-			msg.pSender->GetName() == "button_tabright")
-		{
-			ProcessTabChange(msg);
-		}
-		else if(msg.pSender->GetName().Left(13) == "button_tabok_")
-		{
-			ProcessPageOK(msg);
-		}
-		else if(msg.pSender->GetName() == "closebtn")
-		{
-			ShowWindow(false);
-			// Notify
-			::PostMessage(m_hParentHWND, WM_HIDE_ASSITWND, 0, 0);
-			// ui with name closebtn will be closed by default notify handler
+void AssistPaneWnd::OnNotifyTextChanged(DuiLib::TNotifyUI& msg) {
+	if (msg.pSender->GetName() == "edit_getitem") {
+		CEditUI* pInputEdit = (CEditUI*)m_PaintManager.FindControl("edit_getitem");
+		if (NULL == pInputEdit) {
 			return;
 		}
-	}
-	else if(msg.sType == DUI_MSGTYPE_TIMER)
-	{
-		if(msg.wParam == TIMER_REFRESHUI)
-		{
-			m_PaintManager.KillTimer(m_pTabLayout, TIMER_REFRESHUI);
+		const char* pszText = pInputEdit->GetText();
+		ApplyItemNamesSearch(pszText);
+	} else if (msg.pSender->GetName() == "edit_sgetitem") {
+		CEditUI* pInputEdit = (CEditUI*)m_PaintManager.FindControl("edit_sgetitem");
+		if (NULL == pInputEdit) {
+			return;
 		}
+		const char* pszText = pInputEdit->GetText();
+		ApplyItemNamesSearch(pszText);
+	} else if (msg.pSender->GetName() == "edit_mons") {
+		CEditUI* pInputEdit = (CEditUI*)m_PaintManager.FindControl("edit_mons");
+		if (NULL == pInputEdit) {
+			return;
+		}
+		const char* pszText = pInputEdit->GetText();
+		ApplyMonsNamesSearch(pszText);
+	}
+}
+
+void AssistPaneWnd::OnNotifySelectChanged(DuiLib::TNotifyUI& msg) {
+	COptionUI* pOption = (COptionUI*)msg.pSender->GetInterface(DUI_CTR_OPTION);
+
+	if(pOption)
+	{
+		int nSelIndex = -1;
+		if(1 == sscanf(pOption->GetName(), "option_tab_%d", &nSelIndex))
+		{
+			m_pTabLayout->SelectItem(nSelIndex);
+		}
+	}
+}
+
+void AssistPaneWnd::OnNotifyWindowInit(DuiLib::TNotifyUI& msg) {
+	m_pTabLayout = (CTabLayoutUI*)m_PaintManager.FindControl("layout_content");
+
+	//	F1-F11
+	char szEditName[32] = {0};
+
+	for(int i = 1; i <= 11; ++i)
+	{
+		sprintf(szEditName, "edit_f%dmap", i);
+
+		CRichEditUI* pEdit = (CRichEditUI*)m_PaintManager.FindControl(szEditName)->GetInterface(DUI_CTR_RICHEDIT);
+
+		if(pEdit)
+		{
+			pEdit->SetLimitText(1);
+		}
+	}
+
+	//m_PaintManager.SetTimer(m_pTabLayout, TIMER_REFRESHUI, 2000);
+	LoadConfigFromLocal();
+
+	CControlUI *pCtrl = m_PaintManager.FindControl("option_tab_2");
+	if (NULL != pCtrl) {
+		pCtrl->SetVisible(false);
+	}
+
+	// Load all item names and monster names
+#ifdef _DEBUG
+	std::vector<int> xItemIDs;
+	if (GameInfoManager::GetInstance()->GetItemIDs(xItemIDs)) {
+		for (int i = 0; i < xItemIDs.size(); i++) {
+			ItemAttrib item;
+			if (!GameInfoManager::GetInstance()->GetItemAttrib(xItemIDs[i], &item)) {
+				continue;
+			}
+			std::pair<std::string, int> kv;
+			kv.first = item.name;
+			kv.second = item.id;
+			m_xItemNamesSearchMap.insert(kv);
+		}
+		// Add all item into search panel
+		ApplyItemNamesSearch(NULL);
+	}
+	xItemIDs.clear();
+	if (GameInfoManager::GetInstance()->GetMonsterIDs(xItemIDs)) {
+		for (int i = 0; i < xItemIDs.size(); i++) {
+			ItemAttrib item;
+			if (!GameInfoManager::GetInstance()->GetMonsterAttrib(xItemIDs[i], &item)) {
+				continue;
+			}
+			std::pair<std::string, int> kv;
+			kv.first = item.name;
+			kv.second = item.id;
+			m_xMonsNamesSearchMap.insert(kv);
+		}
+		// Add all monster into search panel
+		ApplyMonsNamesSearch(NULL);
+	}
+#endif
+}
+
+void AssistPaneWnd::OnNotifyClick(DuiLib::TNotifyUI& msg) {
+	if(msg.pSender->GetName() == "button_tableft" ||
+		msg.pSender->GetName() == "button_tabright")
+	{
+		ProcessTabChange(msg);
+	}
+	else if(msg.pSender->GetName().Left(13) == "button_tabok_")
+	{
+		ProcessPageOK(msg);
+	}
+	else if(msg.pSender->GetName() == "closebtn")
+	{
+		ShowWindow(false);
+		// Notify
+		::PostMessage(m_hParentHWND, WM_HIDE_ASSITWND, 0, 0);
+		// ui with name closebtn will be closed by default notify handler
+		return;
+	}
+}
+
+void AssistPaneWnd::OnNotifyTimer(DuiLib::TNotifyUI& msg) {
+	if(msg.wParam == TIMER_REFRESHUI)
+	{
+		m_PaintManager.KillTimer(m_pTabLayout, TIMER_REFRESHUI);
+	}
+}
+
+void AssistPaneWnd::OnNotifyReturn(DuiLib::TNotifyUI& msg) {
+	if (msg.pSender->GetName() == "edit_getitem") {
+#ifdef _DEBUG
+		CEditUI* pInputEdit = (CEditUI*)m_PaintManager.FindControl("edit_getitem");
+		if (NULL == pInputEdit) {
+			return;
+		}
+		const char* pszText = pInputEdit->GetText();
+		if (NULL == pszText ||
+			0 == pszText[0]) {
+				return;
+		}
+		std::string xKey = pszText;
+		std::map<std::string, int>::const_iterator it = m_xItemNamesSearchMap.find(xKey);
+		if (it == m_xItemNamesSearchMap.end()) {
+			::MessageBox(NULL, "No item found", "ERROR", MB_ICONERROR | MB_OK);
+			return;
+		}
+
+		PkgPlayerSpeOperateReq req;
+		req.uUserId = GamePlayer::GetInstance()->GetHandlerID();
+		req.dwOp = CMD_OP_GET;
+		req.dwParam = MAKELONG(it->second, 1);
+		g_xBuffer.Reset();
+		g_xBuffer << req;
+		SendBufferToGS(&g_xBuffer);
+#endif
+	} else if (msg.pSender->GetName() == "edit_sgetitem") {
+#ifdef _DEBUG
+		CEditUI* pInputEdit = (CEditUI*)m_PaintManager.FindControl("edit_sgetitem");
+		if (NULL == pInputEdit) {
+			return;
+		}
+		const char* pszText = pInputEdit->GetText();
+		if (NULL == pszText ||
+			0 == pszText[0]) {
+				return;
+		}
+		std::string xKey = pszText;
+		std::map<std::string, int>::const_iterator it = m_xItemNamesSearchMap.find(xKey);
+		if (it == m_xItemNamesSearchMap.end()) {
+			::MessageBox(NULL, "No item found", "ERROR", MB_ICONERROR | MB_OK);
+			return;
+		}
+
+		// Get item point
+#if _MSC_VER == 1800
+		CComboUI* pBox = (CComboUI*)m_PaintManager.FindControl("sitem_level");
+#else
+		CComboBoxUI* pBox = (CComboBoxUI*)m_PaintManager.FindControl("sitem_level");
+#endif
+		if (NULL == pBox) {
+			return;
+		}
+		int nValue = pBox->GetCurSel();
+
+		PkgPlayerSpeOperateReq req;
+		req.uUserId = GamePlayer::GetInstance()->GetHandlerID();
+		req.dwOp = CMD_OP_SGET;
+		req.dwParam = MAKELONG(it->second, nValue);
+		g_xBuffer.Reset();
+		g_xBuffer << req;
+		SendBufferToGS(&g_xBuffer);
+#endif
+	} else if (msg.pSender->GetName() == "edit_mons") {
+#ifdef _DEBUG
+		CEditUI* pInputEdit = (CEditUI*)m_PaintManager.FindControl("edit_mons");
+		if (NULL == pInputEdit) {
+			return;
+		}
+		const char* pszText = pInputEdit->GetText();
+		if (NULL == pszText ||
+			0 == pszText[0]) {
+				return;
+		}
+		std::string xKey = pszText;
+		std::map<std::string, int>::const_iterator it = m_xMonsNamesSearchMap.find(xKey);
+		if (it == m_xMonsNamesSearchMap.end()) {
+			::MessageBox(NULL, "No monster found", "ERROR", MB_ICONERROR | MB_OK);
+			return;
+		}
+
+		// Get item point
+#if _MSC_VER == 1800
+		CComboUI* pBox = (CComboUI*)m_PaintManager.FindControl("mons_level");
+#else
+		CComboBoxUI* pBox = (CComboBoxUI*)m_PaintManager.FindControl("mons_level");
+#endif
+		if (NULL == pBox) {
+			return;
+		}
+		int nValue = pBox->GetCurSel();
+
+		PkgPlayerSpeOperateReq req;
+		req.uUserId = GamePlayer::GetInstance()->GetHandlerID();
+		// Determine the command
+		if (1 == nValue) {
+			req.dwOp = CMD_OP_EMONSTER;
+			req.dwParam = it->second;
+		} else if (2 == nValue) {
+			req.dwOp = CMD_OP_LMONSTER;
+			req.dwParam = it->second;
+		} else {
+			req.dwOp = CMD_OP_MONSTER;
+			req.dwParam = MAKELONG(it->second, 1);
+		}
+		g_xBuffer.Reset();
+		g_xBuffer << req;
+		SendBufferToGS(&g_xBuffer);
+#endif
+	} else if (msg.pSender->GetName() == "edit_levelup") {
+#ifdef _DEBUG
+		CEditUI* pInputEdit = (CEditUI*)m_PaintManager.FindControl("edit_levelup");
+		if (NULL == pInputEdit) {
+			return;
+		}
+		const char* pszText = pInputEdit->GetText();
+		if (NULL == pszText ||
+			0 == pszText[0]) {
+				::MessageBox(NULL, "Invalid level", "ERROR", MB_ICONERROR | MB_OK);
+				return;
+		}
+
+		int nLevel = atoi(pszText);
+		if (nLevel <= 0 ||
+			nLevel > MAX_LEVEL) {
+				::MessageBox(NULL, "Invalid level", "ERROR", MB_ICONERROR | MB_OK);
+				return;
+		}
+
+		PkgPlayerSpeOperateReq req;
+		req.uUserId = GamePlayer::GetInstance()->GetHandlerID();
+		req.dwOp = CMD_OP_LEVELUP;
+		req.dwParam = nLevel;
+		g_xBuffer.Reset();
+		g_xBuffer << req;
+		SendBufferToGS(&g_xBuffer);
+#endif
+	}
+}
+
+void AssistPaneWnd::OnNotifySetFocus(DuiLib::TNotifyUI& msg) {
+	static const char* s_szRecordFocusEditNames[] = {
+		"edit_getitem",
+		"edit_sgetitem",
+		"edit_mons",
+	};
+	for (int i = 0; i < sizeof(s_szRecordFocusEditNames) / sizeof(s_szRecordFocusEditNames[0]); i++) {
+		if (msg.pSender->GetName() == s_szRecordFocusEditNames[i]) {
+			m_pLastFocusEdit = (CEditUI*)msg.pSender->GetInterface(DUI_CTR_EDIT);
+			break;
+		}
+	}
+}
+
+void AssistPaneWnd::OnNotifyItemClick(DuiLib::TNotifyUI& msg) {
+	if (msg.pSender->GetUserData() == LIST_ITEM_ITEMS ||
+		msg.pSender->GetUserData() == LIST_ITEM_MONSS) {
+			if (NULL != m_pLastFocusEdit) {
+				m_pLastFocusEdit->SetText(msg.pSender->GetText());
+			}
+	}
+}
+
+void AssistPaneWnd::Notify(DuiLib::TNotifyUI& msg)
+{
+	if(msg.sType == DUI_MSGTYPE_SELECTCHANGED) {
+		OnNotifySelectChanged(msg);
+	} else if(msg.sType == DUI_MSGTYPE_WINDOWINIT) {
+		OnNotifyWindowInit(msg);
+	} else if(msg.sType == DUI_MSGTYPE_CLICK) {
+		OnNotifyClick(msg);
+	} else if(msg.sType == DUI_MSGTYPE_TIMER) {
+		OnNotifyTimer(msg);	
+	} else if (msg.sType == DUI_MSGTYPE_TEXTCHANGED) {
+		OnNotifyTextChanged(msg);
+	} else if (msg.sType == DUI_MSGTYPE_RETURN) {
+		OnNotifyReturn(msg);
+	} else if (msg.sType == DUI_MSGTYPE_SETFOCUS) {
+		OnNotifySetFocus(msg);
+	} else if (msg.sType == DUI_MSGTYPE_ITEMCLICK) {
+		OnNotifyItemClick(msg);
 	}
 
 	__super::Notify(msg);
@@ -153,6 +413,90 @@ void AssistPaneWnd::Notify(DuiLib::TNotifyUI& msg)
 
 void AssistPaneWnd::OnFinalMessage( HWND hWnd ) {
 	__super::OnFinalMessage(hWnd);
+}
+
+void AssistPaneWnd::ApplyItemNamesSearch(const char* _pszPattern) {
+#ifdef _DEBUG
+	CListUI* pList = (CListUI*)m_PaintManager.FindControl("itemList");
+	if (NULL == pList) {
+		return;
+	}
+	if (pList->GetCount() == 0 &&
+		!m_xItemNamesSearchMap.empty()) {
+		// Empty, not initialized
+		CListHeaderItemUI* pHeader = new CListHeaderItemUI;
+		pHeader->SetText("物品列表");
+		pList->Add(pHeader);
+		std::map<std::string, int>::const_iterator it = m_xItemNamesSearchMap.begin();
+		for (it; it != m_xItemNamesSearchMap.end(); it++) {
+			CListLabelElementUI* pEle = new CListLabelElementUI;
+			pEle->SetText(it->first.c_str());
+			pEle->SetAttribute("align", "hcenter");
+			pEle->SetUserData(LIST_ITEM_ITEMS);
+			pList->Add(pEle);
+		}
+	}
+	// Hide some item with pattern if needed
+	for (int i = 0; i < pList->GetCount(); i++) {
+		CControlUI* pChild = pList->GetItemAt(i);
+		if (NULL == pChild) {
+			continue;
+		}
+		// Check match the pattern
+		if (NULL == _pszPattern ||
+			_pszPattern[0] == '\0') {
+			pChild->SetVisible(true);
+			continue;
+		}
+		if (pChild->GetText().Find(_pszPattern) >= 0) {
+			pChild->SetVisible(true);
+		} else {
+			pChild->SetVisible(false);
+		}
+	}
+#endif
+}
+
+void AssistPaneWnd::ApplyMonsNamesSearch(const char* _pszPattern) {
+#ifdef _DEBUG
+	CListUI* pList = (CListUI*)m_PaintManager.FindControl("monsList");
+	if (NULL == pList) {
+		return;
+	}
+	if (pList->GetCount() == 0 &&
+		!m_xMonsNamesSearchMap.empty()) {
+			// Empty, not initialized
+			CListHeaderItemUI* pHeader = new CListHeaderItemUI;
+			pHeader->SetText("NPC列表");
+			pList->Add(pHeader);
+			std::map<std::string, int>::const_iterator it = m_xMonsNamesSearchMap.begin();
+			for (it; it != m_xMonsNamesSearchMap.end(); it++) {
+				CListLabelElementUI* pEle = new CListLabelElementUI;
+				pEle->SetText(it->first.c_str());
+				pEle->SetAttribute("align", "hcenter");
+				pEle->SetUserData(LIST_ITEM_MONSS);
+				pList->Add(pEle);
+			}
+	}
+	// Hide some item with pattern if needed
+	for (int i = 0; i < pList->GetCount(); i++) {
+		CControlUI* pChild = pList->GetItemAt(i);
+		if (NULL == pChild) {
+			continue;
+		}
+		// Check match the pattern
+		if (NULL == _pszPattern ||
+			_pszPattern[0] == '\0') {
+				pChild->SetVisible(true);
+				continue;
+		}
+		if (pChild->GetText().Find(_pszPattern) >= 0) {
+			pChild->SetVisible(true);
+		} else {
+			pChild->SetVisible(false);
+		}
+	}
+#endif
 }
 
 void AssistPaneWnd::ProcessPageOK(DuiLib::TNotifyUI& msg)
@@ -749,12 +1093,12 @@ int AssistPaneWnd::CheckMappedKey(int _nKey)
 
 LRESULT AssistPaneWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	MSG msg;
+	/*MSG msg;
 	msg.hwnd = GetHWND();
 	msg.message = uMsg;
 	msg.wParam = wParam;
 	msg.lParam = lParam;
-	TranslateMessage(&msg);
+	TranslateMessage(&msg);*/
 
 	return __super::HandleMessage(uMsg, wParam, lParam);
 }

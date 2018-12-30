@@ -16,8 +16,13 @@
 #endif
 
 // hge
-#pragma comment(lib,"hge.lib")
-#pragma comment(lib,"hgehelp.lib")
+#ifdef _DEBUG
+#pragma comment(lib,"mhge_d.lib")
+#pragma comment(lib,"mhgehelp_d.lib")
+#else
+#pragma comment(lib,"mhge.lib")
+#pragma comment(lib,"mhgehelp.lib")
+#endif
 
 // gdiplus
 #pragma comment(lib, "gdiplus.lib")

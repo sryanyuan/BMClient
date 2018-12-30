@@ -39,6 +39,7 @@
 											<Option name="option_tab_1" group="group_tabsel" selected="false" font="3" width="80" height="24" text="按键映射" normalimage="file='AssistPane/button.png' source='0,0,177,52' corner='8,8,8,8'" hotimage="file='AssistPane/button.png' source='0,52,177,104' corner='8,8,8,8'" pushedimage="file='AssistPane/button.png' source='0,104,177,156' corner='8,8,8,8'" selectedimage="file='AssistPane/button.png' source='0,104,177,156' corner='8,8,8,8'" />
 											<!--Label width="2" /-->
 											<!--Option name="option_tab_2" group="group_tabsel" selected="false" font="3" width="80" height="24" text="人物状态" normalimage="file='AssistPane/button.png' source='0,0,177,52' corner='8,8,8,8'" hotimage="file='AssistPane/button.png' source='0,52,177,104' corner='8,8,8,8'" pushedimage="file='AssistPane/button.png' source='0,104,177,156' corner='8,8,8,8'" selectedimage="file='AssistPane/button.png' source='0,104,177,156' corner='8,8,8,8'" /-->
+											<Option name="option_tab_2" group="group_tabsel" selected="false" font="3" width="80" height="24" text="指令" normalimage="file='AssistPane/button.png' source='0,0,177,52' corner='8,8,8,8'" hotimage="file='AssistPane/button.png' source='0,52,177,104' corner='8,8,8,8'" pushedimage="file='AssistPane/button.png' source='0,104,177,156' corner='8,8,8,8'" selectedimage="file='AssistPane/button.png' source='0,104,177,156' corner='8,8,8,8'" />
 											<Label />
 										</HorizontalLayout>
 										<Label width="5" />
@@ -188,6 +189,66 @@
 											
 											<!--map end-->
 										</VerticalLayout>
+										
+										<!--GM面板-->
+										<HorizontalLayout name="gm_tab">
+											<VerticalLayout vscrollbar="true">
+												<Control height="5" />
+												<HorizontalLayout height="20" >
+													<Label text="获得绑定物品" font="3" />
+													<Label width="5" />
+													<Edit name="edit_getitem" maxchar="20" width="120" bkimage="file='AssistPane/edit_bk.png' corner='2,2,2,2'" inset="2,2,2,2" />
+													<Label width="5" />
+												</HorizontalLayout>
+												
+												<Control height="5" />
+												<HorizontalLayout height="20" >
+													<Label text="获得极品物品" font="3" />
+													<Label width="5" />
+													<Edit name="edit_sgetitem" maxchar="20" width="120" bkimage="file='AssistPane/edit_bk.png' corner='2,2,2,2'" inset="2,2,2,2" />
+													<Label width="5" />
+													<Combo name="sitem_level" >  
+														<ListLabelElement text="普通" selected="true" />  
+														<ListLabelElement text="良品" />
+														<ListLabelElement text="精致" />
+														<ListLabelElement text="无暇" />
+														<ListLabelElement text="完美" />
+														<ListLabelElement text="卓越" />
+														<ListLabelElement text="登峰" />
+														<ListLabelElement text="传说" />
+														<ListLabelElement text="史诗" />
+													</Combo>  
+												</HorizontalLayout>
+												
+												<Control height="5" />
+												<HorizontalLayout height="20" >
+													<Label text="生成怪物" font="3" />
+													<Label width="5" />
+													<Edit name="edit_mons" maxchar="20" width="120" bkimage="file='AssistPane/edit_bk.png' corner='2,2,2,2'" inset="2,2,2,2" />
+													<Label width="5" />
+													<Combo name="mons_level" >  
+														<ListLabelElement text="普通" selected="true" />  
+														<ListLabelElement text="精英" />
+														<ListLabelElement text="首领" />
+													</Combo>  
+												</HorizontalLayout>
+												
+												<Control height="5" />
+												<HorizontalLayout height="20" >
+													<Label text="级数" font="3" />
+													<Label width="5" />
+													<Edit name="edit_levelup" maxchar="20" width="120" bkimage="file='AssistPane/edit_bk.png' corner='2,2,2,2'" inset="2,2,2,2" />
+													<Label width="5" />
+												</HorizontalLayout>
+												
+											</VerticalLayout>
+											<VerticalLayout>
+												<List name="itemList" padding="10,8,10,14" vscrollbar="true" bkcolor="#ffffffff" autovscroll="false" readonly="true"  bkimage="file='AssistPane/edit_bk.png' corner='2,2,2,2'" inset="6,6,6,6"/>
+												<Control height="5" />
+												<List name="monsList" padding="10,8,10,14" vscrollbar="true" bkcolor="#ffffffff" autovscroll="false" readonly="true"  bkimage="file='AssistPane/edit_bk.png' corner='2,2,2,2'" inset="6,6,6,6"/>
+												<Control height="5" />
+											</VerticalLayout>
+										</HorizontalLayout>
 										
 										<!--人物状态-->
 										<!--VerticalLayout>
