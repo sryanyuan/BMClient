@@ -438,7 +438,7 @@ bool MirGame::UserInitial()
 
 	//	设置脚本读取路径
 #ifdef _DEBUG
-	sprintf(szBuf, "%s\\Help\\",
+	sprintf(szBuf, "%s\\Script\\",
 		GetRootPath());
 #else
 	sprintf(szBuf, "%s\\Help\\dog.idx",
