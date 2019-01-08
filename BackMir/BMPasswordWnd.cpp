@@ -91,7 +91,8 @@ void BMPasswordWnd::Notify(TNotifyUI& msg)
 			char szReqURL[MAX_PATH];
 			sprintf(szReqURL, "%s/get?key=app_reg_url", refURL.c_str());
 			// request for battle net address
-			BMHttpManager::GetInstance()->DoGetRequestSync(szReqURL, fastdelegate::bind(&BMPasswordWnd::OnRegisterURLHTTPGet, this));
+			BMHttpManager::GetInstance()->DoGetRequestSync(szReqURL, std::bind(&BMPasswordWnd::OnRegisterURLHTTPGet, this,
+				std::placeholders::_1, std::placeholders::_2));
 		}
 	}
 }

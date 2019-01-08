@@ -623,7 +623,8 @@ void LoginScene::OnAppVersionHTTPGet(const char* _pData, size_t _uSize)
 	char szReqURL[MAX_PATH];
 	sprintf(szReqURL, "%s/get?key=app_patch_url_%s", refURL.c_str(), xAppVersionLatest.c_str());
 	// request for battle net address
-	BMHttpManager::GetInstance()->DoGetRequestSync(szReqURL, fastdelegate::bind(&LoginScene::OnPatchURLHTTPGet, this));
+	BMHttpManager::GetInstance()->DoGetRequestSync(szReqURL, std::bind(&LoginScene::OnPatchURLHTTPGet, this,
+		std::placeholders::_1, std::placeholders::_2));
 }
 
 void LoginScene::OnPatchURLHTTPGet(const char* _pData, size_t _uSize)
@@ -755,7 +756,8 @@ void LoginScene::OnButton(RECT_RIGION _rc)
 				char szReqURL[MAX_PATH];
 				sprintf(szReqURL, "%s/get?key=app_battlenet_addresses", refURL.c_str());
 				// request for battle net address
-				BMHttpManager::GetInstance()->DoGetRequestSync(szReqURL, fastdelegate::bind(&LoginScene::OnBattleNetHTTPGet, this));
+				BMHttpManager::GetInstance()->DoGetRequestSync(szReqURL, std::bind(&LoginScene::OnBattleNetHTTPGet, this,
+					std::placeholders::_1, std::placeholders::_2));
 			}
 		}break;
 	case RECT_NET:
@@ -783,7 +785,8 @@ void LoginScene::OnButton(RECT_RIGION _rc)
 				char szReqURL[MAX_PATH];
 				sprintf(szReqURL, "%s/get?key=app_version", refURL.c_str());
 				// request for battle net address
-				BMHttpManager::GetInstance()->DoGetRequestSync(szReqURL, fastdelegate::bind(&LoginScene::OnAppVersionHTTPGet, this));
+				BMHttpManager::GetInstance()->DoGetRequestSync(szReqURL, std::bind(&LoginScene::OnAppVersionHTTPGet, this,
+					std::placeholders::_1, std::placeholders::_2));
 			}
 		}break;
 	case RECT_QUIT:
