@@ -504,6 +504,9 @@
     <ClInclude Include="GameScene\GameResourceUtil.h">
       <Filter>GameScene</Filter>
     </ClInclude>
+    <ClInclude Include="..\CommonModule\CollDownController.h">
+      <Filter>Module</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resource\arrow\attack.cur">
@@ -1081,6 +1084,9 @@
     </ClCompile>
     <ClCompile Include="GameScene\GameResourceUtil.cpp">
       <Filter>GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommonModule\CollDownController.cpp">
+      <Filter>Module</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

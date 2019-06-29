@@ -18,7 +18,7 @@ int LoadGlobalLuaConfig()
 	sprintf(szBuf, "%s\\Script\\",
 		GetRootPath());
 #else
-	sprintf(szBuf, "%s\\Help\\dog.idx",
+	sprintf(szBuf, "%s\\Script\\dog.idx",
 		GetRootPath());
 #endif
 	eng.SetLuaLoadPath(szBuf);

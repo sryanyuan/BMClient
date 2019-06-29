@@ -59,7 +59,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(DEVLIB_DIR)\Incvc12\DuiLib;$(DEVLIB_DIR)\Inc\luajit;$(DEVLIB_DIR)\Inc\ZipArchive;$(DEVLIB_DIR)\Inc\fomdex;$(DEVLIB_DIR)\Inc\Sqlite;$(DEVLIB_DIR)\Inc\Zlib;$(DEVLIB_DIR)\inc\hge;$(DEVLIB_DIR)\inc\DX8.1\;$(DEVLIB_DIR)\Inc\fastdelegate;$(DEVLIB_DIR)\Inc\protobuf;$(DEVLIB_DIR)\Inc\curl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;ZLIB_WINAPI;_NET_GAME_;_ZIPARCHIVE_;_SELCHR_;POINTER_64=__ptr64;_BIN_PATH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;ZLIB_WINAPI;_NET_GAME_;_ZIPARCHIVE_;_SELCHR_;POINTER_64=__ptr64;_BIN_PATH;_BMCLIENT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -114,6 +114,7 @@
     <ClInclude Include="..\CommonModule\BMHttpManager.h" />
     <ClInclude Include="..\CommonModule\ByteBuffer.h" />
     <ClInclude Include="..\CommonModule\cJSON.h" />
+    <ClInclude Include="..\CommonModule\CollDownController.h" />
     <ClInclude Include="..\CommonModule\CommandLineHelper.h" />
     <ClInclude Include="..\CommonModule\ConvertUTF.h" />
     <ClInclude Include="..\CommonModule\DataEncryptor.h" />
@@ -273,6 +274,7 @@
     <ClCompile Include="..\CommonModule\BMHttpManager.cpp" />
     <ClCompile Include="..\CommonModule\ByteBuffer.cpp" />
     <ClCompile Include="..\CommonModule\cJSON.c" />
+    <ClCompile Include="..\CommonModule\CollDownController.cpp" />
     <ClCompile Include="..\CommonModule\CommandLineHelper.cpp" />
     <ClCompile Include="..\CommonModule\ConvertUTF.c" />
     <ClCompile Include="..\CommonModule\DataEncryptor.cpp" />

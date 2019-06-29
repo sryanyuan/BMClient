@@ -207,7 +207,7 @@ void AssistPaneWnd::OnNotifyClick(DuiLib::TNotifyUI& msg) {
 	{
 		ProcessPageOK(msg);
 	}
-	else if(msg.pSender->GetName() == "closebtn")
+	else if(msg.pSender->GetName() == "hidebtn")
 	{
 		ShowWindow(false);
 		// Notify
@@ -412,6 +412,7 @@ void AssistPaneWnd::Notify(DuiLib::TNotifyUI& msg)
 }
 
 void AssistPaneWnd::OnFinalMessage( HWND hWnd ) {
+	// Skip close message
 	__super::OnFinalMessage(hWnd);
 }
 

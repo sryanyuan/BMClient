@@ -124,25 +124,6 @@ public:
 		return (m_xSettings.GetIntValue("SOUNDENABLE") != 0);
 		return (m_bSoundEnable && !m_bSoundForbid);
 	}
-	inline const char* GetRunMap(int _id)
-	{
-		if(_id < 0 ||
-			_id >= m_xRunMapData.size())
-		{
-			return NULL;
-		}
-		return m_xRunMapData[_id].c_str();
-	}
-	inline const char* GetInstanceMap(int _id)
-	{
-		INSTANCEMAPDATA::const_iterator fndIter = m_xInsMapData.find(_id);
-		if(fndIter != m_xInsMapData.end())
-		{
-			return fndIter->second.c_str();
-		}
-
-		return NULL;
-	}
 	inline hgeResourceManager* GetGameRes()
 	{
 		return m_pxGameRes;
@@ -324,9 +305,6 @@ private:
 	bool m_bSoundForbid;
 	bool m_bSoundEnable;
 
-	//	运行地图
-	RUNMAPDATA m_xRunMapData;
-	INSTANCEMAPDATA m_xInsMapData;
 	//	是否已连接
 	bool m_bConnect;
 	//	游戏设置

@@ -10,6 +10,7 @@
 #include "../../CommonModule/ShareData.h"
 #include "../../CommonModule/QuestContext.h"
 #include "../../CommonModule/RandGenerator.h"
+#include "../../CommonModule/CollDownController.h"
 //////////////////////////////////////////////////////////////////////////
 #define WAITSERVERRSP_NONE			0
 #define WAITSERVERRSP_NORMALATK		1

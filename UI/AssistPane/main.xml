@@ -21,7 +21,7 @@
 						<HorizontalLayout height="34">
 							<Label name="label_caption" text="BackMIR辅助面板" textcolor="0xffffffff" font="1" float="true" pos="15,10,200,25" />
 							<Label />
-							<Button name="closebtn" width="41" height="35" normalimage="file='assistpane/btn_msgdlgClose.png' source='0,0,41,35'" hotimage="file='assistpane/btn_msgdlgClose.png' source='0,35,41,70'" pushedimage="file='assistpane/btn_msgdlgClose.png' source='0,70,41,105'" />
+							<Button name="hidebtn" width="41" height="35" normalimage="file='assistpane/btn_msgdlgClose.png' source='0,0,41,35'" hotimage="file='assistpane/btn_msgdlgClose.png' source='0,35,41,70'" pushedimage="file='assistpane/btn_msgdlgClose.png' source='0,70,41,105'" />
 						</HorizontalLayout>
 						
 						<HorizontalLayout bkcolor="0xffe9f0f4" >

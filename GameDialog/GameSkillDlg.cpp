@@ -7,9 +7,9 @@ static const int s_nOftX = 22 - 3;
 static const int s_nOftY = 57 + 20 + 10;
 static const int s_nIconX = 14+2;
 static const int s_nIconY = 11+2;
-static const char* s_pszSkillTip = "[帮助]技能释放有两种模式。\
-								   \n1：点击技能图标按钮，设置F1-F9进行释放\
-								   \n2：移到技能图标按钮上，点击按键A-Z进行设置，然后用A-Z选择技能，退格键清空（←），使用~(数字1旁边按键)进行释放";
+static const char* s_pszSkillTip = "[帮助]技能释放有两种模式。"
+								   "\n1：点击技能图标按钮，设置F1-F9进行释放"
+								   "\n2：移到技能图标按钮上，点击按键A-Z进行设置，然后用A-Z选择技能，退格键清空（←），使用~(数字1旁边按键)进行释放";
 //////////////////////////////////////////////////////////////////////////
 GameSkillDlg::GameSkillDlg()
 {

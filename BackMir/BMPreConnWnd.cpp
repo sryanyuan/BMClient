@@ -12,6 +12,8 @@
 #include "BMSelServerWnd.h"
 #include "BMPasswordWnd.h"
 #include "../Common/strutils.h"
+#include <sstream>
+#include <direct.h>
 
 #include <mutex>
 #include <condition_variable>
@@ -52,6 +54,30 @@ BMPreConnWnd::BMPreConnWnd()
 		if (NULL != szCustomResDir) {
 			GameResourceManager::GetInstance()->SetCustomDir(szCustomResDir);
 		}
+
+#ifdef _DEBUG
+		std::stringstream ssDebugArg;
+		// Print args
+		auto args = xHelper.GetAllParams();
+		for (auto &argList : args) {
+			ssDebugArg << "Run arg list: " << argList << "\n";
+		}
+		// Print env
+		const char* pEnvVal = getenv("RES_DATA_DIR");
+		if (nullptr != pEnvVal) {
+			ssDebugArg << "RES_DATA_DIR=" << pEnvVal << "\n";
+		}
+		pEnvVal = getenv("gmcode");
+		if (nullptr != pEnvVal) {
+			ssDebugArg << "gmcode=" << pEnvVal << "\n";
+		}
+		// Print cwd
+		char szCwd[MAX_PATH];
+		szCwd[0] = 0;
+		getcwd(szCwd, sizeof(szCwd));
+		ssDebugArg << "cwd=" << szCwd;
+		MessageBox(NULL, ssDebugArg.str().c_str(), "ARGS && ENVS", MB_OK);
+#endif
 	}
 
 	m_nLID = 0;

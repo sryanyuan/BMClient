@@ -214,84 +214,6 @@ bool GameScene::SwitchScene(const char* lpszmapname)
 /************************************************************************/
 /* 切换地图场景 
 /************************************************************************/
-/*
-bool GameScene::SwitchScene(DWORD _id)
-{
-	char szMapName[MAX_PATH];
-	sprintf(szMapName, "%s\\cfg.ini",
-		GetRootPath());
-	const char* pszMapName = NULL;
-
-	if(_id < 100)
-	{
-		pszMapName = pTheGame->GetRunMap(_id);
-	}
-	else
-	{
-		pszMapName = pTheGame->GetInstanceMap(_id);
-	}
-
-#ifdef _DEBUG
-	int x = 0;
-	int y = 0;
-	x = GetPrivateProfileInt("STANDING",
-		"x",
-		99999,
-		szMapName);
-	y = GetPrivateProfileInt("STANDING",
-		"y",
-		99999,
-		szMapName);
-	if(x != 99999 &&
-		y != 99999)
-	{
-		GamePlayer::GetInstance()->SetReallyCoord(x, y);
-	}
-#endif
-
-	if(NULL == pszMapName)
-	{
-		AfxGetHge()->System_Log("不存在的地图ID[%d]",
-			_id);
-		return false;
-	}
-	else
-	{
-		AfxGetHge()->System_Log("载入地图ID[%d]",
-			_id);
-		//return true;
-	}
-
-	//	清除黑夜标记
-	pTheGame->SetDarkMode(0);
-	//	清楚地图显示标记
-	pTheGame->SetShowMapSnap(true);
-
-	//	触发场景更换事件
-	LuaEvent_SwitchScene evt = {0};
-	evt.nMapId = _id;
-	pTheGame->GetScriptEngine()->DispatchEvent(kLuaEvent_SwitchScene, &evt);
-
-	GameResourceManager::GetInstance()->ReleaseAllFile();
-	GameSoundManager::GetInstancePtr()->ReleaseCache();
-	SelectedTextureManager::GetInstance()->ClearAll();
-	OutlineTextureManager::GetInstance()->ClearAll();
-
-	if(m_pMiniMap)
-	{
-		m_pMiniMap->SetMap(_id);
-		GamePlayer::GetInstance()->SetMapID(_id);
-		m_pMainOpt->GetMapDlg()->Reset();
-	}
-	GamePlayer::GetInstance()->SetAtkMonster(NULL);
-	GamePlayer::GetInstance()->SetMgcTarget(NULL);
-	//m_pMainOpt->GetShopDlg()->SetVisible(false);
-	//m_pMainOpt->GetStoreDlg()->SetVisible(false);
-	GameScene::sThis->GetMainOpt()->GetShopDlg2()->CloseDialog();
-	GameScene::sThis->GetMainOpt()->GetStoreDlg2()->CloseDialog();
-	return SwitchScene(pszMapName);
-}*/
-
 bool GameScene::SwitchScene(DWORD _id)
 {
 	const LuaMapInfo* pMapInfo = GetMapConfigManager().GetLuaMapInfo(_id);
@@ -3264,7 +3186,7 @@ bool GameScene::InsertNewObject(const PkgNewPlayerNot& not)
 				DWORD dwLevel = 0;
 				int nIndex = 0;
 
-				for(list<DWORD>::const_iterator begIter = not.xSkillInfo.begin();
+				for(list<unsigned int>::const_iterator begIter = not.xSkillInfo.begin();
 					begIter != not.xSkillInfo.end();
 					++begIter)
 				{

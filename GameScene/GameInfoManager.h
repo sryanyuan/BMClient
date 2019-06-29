@@ -4,6 +4,7 @@
 #include "../../CommonModule/ObjectData.h"
 #include <sqlite3.h>
 #include <map>
+#include <Windows.h>
 //////////////////////////////////////////////////////////////////////////
 #define ITEM_ID_MAX	2000
 #define ITEM_DESC_TEXT_WIDTH	(12 * 12)

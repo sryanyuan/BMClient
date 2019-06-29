@@ -481,8 +481,8 @@ bool GamePlayer::LoadSaveData_SaveFile(const char* _pszFile)
 	extern ByteBuffer g_xBuffer;
 	g_xBuffer.Reset();
 
-	DWORD dwDataSize = 0;
-	DWORD dwHeaderSize = 0;
+	unsigned int dwDataSize = 0;
+	unsigned int dwHeaderSize = 0;
 	xSave.GetDataSize(&dwDataSize);
 	xSave.GetHeaderSize(&dwHeaderSize);
 

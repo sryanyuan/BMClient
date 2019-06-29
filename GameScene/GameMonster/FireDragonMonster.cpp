@@ -344,7 +344,7 @@ void FireDragonMonster::PlayAttack1Effect()
 
 	if(!ack.xPos.empty())
 	{
-		std::list<DWORD>::const_iterator begiter = ack.xPos.begin();
+		std::list<unsigned int>::const_iterator begiter = ack.xPos.begin();
 		for(begiter;
 			begiter != ack.xPos.end();
 			++begiter)

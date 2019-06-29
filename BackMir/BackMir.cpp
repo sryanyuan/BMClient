@@ -348,7 +348,7 @@ bool MirGame::UserInitial()
 	SetUnhandledExceptionFilter(&BM_UnhandledExceptionFilter);
 
 	//	版本判断
-	if(!CheckVersion())
+	if(false && !CheckVersion())
 	{
 		::MessageBox(NULL, "文件版本不匹配", "错误", MB_ICONERROR | MB_TASKMODAL);
 		return false;
@@ -441,7 +441,7 @@ bool MirGame::UserInitial()
 	sprintf(szBuf, "%s\\Script\\",
 		GetRootPath());
 #else
-	sprintf(szBuf, "%s\\Help\\dog.idx",
+	sprintf(szBuf, "%s\\Script\\dog.idx",
 		GetRootPath());
 #endif
 	m_xScript.SetLuaLoadPath(szBuf);
@@ -649,7 +649,7 @@ const char* MirGame::GetDifficultyLevelName(int _nDifficultyLevel)
 
 void MirGame::UpdateWindowTitle(int _nDifficultyLevel)
 {
-	char szWndTitle[100];
+	char szWndTitle[200];
 	if(_nDifficultyLevel < 0)
 	{
 		sprintf(szWndTitle, "BackMIR-[%s %s]",
@@ -661,6 +661,18 @@ void MirGame::UpdateWindowTitle(int _nDifficultyLevel)
 			BACKMIR_CURVERSION, BACKMIR_VERSION_CHNAME,
 			GetDifficultyLevelName(_nDifficultyLevel));
 	}
+	// Random part
+	strcat(szWndTitle, " - ");
+	char str[] = "ABCDEFGHIJKLMHOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	char szCaption[256] = { 0 };
+	INT i, leg;
+	srand((unsigned)time(NULL));
+
+	for (i = 0; i < rand() % 4 + 10; i++){
+		leg = rand() % strlen(str);
+		szCaption[i] = str[leg];
+	}
+	strcat(szWndTitle, szCaption);
 	
 	SetWindowText(m_hWin, szWndTitle);
 }
@@ -1123,7 +1135,7 @@ bool MirGame::LoadQuestScript()
 	}
 	return true;
 #else
-	sprintf(szPath, "%s\\Help\\dog.idx",
+	sprintf(szPath, "%s\\Script\\dog.idx",
 		GetRootPath());
 	char szSubFile[50];
 	//sprintf(szSubFile, "questtip.bbt");
@@ -1194,7 +1206,7 @@ bool MirGame::LoadScript(int _nMapID)
 
 	return true;
 #else
-	sprintf(szPath, "%s\\Help\\dog.idx",
+	sprintf(szPath, "%s\\Script\\dog.idx",
 		GetRootPath());
 	char szSubFile[50];
 	sprintf(szSubFile, "react%d.bbt",

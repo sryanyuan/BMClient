@@ -5279,8 +5279,8 @@ void GameOtherPlayer::DoPacket(const PkgPlayerPlayAniAck& ack)
 		ack.wAniID == 1001 ||
 		ack.wAniID == 1002)
 	{
-		std::list<DWORD>::const_iterator begIter = ack.xPos.begin();
-		std::list<DWORD>::const_iterator endIter = ack.xPos.end();
+		std::list<unsigned int>::const_iterator begIter = ack.xPos.begin();
+		std::list<unsigned int>::const_iterator endIter = ack.xPos.end();
 
 		for(begIter;
 			begIter != endIter;
