@@ -356,7 +356,7 @@ void GameScene::ProcKeyCmd()
 					g_xBuffer.Reset();
 					g_xBuffer << req;
 					SendBufferToGS(&g_xBuffer);
-					break;
+					//break;
 				}
 			}
 		}
@@ -2567,6 +2567,30 @@ bool GameScene::SendChatMessage()
 				if (NULL != pWnd) {
 					pWnd->ShowWindow(true);
 					pWnd->AdjustWindowPos();
+				}
+			}
+			else if (0 == strcmp(szCmd, "mvspeed")) {
+				if (0 != sscanf(szText, "@mvspeed %d", &nX))
+				{
+					PkgPlayerSpeOperateReq req;
+					req.uUserId = GamePlayer::GetInstance()->GetHandlerID();
+					req.dwOp = CMD_OP_SETMOVESPEED;
+					req.dwParam = nX;
+					g_xBuffer.Reset();
+					g_xBuffer << req;
+					SendBufferToGS(&g_xBuffer);
+				}
+			}
+			else if (0 == strcmp(szCmd, "atkspeed")) {
+				if (0 != sscanf(szText, "@atkspeed %d", &nX))
+				{
+					PkgPlayerSpeOperateReq req;
+					req.uUserId = GamePlayer::GetInstance()->GetHandlerID();
+					req.dwOp = CMD_OP_SETATTACKSPEED;
+					req.dwParam = nX;
+					g_xBuffer.Reset();
+					g_xBuffer << req;
+					SendBufferToGS(&g_xBuffer);
 				}
 			}
 			else

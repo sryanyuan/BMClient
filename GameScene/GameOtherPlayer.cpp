@@ -21,6 +21,7 @@
 #include "../GameDialog/GameBigStoreDlg.h"
 #include "../GameDialog/GameSkillDlg.h"
 #include "../../CommonModule/version.h"
+#include "../../CommonModule/SimpleActionHelper.h"
 #include <zlib.h>
 #include "../../CommonModule/cJSON.h"
 //////////////////////////////////////////////////////////////////////////
@@ -3475,6 +3476,8 @@ void GameOtherPlayer::OnPacket(const PacketHeader* _pPkt)
 		HANDLE_PACKET(PKG_GAME_PLAYER_DIALOGDATA_ACK,		PkgPlayerDialogDataAck)
 		HANDLE_PACKET(PKG_GAME_PLAYER_DIFFICULTYLEVEL_RSP,	PkgPlayerDifficultyLevelRsp)
 		HANDLE_PACKET(PKG_GAME_PLAYER_QUITSELCHR_RSP,		PkgPlayerQuitSelChrRsp)
+		HANDLE_PACKET(PKG_GAME_SYNCDATA_NOT,				PkgGameSyncDataNot)
+		HANDLE_PACKET(PKG_GAME_OBJECT_ACTIONS_NOT,			PkgGameObjectActionsNot)
 		HANDLE_DEFAULT(_pPkt)
 	END_HANDLE_PACKET(_pPkt)
 }
@@ -5342,4 +5345,139 @@ void GameOtherPlayer::DoPacket(const PkgPlayerQuitSelChrRsp& rsp)
 	GameMainOptUI::GetInstance()->GetSkillDlg()->Reset();
 	GamePlayer::GetInstance()->Reset();
 	::PostMessage(AfxGetHge()->System_GetState(HGE_HWND), WM_BACK_SELCHR, 0, 0);
+}
+
+//////////////////////////////////////////////////////////////////////////
+void GameOtherPlayer::DoPacket(const PkgGameSyncDataNot& not)
+{
+	if (not.nType == SyncDataUpgradeExpr) {
+		if (not.vecVals.size() != MAX_LEVEL) {
+			return;
+		}
+		for (int i = 0; i < MAX_LEVEL; i++) {
+			g_nExprTable[i] = not.vecVals[i];
+		}
+	}
+	if (0 != GamePlayer::GetInstance()->GetAttrib()->level) {
+		GamePlayer::GetInstance()->GetAttrib()->maxEXPR = g_nExprTable[GamePlayer::GetInstance()->GetAttrib()->level - 1];
+	}
+}
+
+static unsigned int readVectorDword(const std::vector<char> &refVec, int _nIndex) {
+	const char *p = &refVec[_nIndex];
+	unsigned int res;
+	memcpy(&res, p, 4);
+	return res;
+}
+
+void GameOtherPlayer::DoPacket(const PkgGameObjectActionsNot& not) {
+	static const int s_nMoveOftTable[] =
+	{
+		0, -1, 1, -1, 1, 0,
+		1, 1, 0, 1, -1, 1,
+		-1, 0, -1, -1
+	};
+
+	// Do uncompress
+	if ((not.uUserId & 0x01) != 0) {
+		static char *s_pBuf = new char[1024 * 256];
+		uLongf srclen = (uLongf)not.vecActions.size();
+		//uLongf buflen = (uLongf)sizeof(szBuf);
+		uLongf buflen = (uLongf)1024;
+
+		int nRet = uncompress((Bytef*)s_pBuf, &buflen, (const Bytef*)&not.vecActions.front(), srclen);
+		if (nRet == Z_OK)
+		{
+			vector<char> &refVec = (vector<char>&)not.vecActions;
+			refVec.resize(buflen);
+			memcpy((char*)&not.vecActions.front(), s_pBuf, buflen);
+		}
+		else {
+			char szErr[64];
+			sprintf(szErr, "Uncompress error: %d", nRet);
+			ALERT_MSGBOX(szErr);
+		}
+	}
+
+	int nCount = 0;
+	for (int i = 0; i < not.vecActions.size(); ) {
+		// Read action type
+		//char cAction = not.vecActions[i++];
+		char cAction = ObjectActionWalk;
+		PkgObjectActionNot anot;
+
+		switch (cAction)
+		{
+		case ObjectActionWalk:
+		{
+			anot.uAction = ACTION_WALK;
+			anot.uTargetId = readVectorDword(not.vecActions, i);
+			i += 4;
+			anot.uUserId = readVectorDword(not.vecActions, i);
+			i += 4;
+			anot.uParam0 = MAKELONG(SimpleActionHelper::GetCoordX(anot), SimpleActionHelper::GetCoordY(anot));
+			char cDir = 0;
+			if (nCount % 2 == 0) {
+				cDir = not.vecActions[i++];
+			}
+			else {
+				cDir = not.vecActions[i - 8 - 1] >> 4;
+			}
+			int nNextX = SimpleActionHelper::GetCoordX(anot);
+			int nNextY = SimpleActionHelper::GetCoordY(anot);
+			if ((cDir & 0x01) != 0) {
+				nNextX += 1;
+			}
+			else if ((cDir & 0x02) != 0) {
+				nNextX -= 1;
+			}
+
+			if ((cDir & 0x04) != 0) {
+				nNextY += 1;
+			}
+			else if ((cDir & 0x08) != 0) {
+				nNextY -= 1;
+			}
+			
+			anot.uParam1 = MAKELONG(nNextX, nNextY);
+
+			GameObject *pObj = (GameObject*)SocketDataCenter::GetInstance().GetHandler(anot.uTargetId);
+			if (nullptr != pObj) {
+				pObj->DoPacket(anot);
+			}
+			++nCount;
+		}break;
+		case ObjectActionRun:
+		{
+			anot.uAction = ACTION_RUN;
+			anot.uTargetId = readVectorDword(not.vecActions, i);
+			i += 4;
+			anot.uUserId = readVectorDword(not.vecActions, i);
+			i += 4;
+			anot.uParam0 = MAKELONG(SimpleActionHelper::GetCoordX(anot), SimpleActionHelper::GetCoordY(anot));
+			anot.uParam1 = readVectorDword(not.vecActions, i);
+			i += 4;
+
+			GameObject *pObj = (GameObject*)SocketDataCenter::GetInstance().GetHandler(anot.uTargetId);
+			if (nullptr != pObj) {
+				pObj->DoPacket(anot);
+			}
+		}break;
+		case ObjectActionTurn:
+		{
+			anot.uAction = ACTION_TURN;
+			anot.uTargetId = readVectorDword(not.vecActions, i);
+			i += 4;
+			anot.uUserId = readVectorDword(not.vecActions, i);
+			i += 4;
+			anot.uParam0 = MAKELONG(SimpleActionHelper::GetCoordX(anot), SimpleActionHelper::GetCoordY(anot));
+			anot.uParam1 = SimpleActionHelper::GetDirection(anot);
+
+			GameObject *pObj = (GameObject*)SocketDataCenter::GetInstance().GetHandler(anot.uTargetId);
+			if (nullptr != pObj) {
+				pObj->DoPacket(anot);
+			}
+		}break;
+		}
+	}
 }

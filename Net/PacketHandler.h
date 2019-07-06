@@ -65,6 +65,7 @@ public:
 	void DoPacket_SystemUserDataAck(const PkgSystemUserDataAck* _pPkt);
 	//	Game
 	void DoPacket_GameObjectActionNot(const PkgObjectActionNot* _pPkt);
+	void DoPacket_GameSyncDataNot(const PkgGameSyncDataNot& not);
 
 	void DoPacket(const PkgSystemNewItemNot& not);
 	void DoPacket(const PkgSystemDelItemNot& not);

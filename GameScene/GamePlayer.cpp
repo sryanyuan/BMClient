@@ -1302,9 +1302,13 @@ bool GamePlayer::ProcUserCmd(const POINT& _mp)
 					AttackMonster(pSelectObj);
 				}
 				//	pick up item
+				static unsigned int uLastPickupTime = 0;
 				if(pTheGame->Config_MousePickUp() &&
-					!IsMoving())
+					!IsMoving() &&
+					GetTickCount() - uLastPickupTime > 1000)
 				{
+					uLastPickupTime = GetTickCount();
+
 					WORD wPosX = GetCoordX();
 					WORD wPosY = GetCoordY();
 					GROUNDITEMS& refGroundItems = GameScene::sThis->GetGroundItems();
@@ -1321,7 +1325,7 @@ bool GamePlayer::ProcUserCmd(const POINT& _mp)
 							g_xBuffer.Reset();
 							g_xBuffer << req;
 							SendBufferToGS(&g_xBuffer);
-							break;
+							//break;
 						}
 					}
 				}

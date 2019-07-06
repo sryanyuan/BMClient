@@ -741,7 +741,9 @@ void BMPreConnWnd::DoLoginSvrPacketProtobuf(const char* _pData, size_t _uLength)
 			wnd.SetServerList(ntf);
 			wnd.Create(NULL, "SelServerWnd", UI_WNDSTYLE_FRAME, 0, 0, 0, 200, 350, 0);
 			wnd.CenterWindow();
+			::ShowWindow(m_hWnd, SW_SHOWMINIMIZED);
 			int nSel = wnd.ShowModal();
+			::ShowWindow(m_hWnd, SW_NORMAL);
 			int nServerIndex = wnd.GetSelServerIndex();
 
 			if (IDOK == nSel &&
@@ -978,7 +980,9 @@ void BMPreConnWnd::DoLoginSvrPacket(const PkgLoginServerAddrV2Not& not) {
 	AppendString("OK\n");
 	wnd.Create(NULL, "SelServerWnd", UI_WNDSTYLE_FRAME, 0, 0, 0, 200, 350, 0);
 	wnd.CenterWindow();
+	::ShowWindow(m_hWnd, SW_SHOWMINIMIZED);
 	int nSel = wnd.ShowModal();
+	::ShowWindow(m_hWnd, SW_NORMAL);
 	int nServerIndex = wnd.GetSelServerIndex();
 
 	if (IDOK == nSel &&
