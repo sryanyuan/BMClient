@@ -1346,7 +1346,8 @@ void GameDisplayDlg::GenShowItems()
 
 	//	suit attribute
 	if(IsEquipItem(&m_stShowItem) &&
-		m_stShowItem.atkPalsy != 0)
+		m_stShowItem.atkPalsy != 0 &&
+		!GamePlayer::GetInstance()->IsSuitIgnored(m_stShowItem.atkPalsy))
 	{
 		const ItemExtraAttribList* pExtraAttribList = GameInfoManager::GetInstance()->GetItemExtraSuitAttribList(m_stShowItem.atkPalsy);
 

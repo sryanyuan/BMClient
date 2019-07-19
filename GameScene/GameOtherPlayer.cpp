@@ -3478,6 +3478,7 @@ void GameOtherPlayer::OnPacket(const PacketHeader* _pPkt)
 		HANDLE_PACKET(PKG_GAME_PLAYER_QUITSELCHR_RSP,		PkgPlayerQuitSelChrRsp)
 		HANDLE_PACKET(PKG_GAME_SYNCDATA_NOT,				PkgGameSyncDataNot)
 		HANDLE_PACKET(PKG_GAME_OBJECT_ACTIONS_NOT,			PkgGameObjectActionsNot)
+		HANDLE_PACKET(PKG_GAME_PLAYER_SUIT_IGNORE_NOT,		PkgGamePlayerSuitIgnoreNot)
 		HANDLE_DEFAULT(_pPkt)
 	END_HANDLE_PACKET(_pPkt)
 }
@@ -5368,6 +5369,10 @@ static unsigned int readVectorDword(const std::vector<char> &refVec, int _nIndex
 	unsigned int res;
 	memcpy(&res, p, 4);
 	return res;
+}
+
+void GameOtherPlayer::DoPacket(const PkgGamePlayerSuitIgnoreNot& not) {
+	GamePlayer::GetInstance()->SetIgnoredSuitIDs(not.setSuitIgnore);
 }
 
 void GameOtherPlayer::DoPacket(const PkgGameObjectActionsNot& not) {

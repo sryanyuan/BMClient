@@ -1240,7 +1240,6 @@ void GameObject::OnPacket(const PacketHeader* _pPkt)
 		HANDLE_PACKET(PKG_GAME_OBJECT_ACTION_EXT_NOT,		PkgObjectActionExtNot)
 		default:
 		{
-		//ALERT_MSGBOX("Unknown opcode!");
 			AfxGetHge()->System_Log("未知的数据包[%d]",
 				_pPkt->uOp);
 		}break;

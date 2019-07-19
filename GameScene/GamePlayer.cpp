@@ -3862,24 +3862,24 @@ void GamePlayer::UpdatePlayerAttrib()
 			if(pDetail->cLevel == 1)
 			{
 				m_attrib.atkSpeed += 1;
-				m_attrib.DC *= 1.1f;
-				m_attrib.maxDC *= 1.3f;
+				m_attrib.DC *= 1.05f;
+				m_attrib.maxDC *= 1.1f;
 				m_attrib.maxAC += 4;
 				m_attrib.accuracy += 2;
 			}
 			else if(pDetail->cLevel == 2)
 			{
 				m_attrib.atkSpeed += 2;
-				m_attrib.DC *= 1.2f;
-				m_attrib.maxDC *= 1.4f;
+				m_attrib.DC *= 1.08f;
+				m_attrib.maxDC *= 1.13f;
 				m_attrib.maxAC += 7;
 				m_attrib.accuracy += 3;
 			}
 			else if(pDetail->cLevel == 3)
 			{
 				m_attrib.atkSpeed += 3;
-				m_attrib.DC *= 1.3f;
-				m_attrib.maxDC *= 1.5f;
+				m_attrib.DC *= 1.11f;
+				m_attrib.maxDC *= 1.16f;
 				m_attrib.maxAC += 10;
 				m_attrib.accuracy += 4;
 			}
@@ -3971,6 +3971,10 @@ void GamePlayer::UpdateSuitAttrib()
 		{
 			if(m_equip[i].atkPalsy != 0)
 			{
+				if (m_xIgnoredSuitIDs.count(m_equip[i].atkPalsy) > 0) {
+					continue;
+				}
+
 				pCurAttribList = GameInfoManager::GetInstance()->GetItemExtraSuitAttribList(m_equip[i].atkPalsy);
 
 				if(pCurAttribList != NULL)

@@ -1739,7 +1739,8 @@ void GameOtherItemDisplayDlg::Render()
 	if(MirGame::IsEquipItem(*m_pItemAttrib))
 	{
 		if(m_pItemAttrib->atkPalsy != 0 &&
-			m_stSuitAttribRenderInfo.bCanShow)
+			m_stSuitAttribRenderInfo.bCanShow &&
+			!GamePlayer::GetInstance()->IsSuitIgnored(m_pItemAttrib->atkPalsy))
 		{
 			//	A line blank
 			++nDetailLine;

@@ -170,6 +170,13 @@ public:
 	void WriteBagItemOrder();
 	void ReadBagItemOrder();
 
+	void SetIgnoredSuitIDs(const std::set<int> &refVals) {
+		m_xIgnoredSuitIDs = refVals;
+	}
+	bool IsSuitIgnored(int nSuitID) {
+		return m_xIgnoredSuitIDs.count(nSuitID) > 0;
+	}
+
 public:
 	//	true : 还没加满 false : 加满了
 	bool AddHP(int _hp, int _way = ADD_NORMAL, int _step = 10);
@@ -412,6 +419,9 @@ private:
 
 	//	小退中
 	bool m_bRequestSmallQuit;
+
+	// Ignored suit ids
+	std::set<int> m_xIgnoredSuitIDs;
 };
 
 //////////////////////////////////////////////////////////////////////////

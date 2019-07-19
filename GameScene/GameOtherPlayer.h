@@ -206,6 +206,7 @@ public:
 	void DoPacket(const PkgPlayerQuitSelChrRsp& rsp);
 	void DoPacket(const PkgGameSyncDataNot& not);
 	void DoPacket(const PkgGameObjectActionsNot& not);
+	void DoPacket(const PkgGamePlayerSuitIgnoreNot& not);
 	//void DoPacket(const PkgPlayerQuickMsgNtf& ntf);
 
 	//bool MoveToDestination(WORD _wCoordX, WORD _wCoordY, BYTE _bWay);
