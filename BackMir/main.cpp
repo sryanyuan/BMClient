@@ -20,6 +20,9 @@ int CreateGameDirs()
 
 	mkdir(szDir);
 
+	sprintf(szDir, "%s\\Save", szRoot);
+	mkdir(szDir);
+
 	return 0;
 }
 

@@ -1,6 +1,7 @@
 #include "GameDlgBase.h"
 #include "../GameScene/GameResourceManager.h"
 #include "../BackMir/BackMir.h"
+#include "../../CommonModule/base64.h"
 //////////////////////////////////////////////////////////////////////////
 static const int s_nSkillBtnOftX = 40;
 static const int s_nSkillBtnOftY = 65;
@@ -378,6 +379,7 @@ bool GameStaticDlg::ProcUserCmd(const POINT& _mp)
 
 	if(m_bMode == MODE_SKILL)
 	{
+		bool bNeedSave = false;
 		if(_mp.y > RELATIVE_Y(s_nSkillBtnOftY) &&
 			_mp.y < RELATIVE_Y(s_nSkillBtnOftY + 30))
 		{
@@ -398,6 +400,7 @@ bool GameStaticDlg::ProcUserCmd(const POINT& _mp)
 						SetVisible(false);
 						GameSoundManager::GetInstancePtr()->PlayGameSound(SDGAME_CLICKBUTTON);
 						GamePlayer::GetInstance()->WriteAccMagicKeyCfg();
+						bNeedSave = true;
 						//m_pParent->GetDlgControl()->SetUnBlock();
 					}
 				}
@@ -417,8 +420,18 @@ bool GameStaticDlg::ProcUserCmd(const POINT& _mp)
 				GamePlayer::GetInstance()->SetMagicKey(m_dwMgc, 0);
 				SetVisible(false);
 				GameSoundManager::GetInstancePtr()->PlayGameSound(SDGAME_CLICKBUTTON);
+				bNeedSave = true;
 				//m_pParent->GetDlgControl()->SetUnBlock();
 			}
+		}
+		if (bNeedSave) {
+			char szSavFile[MAX_PATH];
+			string strName = GamePlayer::GetInstance()->GetAttrib()->name;
+			string strFile;
+			Base64::Encode(strName, &strFile);
+			sprintf(szSavFile, "%s\\Save\\%s.cfg",
+				GetRootPath(), strFile.c_str());
+			SocketDataCenter::GetInstance().SaveHumConfig(szSavFile);
 		}
 	}
 	else if(m_bMode == MODE_DEAD)

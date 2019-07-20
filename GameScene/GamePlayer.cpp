@@ -22,9 +22,11 @@
 #include "../../CommonModule/HideAttribHelper.h"
 #include "../../CommonModule/PotentialAttribHelper.h"
 #include "../../CommonModule/StoveManager.h"
+#include "../../CommonModule/base64.h"
 #include <io.h>
 //#define ZLIB_WINAPI
 #include <zlib.h>
+#include <direct.h>
 
 #ifdef _ZIPARCHIVE_
 #include <ZipArchive.h>
@@ -5279,8 +5281,19 @@ void GamePlayer::WriteAccMagicKeyCfg()
 	}
 
 	char szCfgFile[MAX_PATH];
+	sprintf(szCfgFile, "%s\\Save",
+		GetRootPath());
+	mkdir(szCfgFile);
+
+	string strFilename;
+	string strName = GetAttrib()->name;
+	if (!Base64::Encode(strName, &strFilename)) {
+		AfxGetHge()->System_Log("Can't calculate base64 of name");
+		return;
+	}
+
 	sprintf(szCfgFile, "%s\\Save\\%s.acc",
-		GetRootPath(), GetAttrib()->name);
+		GetRootPath(), strFilename.c_str());
 
 	HANDLE hCfgFile = ::CreateFile(szCfgFile, GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS, NULL, NULL);
 	DWORD dwWrite = 0;
@@ -5302,8 +5315,14 @@ void GamePlayer::WriteAccMagicKeyCfg()
 void GamePlayer::LoadAccMagicKeyCfg()
 {
 	char szCfgFile[MAX_PATH];
+	string strFilename;
+	string strName = GetAttrib()->name;
+	if (!Base64::Encode(strName, &strFilename)) {
+		AfxGetHge()->System_Log("Can't calculate base64 of name");
+		return;
+	}
 	sprintf(szCfgFile, "%s\\Save\\%s.acc",
-		GetRootPath(), GetAttrib()->name);
+		GetRootPath(), strFilename.c_str());
 
 	HANDLE hCfgFile = ::CreateFile(szCfgFile, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, NULL, NULL);
 	DWORD dwRead = 0;

@@ -19,6 +19,7 @@
 #include <ZipArchive.h>
 #include <direct.h>
 #include <Windows.h>
+#include "../../CommonModule/base64.h"
 extern ByteBuffer g_xBuffer;
 
 //////////////////////////////////////////////////////////////////////////
@@ -283,16 +284,11 @@ void SocketDataCenter::DoPacket_SystemUserLoginAck(const PkgUserLoginAck* _pPkt)
 
 			g_xBuffer.Reset();
 			char szSavFile[MAX_PATH];
-/*
-#ifdef _DEBUG
-			sprintf(szSavFile, "%s\\Save\\Debug\\%s.cfg",
-				GetRootPath(), pPlayer->GetAttrib()->name);
-#else
+			string strName = pPlayer->GetAttrib()->name;
+			string strFile;
+			Base64::Encode(strName, &strFile);
 			sprintf(szSavFile, "%s\\Save\\%s.cfg",
-				GetRootPath(), pPlayer->GetAttrib()->name);
-#endif*/
-			sprintf(szSavFile, "%s\\Save\\%s.cfg",
-				GetRootPath(), pPlayer->GetAttrib()->name);
+				GetRootPath(), strFile.c_str());
 
 			HANDLE hCfgFile = ::CreateFile(szSavFile, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, NULL, NULL);
 			DWORD dwRead = 0;
@@ -1349,8 +1345,11 @@ void SocketDataCenter::DoPacket_SystemUserDataAck(const PkgSystemUserDataAck* _p
 #else
 		SaveHumData_SaveFile(szSavFile, _pPkt);
 #endif
+		string strName = pPlayer->GetAttrib()->name;
+		string strFile;
+		Base64::Encode(strName, &strFile);
 		sprintf(szSavFile, "%s\\Save\\%s.cfg",
-			GetRootPath(), pPlayer->GetAttrib()->name);
+			GetRootPath(), strFile.c_str());
 		SaveHumConfig(szSavFile);
 		pPlayer->WriteAccMagicKeyCfg();
 		pPlayer->WriteBagItemOrder();

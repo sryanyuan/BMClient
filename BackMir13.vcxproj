@@ -111,6 +111,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\CommonModule\base64.h" />
     <ClInclude Include="..\CommonModule\BMHttpManager.h" />
     <ClInclude Include="..\CommonModule\ByteBuffer.h" />
     <ClInclude Include="..\CommonModule\cJSON.h" />

@@ -507,6 +507,9 @@
     <ClInclude Include="..\CommonModule\CollDownController.h">
       <Filter>Module</Filter>
     </ClInclude>
+    <ClInclude Include="..\CommonModule\base64.h">
+      <Filter>Module</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resource\arrow\attack.cur">
